@@ -1,44 +1,82 @@
 # Архитектура фронтенда (NX)
 
-**Важно для ИИ (и для человека):**  
-При добавлении/удалении модуля, библиотеки, фичи или компонента — **обязательно обновляй этот файл**.  
-Структура и правила должны быть реальными 100%.
+**Важно для ИИ и разработчика:**  
+Любое изменение структуры, слоёв, импортов, фич и публичных API должно отражаться в этом файле.
 
-## Цель  
-Чистый, масштабируемый Angular-фронт на NX (standalone + signals).  
-UI-компоненты переиспользуемые, бизнес-логика только в features, единый стиль через design-tokens.
+## Цель
+Поддерживать предсказуемый и масштабируемый Angular/Nx фронтенд:  
+- переиспользуемый UI в `ui-kit`  
+- бизнес-логика в `features`  
+- чёткие границы слоёв  
+- единый дизайн через `design-tokens`  
+- минимальный риск "архитектурного мусора"
 
-## Структура репозитория
+## Слои и ответственность
 
+### 1) `apps/web` (composition layer)
+- Точки входа приложения (`main.ts`, `app.config.ts`, роутинг, layout).
+- Связывает фичи между собой, но не хранит доменную бизнес-логику.
+- Не содержит дублирующие UI-компоненты, если они уже есть в `ui-kit`.
+
+### 2) `apps/web/src/app/features/*` (domain feature layer)
+- Каждая папка — отдельная предметная фича (`clients`, `organizations`, `products`...).
+- Внутри фичи: page/container, формы, локальные модели/мапперы, feature-сервис.
+- Feature не импортирует другую feature напрямую.
+
+### 3) `libs/ui-kit` (presentational UI layer)
+- Только "глупые" переиспользуемые компоненты (Button, Input, Card, ConfirmDialog...).
+- Никакой доменной логики, HTTP, роутинга, knowledge о фичах.
+- API через `input/output`; состояние только UI-уровня (open/loading/disabled).
+
+### 4) `libs/design-tokens` (design system layer)
+- Единственный источник токенов: цвета, spacing, тени, типографика, radius.
+- Любая визуальная настройка через `var(--...)`, без хардкода.
+
+### 5) `libs/shared` (cross-feature logic layer)
+- Общие типы, утилиты, guards, pure функции.
+- Без Angular UI-компонентов.
+
+## Smart и Dumb компоненты (обязательное правило)
+
+### Smart (container) компоненты
+- Расположение: только `features/*`.
+- Отвечают за: получение данных, orchestration, сигналы состояния, вызовы сервисов, роутинг.
+- Могут знать DTO/модели конкретной фичи.
+
+### Dumb (presentational) компоненты
+- Расположение: преимущественно `libs/ui-kit` (или локально в фиче, если компонент 100% специфичен и не переиспользуется).
+- Отвечают только за отображение и события `input/output`.
+- Не делают HTTP, не ходят в `Router`, не хранят бизнес-правила.
+
+Правило потока: **Smart -> Dumb через `input`**, **Dumb -> Smart через `output`**.
+
+## Точки входа и публичный API
+
+- Каждый reusable модуль имеет `index.ts` как публичный entry point.
+- Импортировать только через публичный API, не через глубокие пути файлов.
+- Для `ui-kit`:
+  - внешний импорт из app: `@ui-kit/button`, `@ui-kit/input`, `@ui-kit/card`, `@ui-kit/confirm-dialog`
+  - внутренние импорты внутри `ui-kit`: относительные (`../button`, `../card`)
+- Запрещены deep-importы вида `libs/.../src/lib/.../file.ts`.
+
+## Стандарт структуры папок
+
+### Репозиторий
 ```text
-my-monorepo/
-  apps/
-    web/                    # основное приложение (Angular standalone)
-  libs/
-    ui-kit/                 # переиспользуемые компоненты (button, input, card, confirm-dialog и т.д.)
-    shared/                 # общие утилиты, типы, guards (без Angular-компонентов)
-    design-tokens/          # цвета, радиусы, шрифты, spacing, shadows (SCSS + Tailwind)
-  docs/
-    ai/                     # этот файл + COMPONENT_TEMPLATE.md + COMPONENT_CATALOG.md
-  nx.json
-  tsconfig.base.json
-  package.json
-libs/ui-kit
+apps/
+  web/
+    src/app/
+      core/
+      features/
+      shared/
+libs/
+  ui-kit/
+  design-tokens/
+  shared/
+docs/ai/
+```
 
-Компоненты: button, input, card, confirm-dialog и т.д.
-Экспорт: index.ts → export * from './button';
-Стили: через :host + переменные из design-tokens
-ViewEncapsulation: None (для всех компонентов ui-kit)
-Создание: nx g @nx/angular:component button --project=ui-kit --style=scss --standalone --export
-
-Стандарт структуры (обязательно):
-- Каждый UI-компонент живёт в отдельной папке: `libs/ui-kit/src/lib/<component-name>/`
-- В папке компонента только связанные файлы: `<name>.ts`, `<name>.html`, `<name>.scss`, `<name>.spec.ts`, `index.ts`
-- В `libs/ui-kit/src/lib/` не должно быть "плоских" файлов компонентов и временных дублей (`*.component.ts`, `ui-kit.ts` и т.п.)
-- Публичный экспорт только через `libs/ui-kit/src/index.ts`
-- Внутренние импорты в ui-kit делай через относительные пути между папками компонентов (`../button`, `../card`), а не через app-level aliases
-
-Эталон:
+### `ui-kit` (обязательно "один компонент = одна папка")
 ```text
 libs/ui-kit/src/lib/
   button/
@@ -67,90 +105,65 @@ libs/ui-kit/src/lib/
     index.ts
 ```
 
-apps/web
+### Feature-шаблон (эталон)
+```text
+apps/web/src/app/features/<feature>/
+  <feature>-page.component.ts       # smart container
+  <feature>-page.component.html
+  <feature>-page.component.scss
+  <feature>-form.component.ts       # dumb/presentational (feature-specific)
+  <feature>-form.component.html
+  <feature>-form.component.scss
+  <feature>.service.ts              # feature facade/state/business orchestration
+  <feature>.model.ts                # types/interfaces
+```
 
-src/app/core/ — роутинг, layout, http-client, auth
-src/app/features/<feature>/ — страницы/фичи (clients, organizations и т.д.)
-каждый feature: page.component.ts, form.component.ts, service.ts, model.ts
+## Правила переиспользуемости
 
-src/app/shared/ — только локальные утилиты (если не вынес в libs)
+- Если компонент нужен в 2+ фичах -> переносим в `libs/ui-kit` (UI) или `libs/shared` (logic/types).
+- Если компонент фиче-специфичен и не ожидается reuse -> оставляем в feature.
+- Не дублировать одинаковые кнопки/инпуты/карточки в `features`.
+- Любые изменения базового UI сначала отражаются в Component Catalog.
 
-Guardrail: feature не импортирует другую feature.
-Проверка: npm run arch:check + nx run web:lint --fix
-Design System
-Все стили только через libs/design-tokens (переменные OKLCH + Tailwind).
-Компоненты не содержат хардкод цветов, шрифтов, теней — только var(--...).
-Правила для ИИ (Design Tokens + UI-kit)
+## Дизайн и стилизация
 
-Всегда используй глобальные переменные из design-tokens (var(--primary), var(--spacing-1) и т.д.).
-Не хардкодь цвета, шрифты, тени, радиусы, spacing.
-При создании компонента в ui-kit — обязательно:
-encapsulation: ViewEncapsulation.None
-@use "@design-tokens/styles/tokens" as tokens;
-стили через var(--...) или tokens.$var
-классы на реальном элементе (<button [class]="...">), не только host
+- Для ui-компонентов `ViewEncapsulation.None`.
+- Классы применяются к реальным DOM-элементам, не только host.
+- В `.scss` компонентов обязательный импорт токенов: `@use "tokens";`
+- Цвета/тени/шрифты/spacing/radius: только `var(--...)` из `design-tokens`.
+- Запрещён визуальный хардкод (`#...`, `rgba(...)`, fixed shadow values), кроме обоснованных случаев в токенах.
 
-Запрещено создавать локальные button/input/card/confirm в features — только через @ui-kit/button, @ui-kit/input, @ui-kit/card, @ui-kit/confirm-dialog.
-При создании новой фичи — обновляй этот файл.
-При создании компонента — следуй COMPONENT_TEMPLATE.md.
-Отслеживание компонентов и артикулов — через Component Catalog (кнопка "UI" в хедере).
+## Guardrails по импортам
 
-Feature Pattern (эталон) — Clients
-Все будущие фичи (Organizations, Products, Proposals и т.д.) должны быть сделаны ТОЧНО по этому шаблону, чтобы юзабилити и визуал были идентичными.
-Структура фичи (пример clients):
-textfeatures/clients/
-  clients-page.component.ts        # основная страница
-  clients-form.component.ts        # отдельный компонент формы
-  clients.service.ts               # сервис на сигналах
-  clients.model.ts                 # interface Client по DTO
-Обязательные элементы (как в clients):
+- `features/*` -> можно: `ui-kit`, `shared`, `design-tokens`; нельзя: другие `features/*`.
+- `ui-kit` -> можно: `design-tokens`; нельзя: `features/*`.
+- `shared` -> нельзя зависеть от `features/*` и `ui-kit`.
+- `apps/web/core` -> может оркестрировать feature-маршруты и app-level провайдеры, но не дублирует feature-сервисы.
 
-Поиск сверху (app-input)
-Таблица с сортировкой по клику на заголовки
-Пагинация (10 элементов + кнопки Пред/След)
-Удаление через ConfirmDialog из ui-kit (не нативный confirm)
-Кнопка "Детали" → модалка просмотра всех полей
-Форма создания/редактирования — только через отдельный *FormComponent
-Все UI-элементы — только из ui-kit
-Tight-дизайн, цвета/размеры/шрифты — только через design-tokens + var(--...)
-Артикулы компонентов — в Component Catalog
+## Component Catalog
 
-Правило для любого ИИ и разработчика:
-"При создании новой фичи — копируй структуру, поведение и визуал clients на 100%. Изменяй только название фичи и поля из DTO. Никаких отклонений по юзабилити и стилю."
-Component Catalog
-Кнопка "UI" в хедере приложения открывает каталог всех компонентов ui-kit.
-Каталог — источник правды по внешнему виду и артикулам.
+- Кнопка `UI` в хедере открывает каталог компонентов.
+- Каталог — источник правды по артикулам и визуалу (`b-01`, `b-02`, `i-01`, `c-01`...).
+- Любая правка ui-kit проверяется в каталоге и в реальных экранах.
 
-Артикулы: b-01 (Primary Button), b-02 (Secondary), i-01 (Default Input), c-01 (Card) и т.д.
-Когда нужно изменить компонент (например "b-02 сделать больше") — меняй в ui-kit → изменения сразу видны в каталоге и во всём приложении.
+## Обязательная проверка перед коммитом
 
-COMPONENT_TEMPLATE.md (чек-лист для создания компонента)
-(ссылка на существующий файл — не удаляй, он остаётся актуальным)
+1. `npm run ui:lint`
+2. `nx serve web` + hard refresh (`Ctrl+F5`) для визуальной проверки
+3. Проверка, что нет deep-import и нет новых дублирующих компонентов
+4. Обновление `docs/ai/ARCHITECTURE.md`, если менялась структура или правила
 
-Команда: nx g @nx/angular:component ... --project=ui-kit --style=scss --standalone --export
-encapsulation: ViewEncapsulation.None
-@use "@design-tokens/styles/tokens" as tokens;
-Классы на реальном элементе через computedClasses()
-Цвета/тени/шрифты только var(--...)
-Тест: nx serve web + Ctrl+F5 — видно ли изменения?
-Линтинг: npm run ui:lint
+## Базовые команды
 
-Общее
+- `npx nx serve web`
+- `npx nx build web`
+- `npx nx g @nx/angular:component ...`
+- `npm run ui:lint`
 
-Standalone — все компоненты без NgModule
-Signals — где возможно (state, computed, input/output)
-Path aliases (tsconfig.base.json):JSON"@ui-kit/*": ["libs/ui-kit/src/lib/*"],
-"@design-tokens/*": ["libs/design-tokens/src/*"]
-Команды:
-nx serve web — запуск
-nx build web — билд
-nx g @nx/angular:component ... — создание
-npm run ui:lint — проверка ui-kit + design-tokens + web
+## Жёсткие запреты
 
-
-Запреты:
-
-Нет ng g
-Нет локальных UI-компонентов в features
-Нет импортов из feature в feature
-Нет хардкода стилей — только design-tokens
+- Нет локальных дублей `button/input/card/confirm-dialog` внутри `features`.
+- Нет импортов из feature в feature.
+- Нет deep-import в обход `index.ts`.
+- Нет хардкода дизайн-значений вне `design-tokens`.
+- Нет создания архитектурных сущностей без обновления этого документа.
