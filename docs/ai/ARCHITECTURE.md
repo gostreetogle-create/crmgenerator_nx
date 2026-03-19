@@ -31,6 +31,42 @@ libs/ui-kit
 ViewEncapsulation: None (для всех компонентов ui-kit)
 Создание: nx g @nx/angular:component button --project=ui-kit --style=scss --standalone --export
 
+Стандарт структуры (обязательно):
+- Каждый UI-компонент живёт в отдельной папке: `libs/ui-kit/src/lib/<component-name>/`
+- В папке компонента только связанные файлы: `<name>.ts`, `<name>.html`, `<name>.scss`, `<name>.spec.ts`, `index.ts`
+- В `libs/ui-kit/src/lib/` не должно быть "плоских" файлов компонентов и временных дублей (`*.component.ts`, `ui-kit.ts` и т.п.)
+- Публичный экспорт только через `libs/ui-kit/src/index.ts`
+- Внутренние импорты в ui-kit делай через относительные пути между папками компонентов (`../button`, `../card`), а не через app-level aliases
+
+Эталон:
+```text
+libs/ui-kit/src/lib/
+  button/
+    button.ts
+    button.html
+    button.scss
+    button.spec.ts
+    index.ts
+  input/
+    input.ts
+    input.html
+    input.scss
+    input.spec.ts
+    index.ts
+  card/
+    card.ts
+    card.html
+    card.scss
+    card.spec.ts
+    index.ts
+  confirm-dialog/
+    confirm-dialog.ts
+    confirm-dialog.html
+    confirm-dialog.scss
+    confirm-dialog.spec.ts
+    index.ts
+```
+
 apps/web
 
 src/app/core/ — роутинг, layout, http-client, auth

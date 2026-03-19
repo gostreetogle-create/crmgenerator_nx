@@ -6,8 +6,8 @@ import {
   input,
   output,
 } from '@angular/core';
-import { ButtonComponent } from './button';
-import { CardComponent } from './card';
+import { ButtonComponent } from '../button';
+import { CardComponent } from '../card';
 
 @Component({
   // eslint-disable-next-line @angular-eslint/component-selector
