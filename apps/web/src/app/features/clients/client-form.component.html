@@ -1,0 +1,120 @@
+<app-card [title]="client() ? 'Редактировать клиент' : 'Новый клиент'" class="client-form-card">
+  <form class="client-form" (ngSubmit)="onSubmit()">
+    <div class="field">
+      <app-input
+        label="Название / ФИО"
+        [value]="formData().name || ''"
+        [error]="errors().name"
+        (valueChange)="formData.update((v) => ({ ...v, name: $event }))"
+      />
+      @if (errors().name) {
+        <p class="field-error">{{ errors().name }}</p>
+      }
+    </div>
+
+    <app-input
+      label="Контактное лицо"
+      [value]="formData().contactPerson || ''"
+      (valueChange)="formData.update((v) => ({ ...v, contactPerson: $event }))"
+    />
+
+    <div class="field">
+      <app-input
+        label="Телефон"
+        type="tel"
+        [value]="formData().phone || ''"
+        [error]="errors().phone"
+        (valueChange)="formData.update((v) => ({ ...v, phone: $event }))"
+      />
+      @if (errors().phone) {
+        <p class="field-error">{{ errors().phone }}</p>
+      }
+    </div>
+
+    <div class="field">
+      <app-input
+        label="E-mail"
+        type="email"
+        [value]="formData().email || ''"
+        [error]="errors().email"
+        (valueChange)="formData.update((v) => ({ ...v, email: $event }))"
+      />
+      @if (errors().email) {
+        <p class="field-error">{{ errors().email }}</p>
+      }
+    </div>
+
+    <div class="field">
+      <app-input
+        label="ИНН"
+        [value]="formData().inn || ''"
+        [error]="errors().inn"
+        (valueChange)="formData.update((v) => ({ ...v, inn: $event }))"
+      />
+      @if (errors().inn) {
+        <p class="field-error">{{ errors().inn }}</p>
+      }
+    </div>
+
+    <div class="field">
+      <app-input
+        label="КПП"
+        [value]="formData().kpp || ''"
+        [error]="errors().kpp"
+        (valueChange)="formData.update((v) => ({ ...v, kpp: $event }))"
+      />
+      @if (errors().kpp) {
+        <p class="field-error">{{ errors().kpp }}</p>
+      }
+    </div>
+
+    <app-input
+      label="Адрес"
+      [value]="formData().address || ''"
+      (valueChange)="formData.update((v) => ({ ...v, address: $event }))"
+    />
+
+    <app-input
+      label="Реквизиты"
+      [value]="formData().requisites || ''"
+      (valueChange)="formData.update((v) => ({ ...v, requisites: $event }))"
+    />
+
+    <div class="field">
+      <app-input
+        label="Скидка, %"
+        type="number"
+        [value]="asText(formData().discount)"
+        [error]="errors().discount"
+        (valueChange)="formData.update((v) => ({ ...v, discount: +$event || 0 }))"
+      />
+      @if (errors().discount) {
+        <p class="field-error">{{ errors().discount }}</p>
+      }
+    </div>
+
+    <app-input
+      label="Наценка клиента, %"
+      type="number"
+      [value]="asText(formData().clientMarkup)"
+      (valueChange)="formData.update((v) => ({ ...v, clientMarkup: +$event || 0 }))"
+    />
+
+    <label class="notes-label" for="notes">Заметки</label>
+    <textarea
+      id="notes"
+      class="notes-area"
+      [value]="formData().notes || ''"
+      (input)="formData.update((v) => ({ ...v, notes: $any($event.target).value }))"
+    ></textarea>
+
+    <div class="form-actions">
+      <app-button variant="secondary" type="button" (clicked)="cancel.emit()">
+        Отмена
+      </app-button>
+      <app-button variant="primary" type="submit" [disabled]="hasErrors()">
+        Сохранить
+      </app-button>
+    </div>
+  </form>
+</app-card>

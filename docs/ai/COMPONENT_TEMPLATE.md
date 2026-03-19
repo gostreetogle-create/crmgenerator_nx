@@ -1,0 +1,11 @@
+# COMPONENT_TEMPLATE
+
+Короткий чек-лист для создания UI-компонента в `ui-kit`.
+
+- Команда: `nx g @nx/angular:component --project=ui-kit --style=scss --standalone --export`
+- `encapsulation: ViewEncapsulation.None`
+- Импорт: `@import "@design-tokens/styles/tokens";` в `.scss`
+- Классы: на реальном элементе, через `[class]="computedClasses()"`
+- Цвета/тени/шрифты: только `var(--...)` из tokens
+- Тест: `nx serve web` + `Ctrl+F5` — видно ли изменения?
+- Линтинг: `npm run ui:lint`

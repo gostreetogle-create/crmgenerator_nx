@@ -1,0 +1,84 @@
+<app-card title="Заказчики">
+  <app-button variant="primary" size="md" (clicked)="onOpenModal()">
+    Добавить клиента
+  </app-button>
+
+  <app-input
+    label="Поиск по имени, телефону, ИНН или email"
+    placeholder="Введите текст..."
+    size="md"
+    [value]="searchQuery()"
+    (valueChange)="searchQuery.set($event)"
+    class="search-input w-full max-w-md mb-4"
+  />
+
+  <div class="table-wrap">
+    <table class="clients-table">
+      <thead>
+        <tr>
+          <th (click)="toggleSort('name')" class="sortable">
+            Имя
+            <span class="sort-indicator">{{
+              sortBy() === 'name' ? (sortAsc() ? '↑' : '↓') : ''
+            }}</span>
+          </th>
+          <th>Контакт</th>
+          <th>Телефон</th>
+          <th>Email</th>
+          <th>ИНН</th>
+          <th (click)="toggleSort('discount')" class="sortable">
+            Скидка
+            <span class="sort-indicator">{{
+              sortBy() === 'discount' ? (sortAsc() ? '↑' : '↓') : ''
+            }}</span>
+          </th>
+          <th>Действия</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (c of filteredClients(); track c._id) {
+          <tr>
+            <td>{{ c.name }}</td>
+            <td>{{ c.contactPerson || '—' }}</td>
+            <td>{{ c.phone || '—' }}</td>
+            <td>{{ c.email || '—' }}</td>
+            <td>{{ c.inn || '—' }}</td>
+            <td>{{ c.discount ?? 0 }}%</td>
+            <td class="actions">
+              <button type="button" class="link-btn" (click)="onOpenModal(c)">
+                Ред
+              </button>
+              <button
+                type="button"
+                class="link-btn danger"
+                (click)="c._id && onDelete(c._id)"
+              >
+                Удал
+              </button>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</app-card>
+
+@if (showModal()) {
+  <div class="modal-backdrop">
+    <app-client-form
+      [client]="editingClient()"
+      (save)="onSave($event)"
+      (cancel)="showModal.set(false)"
+    />
+  </div>
+}
+
+<app-confirm-dialog
+  [open]="showConfirm()"
+  title="Удалить клиента?"
+  message="Клиент будет удалён навсегда. Продолжить?"
+  confirmText="Удалить"
+  confirmVariant="danger"
+  (confirmed)="onConfirmDelete()"
+  (cancelled)="showConfirm.set(false)"
+/>

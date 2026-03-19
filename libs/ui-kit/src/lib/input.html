@@ -1,0 +1,18 @@
+@if (label()) {
+  <label [for]="inputId()" class="input-label">{{ label() }}</label>
+}
+
+<input
+  [id]="inputId()"
+  [type]="type()"
+  [placeholder]="placeholder()"
+  [value]="value()"
+  [disabled]="disabled()"
+  [class]="computedClasses()"
+  (input)="onInput($event)"
+  (change)="onInput($event)"
+/>
+
+@if (error()) {
+  <p class="error">{{ error() }}</p>
+}

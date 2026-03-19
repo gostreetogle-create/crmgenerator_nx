@@ -1,0 +1,15 @@
+@if (open()) {
+  <div class="confirm-overlay">
+    <app-card [title]="title()" class="confirm-card">
+      <p class="confirm-message">{{ message() }}</p>
+      <div class="confirm-actions">
+        <app-button variant="secondary" (clicked)="cancelled.emit()">
+          {{ cancelText() }}
+        </app-button>
+        <app-button [variant]="confirmVariant()" (clicked)="confirmed.emit()">
+          {{ confirmText() }}
+        </app-button>
+      </div>
+    </app-card>
+  </div>
+}

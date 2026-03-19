@@ -1,0 +1,54 @@
+@use "tokens";
+
+.client-form-card {
+  width: min(640px, 95vw);
+}
+
+.client-form {
+  display: grid;
+  gap: var(--spacing-2);
+}
+
+.field {
+  display: grid;
+  gap: var(--spacing-1);
+}
+
+.field-error {
+  margin: 0;
+  font-size: var(--font-size-sm);
+  color: var(--danger);
+  background: color-mix(in oklch, var(--danger) 12%, transparent);
+  border: 1px solid color-mix(in oklch, var(--danger) 40%, var(--border));
+  border-radius: var(--radius-sm);
+  padding: var(--spacing-1) var(--spacing-2);
+}
+
+.notes-label {
+  font-size: var(--font-size-sm);
+  color: var(--muted-foreground);
+}
+
+.notes-area {
+  min-height: 74px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: var(--spacing-2);
+  font-size: var(--font-size-sm);
+  background: var(--background);
+  color: var(--foreground);
+  resize: vertical;
+}
+
+.notes-area:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 2px color-mix(in oklch, var(--primary) 20%, transparent);
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--spacing-2);
+  margin-top: var(--spacing-2);
+}
