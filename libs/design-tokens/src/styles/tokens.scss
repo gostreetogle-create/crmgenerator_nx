@@ -32,6 +32,8 @@
   --radius-md: 6px;
   --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.08);
   --shadow-glow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  --overlay-backdrop: rgba(0, 0, 0, 0.45);
+  --overlay-backdrop-strong: rgba(0, 0, 0, 0.7);
 }
 
 .dark {
@@ -53,6 +55,8 @@
   --card: oklch(0.31 0 0);
   --card-foreground: var(--foreground);
   --shadow-glow: 0 1px 3px rgba(0, 0, 0, 0.35);
+  --overlay-backdrop: rgba(0, 0, 0, 0.55);
+  --overlay-backdrop-strong: rgba(0, 0, 0, 0.78);
 }
 
 @theme inline {

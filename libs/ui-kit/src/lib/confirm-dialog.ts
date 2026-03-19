@@ -1,5 +1,11 @@
 import { CommonModule } from '@angular/common';
-import { Component, ViewEncapsulation, input, output } from '@angular/core';
+import {
+  Component,
+  HostListener,
+  ViewEncapsulation,
+  input,
+  output,
+} from '@angular/core';
 import { ButtonComponent } from './button';
 import { CardComponent } from './card';
 
@@ -22,4 +28,11 @@ export class ConfirmDialogComponent {
 
   confirmed = output<void>();
   cancelled = output<void>();
+
+  @HostListener('document:keydown.escape')
+  onEscape() {
+    if (this.open()) {
+      this.cancelled.emit();
+    }
+  }
 }

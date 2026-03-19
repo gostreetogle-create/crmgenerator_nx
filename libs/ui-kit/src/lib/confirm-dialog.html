@@ -1,6 +1,21 @@
 @if (open()) {
-  <div class="confirm-overlay">
-    <app-card [title]="title()" class="confirm-card">
+  <div
+    class="confirm-overlay"
+    role="button"
+    tabindex="0"
+    aria-label="Закрыть диалог"
+    (click)="cancelled.emit()"
+    (keydown.enter)="cancelled.emit()"
+    (keydown.space)="cancelled.emit()"
+  >
+    <app-card
+      [title]="title()"
+      class="confirm-card"
+      role="dialog"
+      aria-modal="true"
+      tabindex="-1"
+      (click)="$event.stopPropagation()"
+    >
       <p class="confirm-message">{{ message() }}</p>
       <div class="confirm-actions">
         <app-button variant="secondary" (clicked)="cancelled.emit()">

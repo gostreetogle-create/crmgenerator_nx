@@ -1,0 +1,74 @@
+<app-button variant="ghost" size="sm" (clicked)="openCatalog()">UI</app-button>
+
+@if (isOpen()) {
+  <div class="catalog-overlay">
+    <app-card title="Component Catalog" class="catalog-card">
+      <div class="catalog-grid">
+        @for (group of catalogGroups(); track group.title) {
+          <section class="catalog-group">
+            <h3>{{ group.title }}</h3>
+
+            @for (item of group.items; track item.code) {
+              <article class="catalog-item">
+                <div class="item-head">
+                  <code>{{ item.code }}</code>
+                  <span>{{ item.name }}</span>
+                </div>
+
+                @if (group.title === 'Buttons') {
+                  <app-button [variant]="item.variant || 'primary'" size="sm">
+                    {{ item.name }}
+                  </app-button>
+                }
+
+                @if (group.title === 'Inputs') {
+                  @if (item.code === 'i-02') {
+                    <app-input
+                      label="Пример"
+                      placeholder="Введите значение..."
+                      [error]="'Проверка поля'"
+                    />
+                  } @else {
+                    <app-input label="Пример" placeholder="Введите значение..." />
+                  }
+                }
+
+                @if (group.title === 'Cards') {
+                  <app-card title="Card title" subtitle="Card subtitle">
+                    <p>Пример содержимого карточки.</p>
+                  </app-card>
+                }
+
+                @if (group.title === 'ConfirmDialog') {
+                  <app-button
+                    variant="danger"
+                    size="sm"
+                    (clicked)="showConfirmPreview.set(true)"
+                  >
+                    Открыть confirm
+                  </app-button>
+                }
+              </article>
+            }
+          </section>
+        }
+      </div>
+
+      <div class="catalog-actions">
+        <app-button variant="secondary" (clicked)="isOpen.set(false)">
+          Закрыть
+        </app-button>
+      </div>
+    </app-card>
+  </div>
+}
+
+<app-confirm-dialog
+  [open]="showConfirmPreview()"
+  title="Демо ConfirmDialog"
+  message="Пример подтверждающего диалога из ui-kit."
+  confirmText="Понятно"
+  confirmVariant="primary"
+  (confirmed)="showConfirmPreview.set(false)"
+  (cancelled)="showConfirmPreview.set(false)"
+/>

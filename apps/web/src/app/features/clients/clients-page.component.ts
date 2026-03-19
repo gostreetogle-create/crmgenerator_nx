@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, OnInit, computed, effect, inject, signal } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ButtonComponent } from '@ui-kit/button';
 import { CardComponent } from '@ui-kit/card';
 import { ConfirmDialogComponent } from '@ui-kit/confirm-dialog';
@@ -22,15 +23,21 @@ import { ClientsService } from './clients.service';
   templateUrl: './clients-page.component.html',
   styleUrl: './clients-page.component.scss',
 })
-export class ClientsPageComponent {
+export class ClientsPageComponent implements OnInit {
   private readonly clientsService = inject(ClientsService);
+  private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
+  private syncingFromUrl = false;
 
   readonly clients = this.clientsService.clients;
   readonly searchQuery = signal<string>('');
   readonly sortBy = signal<'name' | 'discount' | null>(null);
   readonly sortAsc = signal<boolean>(true);
+  readonly currentPage = signal(1);
+  readonly pageSize = signal(10);
   readonly showModal = signal(false);
   readonly editingClient = signal<Client | null>(null);
+  readonly selectedClient = signal<Client | null>(null);
   readonly showConfirm = signal(false);
   readonly deletingId = signal<string | null>(null);
 
@@ -60,6 +67,44 @@ export class ClientsPageComponent {
 
     return list;
   });
+  readonly totalPages = computed(() =>
+    Math.max(1, Math.ceil(this.filteredClients().length / this.pageSize()))
+  );
+  readonly paginatedClients = computed(() => {
+    const page = Math.min(this.currentPage(), this.totalPages());
+    const start = (page - 1) * this.pageSize();
+    return this.filteredClients().slice(start, start + this.pageSize());
+  });
+
+  constructor() {
+    effect(() => {
+      const total = this.totalPages();
+      const page = this.currentPage();
+      if (page > total) this.currentPage.set(total);
+      if (page < 1) this.currentPage.set(1);
+    });
+
+    effect(() => {
+      this.searchQuery();
+      this.currentPage();
+      this.sortBy();
+      this.sortAsc();
+      if (!this.syncingFromUrl) {
+        this.updateUrl();
+      }
+    });
+  }
+
+  ngOnInit() {
+    this.route.queryParams.subscribe((params) => {
+      this.syncingFromUrl = true;
+      this.searchQuery.set(params['search'] || '');
+      this.currentPage.set(Math.max(1, +params['page'] || 1));
+      this.sortBy.set((params['sort'] as 'name' | 'discount' | null) || null);
+      this.sortAsc.set(params['asc'] === 'false' ? false : true);
+      this.syncingFromUrl = false;
+    });
+  }
 
   onOpenModal(client?: Client) {
     if (client) {
@@ -109,6 +154,19 @@ export class ClientsPageComponent {
     this.deletingId.set(null);
   }
 
+  setSearchQuery(value: string) {
+    this.searchQuery.set(value);
+    this.currentPage.set(1);
+  }
+
+  goPrevPage() {
+    this.currentPage.update((p) => Math.max(1, p - 1));
+  }
+
+  goNextPage() {
+    this.currentPage.update((p) => Math.min(this.totalPages(), p + 1));
+  }
+
   toggleSort(field: 'name' | 'discount') {
     if (this.sortBy() === field) {
       this.sortAsc.set(!this.sortAsc());
@@ -116,5 +174,20 @@ export class ClientsPageComponent {
       this.sortBy.set(field);
       this.sortAsc.set(true);
     }
+    this.currentPage.set(1);
+  }
+
+  private updateUrl() {
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: {
+        search: this.searchQuery() || null,
+        page: this.currentPage(),
+        sort: this.sortBy(),
+        asc: this.sortAsc(),
+      },
+      queryParamsHandling: 'merge',
+      replaceUrl: true,
+    });
   }
 }

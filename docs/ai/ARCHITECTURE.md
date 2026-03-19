@@ -1,175 +1,120 @@
-# Архитектура проекта
-**Важно для ИИ:** при добавлении или удалении фичи, модуля или слоя этот файл нужно обновить: добавить новое в описание структуры ниже или убрать удалённое. Документ должен соответствовать реальной структуре репозитория.
-## Цель
-Скелет приложения без бизнес-логики, безопасно расширяемый (в т.ч. локальным ИИ).
-## Структура репозитория
-textroot/
-  apps/
-    web/                    # Angular (standalone)
-    api/                    # NestJS
-  packages/
-    shared/                 # общие типы/утилиты (без Angular/Nest)
-  docs/
-    tigran/                 # для человека: шпаргалка (RUNBOOK)
-    ai/                     # для ИИ: главный вход, архитектура, спеки, чек-листы, правила
-  scripts/
-    arch-check.mjs          # запрет cross-feature imports (web)
-    server-deploy.sh        # деплой на сервер
-    server-db-dump.sh       # дамп БД на сервере
-    server-db-restore.sh    # восстановление БД на сервере
-    db-dump.ps1             # дамп БД локально (Windows)
-    db-restore.ps1          # восстановление БД локально (Windows)
-    prod.env.example        # пример .env.prod для сервера
-  docker/
-    docker-compose.yml      # Postgres локально
-    compose.prod.yml        # прод: Caddy + web + api + postgres
-    Caddyfile               # crmgenerator.ru, api.crmgenerator.ru
-    api.Dockerfile
-    web.Dockerfile
-  prisma/
-    schema.prisma
-    migrations/
-  package.json              # корневые команды (workspaces)
-## Web (apps/web)
+# Архитектура фронтенда (NX)
 
-**src/app/core/** — http-клиент, config/env, layout, роутинг
-**src/app/shared/** — ui-компоненты, utils
-**src/app/features/<feature>/** — pages, components, data-access, models
-**src/app/features/clients/** — страница «Заказчики» (организации/заказчики списками + модалки добавления)
-
-**Guardrail:** feature не импортирует другую feature. Проверка: npm run arch:check.
-## API (apps/api)
-
-Конфиг только через ConfigService (не process.env в коде)
-БД только через PrismaService (PrismaModule)
-Глобально: ValidationPipe, CORS
-Обязательный эндпоинт: GET /health
-Эндпоинты (clients): GET/POST/PATCH/DELETE /organizations, GET/POST/PATCH/DELETE /clients (+ фильтр ?organizationId=...)
-
-## Общее
-
-**packages/shared** — без зависимостей от Angular/Nest и без импортов из apps/*
-**prisma** — схема и миграции в git; команды: prisma generate, prisma migrate dev / prisma migrate deploy (прод)
-**Сервер:** папка /opt/crmgenerator, домены crmgenerator.ru и api.crmgenerator.ru
-Хорошо, давай перепишем под новый чистый NX-фронт.
-Бэк, prisma, docker, сервер — вырезаем. Оставляем только фронт + UI-стандартизацию.
-Вот свежий, лаконичный файл архитектуры — вставь его в docs/ai/architecture.md (или как хочешь назвать).
-Markdown# Архитектура фронтенда (NX)
-
-**Важно для ИИ:**  
-При добавлении/удалении модуля, библиотеки или фичи — обновляй этот файл.  
-Структура должна быть реальной.
+**Важно для ИИ (и для человека):**  
+При добавлении/удалении модуля, библиотеки, фичи или компонента — **обязательно обновляй этот файл**.  
+Структура и правила должны быть реальными 100%.
 
 ## Цель  
-Чистый, масштабируемый Angular-фронт на NX.  
-Standalone-компоненты, signals, без бизнес-логики в UI.
+Чистый, масштабируемый Angular-фронт на NX (standalone + signals).  
+UI-компоненты переиспользуемые, бизнес-логика только в features, единый стиль через design-tokens.
 
-## Структура репозитория (фронт)
+## Структура репозитория
 
 ```text
 my-monorepo/
   apps/
-    web/                # основное приложение (Angular standalone)
+    web/                    # основное приложение (Angular standalone)
   libs/
-    ui-kit/             # переиспользуемые компоненты (button, card, input, etc.)
-    shared/             # общие утилиты, типы, guards (без Angular-компонентов)
-    design-tokens/      # цвета, радиусы, шрифты, переменные (SCSS + TS)
+    ui-kit/                 # переиспользуемые компоненты (button, input, card, confirm-dialog и т.д.)
+    shared/                 # общие утилиты, типы, guards (без Angular-компонентов)
+    design-tokens/          # цвета, радиусы, шрифты, spacing, shadows (SCSS + Tailwind)
   docs/
-    ai/                 # этот файл + правила, чек-листы для ИИ
+    ai/                     # этот файл + COMPONENT_TEMPLATE.md + COMPONENT_CATALOG.md
   nx.json
   tsconfig.base.json
   package.json
 libs/ui-kit
 
-Компоненты: button, card, input, dropdown, badge, loader
+Компоненты: button, input, card, confirm-dialog и т.д.
 Экспорт: index.ts → export * from './button';
 Стили: через :host + переменные из design-tokens
-Storybook: nx storybook ui-kit (если подключишь)
-Создание: nx g @nx/angular:component button --project=ui-kit
+ViewEncapsulation: None (для всех компонентов ui-kit)
+Создание: nx g @nx/angular:component button --project=ui-kit --style=scss --standalone --export
 
 apps/web
 
-src/app/
-core/ — роутинг, layout, http-client, auth
-features/ — страницы/фичи (clients, dashboard, settings)
-каждый feature: page.component.ts, data-access.service.ts, models.ts
+src/app/core/ — роутинг, layout, http-client, auth
+src/app/features/<feature>/ — страницы/фичи (clients, organizations и т.д.)
+каждый feature: page.component.ts, form.component.ts, service.ts, model.ts
 
-shared/ — только локальные утилиты (если не вынес в libs)
+src/app/shared/ — только локальные утилиты (если не вынес в libs)
 
 Guardrail: feature не импортирует другую feature.
-Проверка: nx run web:lint --fix + npm run arch:check (добавь скрипт позже)
+Проверка: npm run arch:check + nx run web:lint --fix
+Design System
+Все стили только через libs/design-tokens (переменные OKLCH + Tailwind).
+Компоненты не содержат хардкод цветов, шрифтов, теней — только var(--...).
+Правила для ИИ (Design Tokens + UI-kit)
+
+Всегда используй глобальные переменные из design-tokens (var(--primary), var(--spacing-1) и т.д.).
+Не хардкодь цвета, шрифты, тени, радиусы, spacing.
+При создании компонента в ui-kit — обязательно:
+encapsulation: ViewEncapsulation.None
+@use "@design-tokens/styles/tokens" as tokens;
+стили через var(--...) или tokens.$var
+классы на реальном элементе (<button [class]="...">), не только host
+
+Запрещено создавать локальные button/input/card/confirm в features — только через @ui-kit/button, @ui-kit/input, @ui-kit/card, @ui-kit/confirm-dialog.
+При создании новой фичи — обновляй этот файл.
+При создании компонента — следуй COMPONENT_TEMPLATE.md.
+Отслеживание компонентов и артикулов — через Component Catalog (кнопка "UI" в хедере).
+
+Feature Pattern (эталон) — Clients
+Все будущие фичи (Organizations, Products, Proposals и т.д.) должны быть сделаны ТОЧНО по этому шаблону, чтобы юзабилити и визуал были идентичными.
+Структура фичи (пример clients):
+textfeatures/clients/
+  clients-page.component.ts        # основная страница
+  clients-form.component.ts        # отдельный компонент формы
+  clients.service.ts               # сервис на сигналах
+  clients.model.ts                 # interface Client по DTO
+Обязательные элементы (как в clients):
+
+Поиск сверху (app-input)
+Таблица с сортировкой по клику на заголовки
+Пагинация (10 элементов + кнопки Пред/След)
+Удаление через ConfirmDialog из ui-kit (не нативный confirm)
+Кнопка "Детали" → модалка просмотра всех полей
+Форма создания/редактирования — только через отдельный *FormComponent
+Все UI-элементы — только из ui-kit
+Tight-дизайн, цвета/размеры/шрифты — только через design-tokens + var(--...)
+Артикулы компонентов — в Component Catalog
+
+Правило для любого ИИ и разработчика:
+"При создании новой фичи — копируй структуру, поведение и визуал clients на 100%. Изменяй только название фичи и поля из DTO. Никаких отклонений по юзабилити и стилю."
+Component Catalog
+Кнопка "UI" в хедере приложения открывает каталог всех компонентов ui-kit.
+Каталог — источник правды по внешнему виду и артикулам.
+
+Артикулы: b-01 (Primary Button), b-02 (Secondary), i-01 (Default Input), c-01 (Card) и т.д.
+Когда нужно изменить компонент (например "b-02 сделать больше") — меняй в ui-kit → изменения сразу видны в каталоге и во всём приложении.
+
+COMPONENT_TEMPLATE.md (чек-лист для создания компонента)
+(ссылка на существующий файл — не удаляй, он остаётся актуальным)
+
+Команда: nx g @nx/angular:component ... --project=ui-kit --style=scss --standalone --export
+encapsulation: ViewEncapsulation.None
+@use "@design-tokens/styles/tokens" as tokens;
+Классы на реальном элементе через computedClasses()
+Цвета/тени/шрифты только var(--...)
+Тест: nx serve web + Ctrl+F5 — видно ли изменения?
+Линтинг: npm run ui:lint
 
 Общее
 
 Standalone — все компоненты без NgModule
-Signals — где возможно (state, computed)
-Path aliases (в tsconfig):JSON"@ui-kit/*": ,
-"@shared/*": ```
-Команды:nx serve web — запуск
+Signals — где возможно (state, computed, input/output)
+Path aliases (tsconfig.base.json):JSON"@ui-kit/*": ["libs/ui-kit/src/lib/*"],
+"@design-tokens/*": ["libs/design-tokens/src/*"]
+Команды:
+nx serve web — запуск
 nx build web — билд
 nx g @nx/angular:component ... — создание
+npm run ui:lint — проверка ui-kit + design-tokens + web
 
-Правила для ИИ
 
-Только NX-команды (nx g, nx build, nx test)
+Запреты:
+
 Нет ng g
-Компоненты — standalone, signals
-UI из ui-kit, не дублировать
+Нет локальных UI-компонентов в features
 Нет импортов из feature в feature
-
-## Design System
-
-Все стили через `libs/design-tokens` (переменные OKLCH + Tailwind). Компоненты не содержат хардкод цветов — только `var(--...)`.
-
-### Правила для ИИ (Design Tokens)
-
-- Всегда используй глобальные переменные из `design-tokens`.
-- Не хардкодь цвета, шрифты, тени.
-- При создании компонента — добавляй импорт `tokens.scss` и ссылки на `var(...)`.
-- При создании компонента — следуй `COMPONENT_TEMPLATE.md`.
-- Если добавляешь новую фичу — обнови этот файл.
-
-## Правила стилизации компонентов (2026 best practices)
-
-### ViewEncapsulation
-
-Для всех UI-компонентов в `ui-kit` используй `ViewEncapsulation.None` (или `ShadowDom` только если изоляция критически важна).
-
-Почему: глобальные токены (`--primary`, `--shadow-glow`) и Tailwind должны работать без лишних обёрток.
-
-Пример:
-
-```ts
-@Component({
-  ...,
-  encapsulation: ViewEncapsulation.None,
-})
-```
-
-### Стили на элементе
-
-Все классы/стили всегда на реальном DOM-элементе (`button`, `div`, `input`), а не только на `host`.
-
-Используй `[class]="computedClasses()"` на самом элементе, а не только `host: { ... }`.
-
-### Импорт токенов
-
-Каждый компонент в `ui-kit` обязательно импортирует `@import "@design-tokens/styles/tokens";` в свой `.scss`.
-
-Никогда не хардкодь цвета/тени — только `var(--...)`.
-
-### Проверка
-
-После создания/изменения компонента: `nx serve web` + hard refresh (`Ctrl+F5`).
-
-Если визуально не видно, проверь:
-
-- `encapsulation: ViewEncapsulation.None`
-- Классы на элементе, а не на `host`
-- Импорт `tokens.scss` в компоненте
-
-### Автоматизация
-
-Перед коммитом запускай `npm run ui:lint`.
-
-Запрещено создавать локальные button/input/card в features — только через @ui-kit/button, @ui-kit/input, @ui-kit/card
+Нет хардкода стилей — только design-tokens

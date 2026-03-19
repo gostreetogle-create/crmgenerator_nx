@@ -10,6 +10,18 @@
   margin-top: var(--spacing-2);
 }
 
+.cell-with-icon {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-1);
+}
+
+.icon-sm {
+  width: 1rem;
+  height: 1rem;
+  color: var(--muted-foreground);
+}
+
 .table-wrap {
   margin-top: var(--spacing-2);
   overflow-x: auto;
@@ -75,9 +87,58 @@
 .modal-backdrop {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.45);
+  background: var(--overlay-backdrop);
   display: flex;
   align-items: center;
   justify-content: center;
   padding: var(--spacing-3);
+}
+
+.modal-panel {
+  width: min(640px, 95vw);
+}
+
+.details-backdrop {
+  z-index: 60;
+}
+
+.details-card {
+  width: min(480px, 95vw);
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+.details-grid {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: var(--spacing-2) var(--spacing-3);
+  font-size: var(--font-size-sm);
+}
+
+.dt-with-icon {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-1);
+  font-weight: var(--font-weight-medium);
+  color: var(--muted-foreground);
+}
+
+.details-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: var(--spacing-3);
+}
+
+.pagination-bar {
+  margin-top: var(--spacing-2);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: var(--font-size-sm);
+  color: var(--muted-foreground);
+}
+
+.pagination-actions {
+  display: flex;
+  gap: var(--spacing-2);
 }
