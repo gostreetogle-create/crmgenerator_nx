@@ -1,64 +1,63 @@
-import { Component, inject } from '@angular/core';
-import { Router, RouterLink, RouterOutlet } from '@angular/router';
-import { ButtonComponent } from '@ui-kit/button';
+import { Component } from '@angular/core';
+import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { UiCatalogComponent } from './features/ui-catalog/ui-catalog.component';
 
 @Component({
-  imports: [RouterLink, RouterOutlet, ButtonComponent, UiCatalogComponent],
+  imports: [RouterLink, RouterLinkActive, RouterOutlet, UiCatalogComponent],
   selector: 'app-root',
   template: `
     <header class="app-header">
       <div class="app-header-inner">
         <a routerLink="/" class="app-header-brand">CRM Generator</a>
         <nav class="app-header-nav" aria-label="Основная навигация">
-          <span
-            class="app-header-nav-item"
-            [class.app-header-nav-item--active]="isNavActive('/clients')"
+          <a
+            class="app-header-nav-link"
+            routerLink="/clients"
+            routerLinkActive="app-header-nav-link--active"
+            [routerLinkActiveOptions]="{ exact: true }"
           >
-            <app-button variant="ghost" size="sm" (clicked)="navigate('/clients')">
-              Заказчики
-            </app-button>
-          </span>
-          <span
-            class="app-header-nav-item"
-            [class.app-header-nav-item--active]="isNavActive('/organizations')"
+            Заказчики
+          </a>
+          <a
+            class="app-header-nav-link"
+            routerLink="/organizations"
+            routerLinkActive="app-header-nav-link--active"
+            [routerLinkActiveOptions]="{ exact: true }"
           >
-            <app-button variant="ghost" size="sm" (clicked)="navigate('/organizations')">
-              Организации
-            </app-button>
-          </span>
-          <span
-            class="app-header-nav-item"
-            [class.app-header-nav-item--active]="isNavActive('/catalog/categories')"
+            Организации
+          </a>
+          <a
+            class="app-header-nav-link"
+            routerLink="/catalog/categories"
+            routerLinkActive="app-header-nav-link--active"
+            [routerLinkActiveOptions]="{ exact: false }"
           >
-            <app-button variant="ghost" size="sm" (clicked)="navigate('/catalog/categories')">
-              Категории
-            </app-button>
-          </span>
-          <span
-            class="app-header-nav-item"
-            [class.app-header-nav-item--active]="isNavActive('/catalog/materials')"
+            Категории
+          </a>
+          <a
+            class="app-header-nav-link"
+            routerLink="/catalog/materials"
+            routerLinkActive="app-header-nav-link--active"
+            [routerLinkActiveOptions]="{ exact: true }"
           >
-            <app-button variant="ghost" size="sm" (clicked)="navigate('/catalog/materials')">
-              Материалы
-            </app-button>
-          </span>
-          <span
-            class="app-header-nav-item"
-            [class.app-header-nav-item--active]="isNavActive('/catalog/part-types')"
+            Материалы
+          </a>
+          <a
+            class="app-header-nav-link"
+            routerLink="/catalog/part-types"
+            routerLinkActive="app-header-nav-link--active"
+            [routerLinkActiveOptions]="{ exact: true }"
           >
-            <app-button variant="ghost" size="sm" (clicked)="navigate('/catalog/part-types')">
-              Типы деталей
-            </app-button>
-          </span>
-          <span
-            class="app-header-nav-item"
-            [class.app-header-nav-item--active]="isNavActive('/catalog/products')"
+            Типы деталей
+          </a>
+          <a
+            class="app-header-nav-link"
+            routerLink="/catalog/products"
+            routerLinkActive="app-header-nav-link--active"
+            [routerLinkActiveOptions]="{ exact: true }"
           >
-            <app-button variant="ghost" size="sm" (clicked)="navigate('/catalog/products')">
-              Товары
-            </app-button>
-          </span>
+            Товары
+          </a>
         </nav>
         <div class="app-header-actions">
           <app-ui-catalog />
@@ -119,14 +118,31 @@ import { UiCatalogComponent } from './features/ui-catalog/ui-catalog.component';
       min-width: 0;
     }
 
-    .app-header-nav-item {
+    .app-header-nav-link {
       display: inline-flex;
+      align-items: center;
       border-radius: var(--radius-sm);
+      padding: var(--spacing-1) var(--spacing-2);
+      text-decoration: none;
+      color: var(--foreground);
+      font-size: var(--font-size-sm);
+      border: 1px solid transparent;
+      transition: background-color 0.2s ease, border-color 0.2s ease;
     }
 
-    .app-header-nav-item--active {
+    .app-header-nav-link:hover {
+      background: var(--ghost-hover);
+    }
+
+    .app-header-nav-link:focus-visible {
+      outline: 2px solid var(--primary);
+      outline-offset: 2px;
+    }
+
+    .app-header-nav-link--active {
       background: color-mix(in oklch, var(--primary) 12%, transparent);
-      box-shadow: inset 0 -2px 0 0 var(--primary);
+      border-color: color-mix(in oklch, var(--primary) 35%, var(--border));
+      box-shadow: inset 0 -1px 0 0 var(--primary);
     }
 
     .app-header-actions {
@@ -146,19 +162,4 @@ import { UiCatalogComponent } from './features/ui-catalog/ui-catalog.component';
     }
   `,
 })
-export class AppComponent {
-  private readonly router = inject(Router);
-
-  navigate(path: string): void {
-    void this.router.navigateByUrl(path);
-  }
-
-  /** Активный пункт меню (префикс пути, без query). */
-  isNavActive(route: string): boolean {
-    const tree = this.router.parseUrl(this.router.url);
-    const parts = (tree.root.children['primary']?.segments ?? []).map((s) => s.path);
-    const want = route.replace(/^\//, '').split('/').filter(Boolean);
-    if (!want.length) return false;
-    return want.every((seg, i) => parts[i] === seg);
-  }
-}
+export class AppComponent {}

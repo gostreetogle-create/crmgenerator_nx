@@ -72,6 +72,14 @@
   background: color-mix(in oklch, var(--background) 80%, var(--secondary));
 }
 
+.table-empty-row td {
+  text-align: center;
+  color: var(--muted-foreground);
+  padding: var(--spacing-3);
+  font-style: italic;
+  background: color-mix(in oklch, var(--background) 92%, var(--card));
+}
+
 .actions {
   display: flex;
   flex-wrap: nowrap;

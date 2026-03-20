@@ -16,18 +16,18 @@
         <app-button variant="secondary" size="sm" (clicked)="productsService.refreshFromRemote()">
           Повторить
         </app-button>
-        <button type="button" class="banner-dismiss" (click)="productsService.dismissListLoadError()">
+        <app-button variant="ghost" size="sm" (clicked)="productsService.dismissListLoadError()">
           Скрыть
-        </button>
+        </app-button>
       </div>
     </div>
   }
   @if (productsService.mutationError(); as mutErr) {
     <div class="state-banner state-banner--danger" role="alert">
       <div class="state-banner__text">{{ mutErr }}</div>
-      <button type="button" class="banner-dismiss" (click)="productsService.dismissMutationError()">
+      <app-button variant="ghost" size="sm" (clicked)="productsService.dismissMutationError()">
         Закрыть
-      </button>
+      </app-button>
     </div>
   }
 
@@ -50,6 +50,22 @@
       <div class="products-col__body">
         @if (categoriesService.listLoading() && categoriesService.categories().length === 0) {
           <p class="products-col__hint">Загрузка…</p>
+        }
+        @if (categoriesService.listLoadError(); as categoriesErr) {
+          <div class="state-banner state-banner--warning" role="alert">
+            <div class="state-banner__text">
+              <strong>Ошибка загрузки категорий.</strong>
+              {{ categoriesErr }}
+            </div>
+            <div class="state-banner__actions">
+              <app-button variant="secondary" size="sm" (clicked)="categoriesService.refreshFromRemote()">
+                Повторить
+              </app-button>
+              <app-button variant="ghost" size="sm" (clicked)="categoriesService.dismissListLoadError()">
+                Скрыть
+              </app-button>
+            </div>
+          </div>
         }
         @if (contextProductId() && !contextProduct()?.categoryId?.trim()) {
           <p class="products-col__empty">Категория не задана</p>
@@ -115,13 +131,25 @@
                     <app-button variant="ghost" size="sm" (clicked)="onSelectProduct(p)">
                       Детали
                     </app-button>
-                    <button type="button" class="link-btn" (click)="onOpenModal(p); $event.stopPropagation()">
+                    <app-button
+                      variant="secondary"
+                      size="sm"
+                      (clicked)="onOpenModal(p)"
+                    >
                       Ред
-                    </button>
-                    <button type="button" class="link-btn danger" (click)="p._id && onDelete(p._id, $event)">
+                    </app-button>
+                    <app-button
+                      variant="danger"
+                      size="sm"
+                      (clicked)="p._id && onDelete(p._id)"
+                    >
                       Удал
-                    </button>
+                    </app-button>
                   </td>
+                </tr>
+              } @empty {
+                <tr class="table-empty-row">
+                  <td colspan="5">Ничего не найдено. Измените фильтр или добавьте товар.</td>
                 </tr>
               }
             </tbody>
@@ -168,6 +196,22 @@
         @if (partTypesService.listLoading() && partTypesService.partTypes().length === 0) {
           <p class="products-col__hint">Загрузка…</p>
         }
+        @if (partTypesService.listLoadError(); as partTypesErr) {
+          <div class="state-banner state-banner--warning" role="alert">
+            <div class="state-banner__text">
+              <strong>Ошибка загрузки типов деталей.</strong>
+              {{ partTypesErr }}
+            </div>
+            <div class="state-banner__actions">
+              <app-button variant="secondary" size="sm" (clicked)="partTypesService.refreshFromRemote()">
+                Повторить
+              </app-button>
+              <app-button variant="ghost" size="sm" (clicked)="partTypesService.dismissListLoadError()">
+                Скрыть
+              </app-button>
+            </div>
+          </div>
+        }
         @if (contextProductId() && !contextProduct()?.partTypeId?.trim()) {
           <p class="products-col__empty">Не задано</p>
         } @else if (displayPartTypes().length === 0) {
@@ -202,6 +246,22 @@
       <div class="products-col__body">
         @if (materialsService.listLoading() && materialsService.materials().length === 0) {
           <p class="products-col__hint">Загрузка…</p>
+        }
+        @if (materialsService.listLoadError(); as materialsErr) {
+          <div class="state-banner state-banner--warning" role="alert">
+            <div class="state-banner__text">
+              <strong>Ошибка загрузки материалов.</strong>
+              {{ materialsErr }}
+            </div>
+            <div class="state-banner__actions">
+              <app-button variant="secondary" size="sm" (clicked)="materialsService.refreshFromRemote()">
+                Повторить
+              </app-button>
+              <app-button variant="ghost" size="sm" (clicked)="materialsService.dismissListLoadError()">
+                Скрыть
+              </app-button>
+            </div>
+          </div>
         }
         @if (contextProductId() && !contextProduct()?.materialId?.trim()) {
           <p class="products-col__empty">Не задано</p>

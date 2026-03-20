@@ -16,18 +16,18 @@
         <app-button variant="secondary" size="sm" (clicked)="categoriesService.refreshFromRemote()">
           Повторить
         </app-button>
-        <button type="button" class="banner-dismiss" (click)="categoriesService.dismissListLoadError()">
+        <app-button variant="ghost" size="sm" (clicked)="categoriesService.dismissListLoadError()">
           Скрыть
-        </button>
+        </app-button>
       </div>
     </div>
   }
   @if (categoriesService.mutationError(); as mutErr) {
     <div class="state-banner state-banner--danger" role="alert">
       <div class="state-banner__text">{{ mutErr }}</div>
-      <button type="button" class="banner-dismiss" (click)="categoriesService.dismissMutationError()">
+      <app-button variant="ghost" size="sm" (clicked)="categoriesService.dismissMutationError()">
         Закрыть
-      </button>
+      </app-button>
     </div>
   }
 
@@ -70,9 +70,13 @@
             <td>{{ c.isActive === false ? 'нет' : 'да' }}</td>
             <td class="actions">
               <app-button variant="ghost" size="sm" (clicked)="onSelectCategory(c)">Детали</app-button>
-              <button type="button" class="link-btn" (click)="onOpenModal(c)">Ред</button>
-              <button type="button" class="link-btn danger" (click)="c._id && onDelete(c._id)">Удал</button>
+              <app-button variant="secondary" size="sm" (clicked)="onOpenModal(c)">Ред</app-button>
+              <app-button variant="danger" size="sm" (clicked)="c._id && onDelete(c._id)">Удал</app-button>
             </td>
+          </tr>
+        } @empty {
+          <tr class="table-empty-row">
+            <td colspan="5">Ничего не найдено. Измените фильтр или добавьте категорию.</td>
           </tr>
         }
       </tbody>

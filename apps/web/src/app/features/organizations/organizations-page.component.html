@@ -16,18 +16,18 @@
         <app-button variant="secondary" size="sm" (clicked)="organizationsService.refreshFromRemote()">
           Повторить
         </app-button>
-        <button type="button" class="banner-dismiss" (click)="organizationsService.dismissListLoadError()">
+        <app-button variant="ghost" size="sm" (clicked)="organizationsService.dismissListLoadError()">
           Скрыть
-        </button>
+        </app-button>
       </div>
     </div>
   }
   @if (organizationsService.mutationError(); as mutErr) {
     <div class="state-banner state-banner--danger" role="alert">
       <div class="state-banner__text">{{ mutErr }}</div>
-      <button type="button" class="banner-dismiss" (click)="organizationsService.dismissMutationError()">
+      <app-button variant="ghost" size="sm" (clicked)="organizationsService.dismissMutationError()">
         Закрыть
-      </button>
+      </app-button>
     </div>
   }
 
@@ -93,17 +93,21 @@
               <app-button variant="ghost" size="sm" (clicked)="onSelectOrganization(o)">
                 Детали
               </app-button>
-              <button type="button" class="link-btn" (click)="onOpenModal(o)">
+              <app-button variant="secondary" size="sm" (clicked)="onOpenModal(o)">
                 Ред
-              </button>
-              <button
-                type="button"
-                class="link-btn danger"
-                (click)="o._id && onDelete(o._id)"
+              </app-button>
+              <app-button
+                variant="danger"
+                size="sm"
+                (clicked)="o._id && onDelete(o._id)"
               >
                 Удал
-              </button>
+              </app-button>
             </td>
+          </tr>
+        } @empty {
+          <tr class="table-empty-row">
+            <td colspan="7">Ничего не найдено. Измените фильтр или добавьте организацию.</td>
           </tr>
         }
       </tbody>

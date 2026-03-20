@@ -376,8 +376,8 @@ export class ProductsPageComponent implements OnInit {
       });
   }
 
-  onDelete(id: string, event: Event) {
-    event.stopPropagation();
+  onDelete(id: string, event?: Event) {
+    event?.stopPropagation();
     this.deletingId.set(id);
     this.showConfirm.set(true);
   }

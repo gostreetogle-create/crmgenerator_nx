@@ -85,9 +85,10 @@ apps/web/src/app/features/<entity>/               ← *-page, *-form, *.service.
 3. **Баннеры** (скопировать разметку с `organizations-page` / `clients-page`):
    - пустой список + `listLoading` → текст «Загрузка…»
    - непустой список + `listLoading` → «Обновление списка…»
-   - `listLoadError` → предупреждение + **Повторить** (`refreshFromRemote`) + **Скрыть**
-   - `mutationError` → ошибка + **Закрыть**
-4. Стили баннеров: классы `.list-state`, `.state-banner`, `.banner-dismiss` (как в эталонных `*-page.component.scss`).
+  - `listLoadError` → предупреждение + **Повторить** (`refreshFromRemote`) + **Скрыть**
+  - `mutationError` → ошибка + **Закрыть**
+4. Действия баннеров и строки CRUD-таблиц строить на `app-button` (ghost/secondary/danger), без локальных `link-btn`/`banner-dismiss`.
+5. Стили баннеров: классы `.list-state`, `.state-banner` (как в эталонных `*-page.component.scss`).
 
 ### E. Тесты (`*.service.spec.ts`)
 
@@ -140,3 +141,4 @@ apps/web/src/app/features/<entity>/               ← *-page, *-form, *.service.
 | Дата | Что |
 |------|-----|
 | 2026-03-20 | Первый вариант: единый паттерн CRUD + optional HTTP по organizations/clients. |
+| 2026-03-20 | Уточнение UX: единые `app-button` для баннеров и действий таблиц, обязательный `@empty` и side-panel error/retry для составных экранов. |

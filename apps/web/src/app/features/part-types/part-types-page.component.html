@@ -16,18 +16,18 @@
         <app-button variant="secondary" size="sm" (clicked)="partTypesService.refreshFromRemote()">
           Повторить
         </app-button>
-        <button type="button" class="banner-dismiss" (click)="partTypesService.dismissListLoadError()">
+        <app-button variant="ghost" size="sm" (clicked)="partTypesService.dismissListLoadError()">
           Скрыть
-        </button>
+        </app-button>
       </div>
     </div>
   }
   @if (partTypesService.mutationError(); as mutErr) {
     <div class="state-banner state-banner--danger" role="alert">
       <div class="state-banner__text">{{ mutErr }}</div>
-      <button type="button" class="banner-dismiss" (click)="partTypesService.dismissMutationError()">
+      <app-button variant="ghost" size="sm" (clicked)="partTypesService.dismissMutationError()">
         Закрыть
-      </button>
+      </app-button>
     </div>
   }
 
@@ -63,9 +63,13 @@
             <td>{{ p.isActive === false ? 'нет' : 'да' }}</td>
             <td class="actions">
               <app-button variant="ghost" size="sm" (clicked)="onSelectPartType(p)">Детали</app-button>
-              <button type="button" class="link-btn" (click)="onOpenModal(p)">Ред</button>
-              <button type="button" class="link-btn danger" (click)="p._id && onDelete(p._id)">Удал</button>
+              <app-button variant="secondary" size="sm" (clicked)="onOpenModal(p)">Ред</app-button>
+              <app-button variant="danger" size="sm" (clicked)="p._id && onDelete(p._id)">Удал</app-button>
             </td>
+          </tr>
+        } @empty {
+          <tr class="table-empty-row">
+            <td colspan="4">Ничего не найдено. Измените фильтр или добавьте тип детали.</td>
           </tr>
         }
       </tbody>
