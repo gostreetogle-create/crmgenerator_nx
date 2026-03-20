@@ -80,3 +80,8 @@
 - [ ] Ready for archiving (criteria MVP done)
 - Archive status: не в архиве
 
+
+
+---
+
+**Синхронизация:** при правках кода по паттернам Eve-Arch обновляй связанные разделы — [DOCS_SYNC_RULES.md](./DOCS_SYNC_RULES.md) · [EVE_ARCH_INDEX.md](./EVE_ARCH_INDEX.md)

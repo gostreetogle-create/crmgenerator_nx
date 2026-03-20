@@ -1,4 +1,6 @@
+<!-- Eve-arch: 000 — без выделенного паттерна -->
 <app-card [title]="client() ? 'Редактировать клиент' : 'Новый клиент'" class="client-form-card">
+  <div slot="body">
   <form class="client-form client-form--dialog" (ngSubmit)="onSubmit()">
     <div class="client-form-tabs" role="tablist" aria-label="Разделы формы">
       <button
@@ -154,4 +156,5 @@
       </app-button>
     </div>
   </form>
+  </div>
 </app-card>

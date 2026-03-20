@@ -1,10 +1,8 @@
+// Eve-arch: 000 — без выделенного паттерна
 import { CommonModule } from '@angular/common';
 import {
   Component,
-  ElementRef,
-  HostListener,
   OnInit,
-  ViewChild,
   computed,
   effect,
   inject,
@@ -13,7 +11,7 @@ import {
 import { ActivatedRoute, Router } from '@angular/router';
 import { ButtonComponent } from '@ui-kit/button';
 import { CardComponent } from '@ui-kit/card';
-import { ConfirmDialogComponent } from '@ui-kit/confirm-dialog';
+import { DialogComponent } from '@ui-kit/dialog';
 import { InputComponent } from '@ui-kit/input';
 import { Material } from '@domain';
 import { MaterialFormComponent } from './material-form.component';
@@ -28,7 +26,7 @@ import { MaterialsService } from './materials.service';
     CardComponent,
     InputComponent,
     MaterialFormComponent,
-    ConfirmDialogComponent,
+    DialogComponent,
   ],
   templateUrl: './materials-page.component.html',
   styleUrl: './materials-page.component.scss',
@@ -50,11 +48,6 @@ export class MaterialsPageComponent implements OnInit {
   readonly selectedMaterial = signal<Material | null>(null);
   readonly showConfirm = signal(false);
   readonly deletingId = signal<string | null>(null);
-
-  @ViewChild('editModalPanel', { read: ElementRef })
-  private editModalPanel?: ElementRef<HTMLElement>;
-  @ViewChild('detailsModalCard', { read: ElementRef })
-  private detailsModalCard?: ElementRef<HTMLElement>;
 
   readonly filteredMaterials = computed(() => {
     const q = this.searchQuery().toLowerCase().trim();
@@ -120,12 +113,10 @@ export class MaterialsPageComponent implements OnInit {
   onOpenModal(m?: Material) {
     this.editingMaterial.set(m ?? null);
     this.showModal.set(true);
-    setTimeout(() => this.focusFirst(this.editModalPanel?.nativeElement), 0);
   }
 
   onSelectMaterial(m: Material) {
     this.selectedMaterial.set(m);
-    setTimeout(() => this.focusFirst(this.detailsModalCard?.nativeElement), 0);
   }
 
   closeEditModal() {
@@ -203,55 +194,4 @@ export class MaterialsPageComponent implements OnInit {
     });
   }
 
-  @HostListener('document:keydown', ['$event'])
-  onDocumentKeydown(event: KeyboardEvent) {
-    if (event.key === 'Escape') {
-      if (this.showModal()) this.closeEditModal();
-      else if (this.selectedMaterial()) this.closeDetailsModal();
-    }
-    if (event.key !== 'Tab') return;
-    const container = this.showModal()
-      ? this.editModalPanel?.nativeElement
-      : this.selectedMaterial()
-        ? this.detailsModalCard?.nativeElement
-        : null;
-    if (!container) return;
-    this.trapTab(event, container);
-  }
-
-  private trapTab(event: KeyboardEvent, container: HTMLElement) {
-    const focusables = Array.from(
-      container.querySelectorAll<HTMLElement>(
-        'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
-      )
-    ).filter((el) => !el.hasAttribute('aria-hidden') && el.offsetParent !== null);
-    if (!focusables.length) return;
-    const active = document.activeElement as HTMLElement | null;
-    const first = focusables[0];
-    const last = focusables[focusables.length - 1];
-    if (!(active && container.contains(active))) {
-      event.preventDefault();
-      first.focus();
-      return;
-    }
-    if (event.shiftKey) {
-      if (active === first) {
-        event.preventDefault();
-        last.focus();
-      }
-    } else if (active === last) {
-      event.preventDefault();
-      first.focus();
-    }
-  }
-
-  private focusFirst(container?: HTMLElement) {
-    if (!container) return;
-    const nodes = Array.from(
-      container.querySelectorAll<HTMLElement>(
-        'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
-      )
-    ).filter((el) => !el.hasAttribute('aria-hidden') && el.offsetParent !== null);
-    nodes[0]?.focus?.();
-  }
 }

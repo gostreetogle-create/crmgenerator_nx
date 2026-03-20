@@ -47,6 +47,8 @@
 - [x] Доступность: `Escape` закрывает модалки, добавлена фокус-ловушка (Tab/Shift+Tab) внутри edit/details
 - [x] Просмотр деталей клиента (отдельный модальный слой при `selectedClient`)
 
+<a id="query-url-state"></a>
+
 ### Роутинг / deep-linking
 - [x] Синхронизация `search/page/sort/asc` в query params (`updateUrl` + `route.queryParams.subscribe`)
 - [x] Возможность “вернуться” к состоянию списка через прямую ссылку
@@ -72,7 +74,9 @@
 ## Completion & Archiving
 
 - [x] Ready for archiving (criteria MVP done)
-- Archive status:
-  - `Готово / в архиве: 2026-03-20 — docs/ai/archive/FEATURE_CLIENTS_CHECKLIST.md`
-  - Примечание: ручные проверки UI/UX в браузере пока не удалось инструментально подтвердить (проблемы с доступом к `localhost:4200`), но MVP покрыт unit-тестами.
+- **Статус (актуал):** дублирующая копия в `docs/ai/archive/` удалена; **единственный источник правды** — этот файл (`2026-03-21`).
+- Примечание: ручные проверки UI/UX в браузере при необходимости повторить локально; MVP покрыт unit-тестами.
 
+---
+
+**Синхронизация:** при правках кода по паттернам Eve-Arch обновляй связанные разделы — [`DOCS_SYNC_RULES.md`](./DOCS_SYNC_RULES.md) · [`EVE_ARCH_INDEX.md`](./EVE_ARCH_INDEX.md)

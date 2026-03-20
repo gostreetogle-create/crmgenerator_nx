@@ -6,11 +6,14 @@ import { MaterialsPageComponent } from './features/materials/materials-page.comp
 import { OrganizationsPageComponent } from './features/organizations/organizations-page.component';
 import { PartTypesPageComponent } from './features/part-types/part-types-page.component';
 import { ProductsPageComponent } from './features/products/products-page.component';
+import { UiCatalogComponent } from './features/ui-catalog/ui-catalog.component';
 
+// Eve-arch: ROUTES-004 — единая карта standalone маршрутов
 export const appRoutes: Route[] = [
   { path: '', pathMatch: 'full', redirectTo: 'clients' },
   { path: 'clients', component: ClientsPageComponent },
   { path: 'organizations', component: OrganizationsPageComponent },
+  { path: 'ui', component: UiCatalogComponent },
   {
     path: 'catalog',
     component: CatalogShellComponent,

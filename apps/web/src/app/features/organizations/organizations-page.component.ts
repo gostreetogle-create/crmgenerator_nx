@@ -1,10 +1,8 @@
+// Eve-arch: 000 — без выделенного паттерна
 import { CommonModule } from '@angular/common';
 import {
   Component,
-  ElementRef,
-  HostListener,
   OnInit,
-  ViewChild,
   computed,
   effect,
   inject,
@@ -13,7 +11,7 @@ import {
 import { ActivatedRoute, Router } from '@angular/router';
 import { ButtonComponent } from '@ui-kit/button';
 import { CardComponent } from '@ui-kit/card';
-import { ConfirmDialogComponent } from '@ui-kit/confirm-dialog';
+import { DialogComponent } from '@ui-kit/dialog';
 import { InputComponent } from '@ui-kit/input';
 import { Organization } from '@domain';
 import { OrganizationFormComponent } from './organization-form.component';
@@ -28,7 +26,7 @@ import { OrganizationsService } from './organizations.service';
     CardComponent,
     InputComponent,
     OrganizationFormComponent,
-    ConfirmDialogComponent,
+    DialogComponent,
   ],
   templateUrl: './organizations-page.component.html',
   styleUrl: './organizations-page.component.scss',
@@ -50,9 +48,6 @@ export class OrganizationsPageComponent implements OnInit {
   readonly selectedOrganization = signal<Organization | null>(null);
   readonly showConfirm = signal(false);
   readonly deletingId = signal<string | null>(null);
-
-  @ViewChild('editModalPanel', { read: ElementRef }) private editModalPanel?: ElementRef<HTMLElement>;
-  @ViewChild('detailsModalCard', { read: ElementRef }) private detailsModalCard?: ElementRef<HTMLElement>;
 
   readonly filteredOrganizations = computed(() => {
     const q = this.searchQuery().toLowerCase().trim();
@@ -129,12 +124,10 @@ export class OrganizationsPageComponent implements OnInit {
       this.editingOrganization.set(null);
     }
     this.showModal.set(true);
-    setTimeout(() => this.focusFirstFocusable(this.editModalPanel?.nativeElement), 0);
   }
 
   onSelectOrganization(org: Organization) {
     this.selectedOrganization.set(org);
-    setTimeout(() => this.focusFirstFocusable(this.detailsModalCard?.nativeElement), 0);
   }
 
   closeEditModal() {
@@ -244,69 +237,4 @@ export class OrganizationsPageComponent implements OnInit {
     });
   }
 
-  @HostListener('document:keydown', ['$event'])
-  onDocumentKeydown(event: KeyboardEvent) {
-    if (event.key === 'Escape') {
-      if (this.showModal()) {
-        this.closeEditModal();
-        return;
-      }
-      if (this.selectedOrganization()) {
-        this.closeDetailsModal();
-        return;
-      }
-    }
-
-    if (event.key !== 'Tab') return;
-
-    const container = this.getFocusTrapContainer();
-    if (!container) return;
-
-    const focusables = this.getFocusableElements(container);
-    if (!focusables.length) return;
-
-    const active = document.activeElement as HTMLElement | null;
-    const first = focusables[0];
-    const last = focusables[focusables.length - 1];
-
-    const activeInside = active ? container.contains(active) : false;
-    if (!activeInside) {
-      event.preventDefault();
-      first.focus();
-      return;
-    }
-
-    if (event.shiftKey) {
-      if (active === first) {
-        event.preventDefault();
-        last.focus();
-      }
-    } else {
-      if (active === last) {
-        event.preventDefault();
-        first.focus();
-      }
-    }
-  }
-
-  private getFocusTrapContainer(): HTMLElement | null {
-    if (this.showModal()) return this.editModalPanel?.nativeElement ?? null;
-    if (this.selectedOrganization()) return this.detailsModalCard?.nativeElement ?? null;
-    return null;
-  }
-
-  private getFocusableElements(container: HTMLElement): HTMLElement[] {
-    const nodes = Array.from(
-      container.querySelectorAll<HTMLElement>(
-        'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
-      )
-    );
-    return nodes.filter((el) => !el.hasAttribute('aria-hidden') && el.offsetParent !== null);
-  }
-
-  private focusFirstFocusable(container?: HTMLElement) {
-    if (!container) return;
-    const focusables = this.getFocusableElements(container);
-    focusables[0]?.focus?.();
-  }
 }

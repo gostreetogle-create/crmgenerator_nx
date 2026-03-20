@@ -1,3 +1,4 @@
+// Eve-arch: 000 — без выделенного паттерна
 import { isPlatformBrowser } from '@angular/common';
 import { Injectable, PLATFORM_ID, inject, signal } from '@angular/core';
 import { forkJoin } from 'rxjs';

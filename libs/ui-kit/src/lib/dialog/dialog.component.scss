@@ -1,0 +1,114 @@
+// Eve-arch: FIXED-LAYOUT-001 — панель модалки: min-height/max-height из токенов
+@use "tokens";
+@use "../shared/animations";
+
+:host {
+  display: block;
+}
+
+.dialog-backdrop {
+  position: fixed;
+  inset: 0;
+  background: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-2);
+  z-index: 999;
+  overflow: hidden;
+}
+
+.dialog-backdrop-layer {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  animation: dialog-backdrop-enter 0.3s ease both;
+}
+
+.dialog-backdrop--closing {
+  .dialog-backdrop-layer {
+    animation: dialog-backdrop-exit 0.2s ease both;
+  }
+}
+
+.dialog-panel {
+  position: relative;
+  z-index: 1000;
+  box-sizing: border-box;
+  width: min(760px, 96vw);
+  min-height: 480px;
+  max-height: var(--modal-max-height);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--card, #fff);
+  opacity: 1;
+  color: var(--card-foreground);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  @include animations.dialog-enter;
+}
+
+.dialog-panel--closing {
+  @include animations.dialog-exit;
+}
+
+.dialog-panel--sm {
+  width: min(560px, 94vw);
+  min-height: min(420px, var(--modal-max-height));
+  max-height: var(--modal-max-height);
+}
+
+.dialog-panel--md {
+  width: min(760px, 96vw);
+  min-height: var(--modal-min-height);
+  max-height: var(--modal-max-height);
+}
+
+.dialog-panel--lg {
+  width: min(1040px, 97vw);
+  min-height: min(760px, var(--modal-max-height));
+  max-height: var(--modal-max-height);
+}
+
+.dialog-panel--xl {
+  width: min(1280px, 98vw);
+  min-height: min(860px, var(--modal-max-height));
+  max-height: var(--modal-max-height);
+}
+
+.dialog-header {
+  padding: var(--spacing-3);
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+.dialog-header h3 {
+  margin: 0;
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-medium);
+}
+
+.dialog-body {
+  padding: 24px;
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+.dialog-message {
+  margin: 0;
+  font-size: var(--font-size-sm);
+  line-height: 1.4;
+}
+
+.dialog-footer {
+  padding: 16px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--spacing-2);
+  flex-shrink: 0;
+}
+

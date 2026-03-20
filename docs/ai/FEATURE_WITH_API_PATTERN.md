@@ -142,3 +142,8 @@ apps/web/src/app/features/<entity>/               ← *-page, *-form, *.service.
 |------|-----|
 | 2026-03-20 | Первый вариант: единый паттерн CRUD + optional HTTP по organizations/clients. |
 | 2026-03-20 | Уточнение UX: единые `app-button` для баннеров и действий таблиц, обязательный `@empty` и side-panel error/retry для составных экранов. |
+
+
+---
+
+**Синхронизация:** при правках кода по паттернам Eve-Arch обновляй связанные разделы — [DOCS_SYNC_RULES.md](./DOCS_SYNC_RULES.md) · [EVE_ARCH_INDEX.md](./EVE_ARCH_INDEX.md)

@@ -1,4 +1,6 @@
+<!-- Eve-arch: 000 — без выделенного паттерна -->
 <app-card [title]="organization() ? 'Редактировать организацию' : 'Новая организация'" class="org-form-card">
+  <div slot="body">
   <form class="org-form org-form--dialog" (ngSubmit)="onSubmit()">
     <div class="org-form-tabs" role="tablist" aria-label="Разделы формы">
       <button
@@ -401,4 +403,5 @@
       </app-button>
     </div>
   </form>
+  </div>
 </app-card>

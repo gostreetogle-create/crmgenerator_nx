@@ -9,8 +9,8 @@
 1. `docs/ai/ARCHITECTURE.md` — слои, импорты, запреты  
 2. `docs/ai/FEATURE_CHECKLIST_BASE.md` — формат чек-листа фичи и архивация  
 3. `docs/ai/AI_PROJECT_PLAYBOOK.md` (этот файл) — процесс  
-4. При UI в `ui-kit`: `docs/ai/COMPONENT_TEMPLATE.md` и **`docs/ai/UI_CATALOG_AND_DESIGN_SYSTEM.md`** (добавить/обновить демо в `features/ui-catalog/`)  
-5. Готовые формулировки задач: `docs/PROMPTS.md`  
+4. При UI в `ui-kit`: раздел **Ui-kit component template (P4)** в `docs/ai/FEATURE_CHECKLIST_BASE.md` и **`docs/ai/UI_CATALOG_AND_DESIGN_SYSTEM.md`** (добавить/обновить демо в `features/ui-catalog/`)
+5. Готовые формулировки задач: `docs/ai/PROMPTS.md`
 6. Если фича со **списком + CRUD + опциональным API** — **`docs/ai/FEATURE_WITH_API_PATTERN.md`** (единый паттерн с `organizations` / `clients`).
 
 Если задача касается **конкретной фичи** — открыть `docs/ai/FEATURE_<NAME>_CHECKLIST.md` (или создать по шаблону).
@@ -101,7 +101,7 @@
 
 ## 4. Стандартный пайплайн: новый компонент `ui-kit`
 
-1. Прочитать `COMPONENT_TEMPLATE.md`.  
+1. Прочитать раздел **Ui-kit component template (P4)** в `FEATURE_CHECKLIST_BASE.md`.  
 2. `nx g @nx/angular:component --project=ui-kit ...` (standalone, scss).  
 3. `ViewEncapsulation.None`, классы на элементе, токены в scss.  
 4. Экспорт из `libs/ui-kit/src/index.ts` и `lib/<name>/index.ts`.  
@@ -137,8 +137,12 @@ npx nx lint domain   # если менялся libs/domain
 
 | Файл | Назначение |
 |------|------------|
-| `docs/PROMPTS.md` | Готовые промпты под вставку в чат |
+| `docs/ai/PROMPTS.md` | Готовые промпты под вставку в чат |
 | `docs/ai/FEATURE_CHECKLIST_BASE.md` | Шаблон состояния фичи |
 | `docs/ai/ARCHITECTURE.md` | Норматив по архитектуре |
 | `docs/ai/FEATURE_WITH_API_PATTERN.md` | Эталон CRUD + optional HTTP (как organizations/clients) |
 | `tsconfig.base.json` | Алиасы `@domain`, `@ui-kit/*`, … |
+
+---
+
+**Синхронизация:** при правках кода по паттернам Eve-Arch обновляй связанные разделы — [`DOCS_SYNC_RULES.md`](./DOCS_SYNC_RULES.md) · [`EVE_ARCH_INDEX.md`](./EVE_ARCH_INDEX.md)

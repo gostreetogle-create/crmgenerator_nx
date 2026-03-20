@@ -1,4 +1,6 @@
+<!-- Eve-arch: 000 — без выделенного паттерна -->
 <app-card [title]="product() ? 'Редактировать товар' : 'Новый товар'" class="product-form-card">
+  <div slot="body">
   <form class="product-form product-form--dialog" (submit)="$event.preventDefault()">
     <div class="product-form-tabs" role="tablist" aria-label="Разделы формы товара">
       <button
@@ -248,4 +250,5 @@
       </app-button>
     </div>
   </form>
+  </div>
 </app-card>

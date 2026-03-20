@@ -47,3 +47,8 @@
 - [ ] Справочники `mount-types` и `functionalities` + связи с товаром.
 - [ ] UI-мультивыбор mounts/functionalities в форме товара.
 - [ ] Обновление `FRONTEND_CONTRACT.md` после согласования API по новым сущностям.
+
+
+---
+
+**Синхронизация:** при правках кода по паттернам Eve-Arch обновляй связанные разделы — [DOCS_SYNC_RULES.md](./DOCS_SYNC_RULES.md) · [EVE_ARCH_INDEX.md](./EVE_ARCH_INDEX.md)

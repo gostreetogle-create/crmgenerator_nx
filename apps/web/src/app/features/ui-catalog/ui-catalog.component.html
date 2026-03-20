@@ -1,8 +1,7 @@
-<app-button variant="ghost" size="sm" (clicked)="openCatalog()">UI</app-button>
-
-@if (isOpen()) {
-  <div class="catalog-overlay">
-    <app-card title="Каталог UI и паттернов" class="catalog-card">
+<!-- Eve-arch: 000 — без выделенного паттерна -->
+<div class="catalog-page">
+  <app-card title="Каталог UI и паттернов" class="catalog-card">
+    <div slot="body">
       <div class="catalog-top-actions">
         <app-button variant="outline" size="sm" (clicked)="toggleTheme()">
           {{ theme() === 'dark' ? 'Тёмная' : 'Светлая' }}
@@ -29,38 +28,66 @@
                 </div>
 
                 @if (group.title === 'Buttons') {
-                  <app-button [variant]="item.variant || 'primary'" size="sm">
-                    {{ item.name }}
-                  </app-button>
+                  @if (item.code === 'b-01') {
+                    <app-button [variant]="item.variant || 'primary'" size="sm" [loading]="true">
+                      Загрузка
+                    </app-button>
+                  } @else {
+                    <app-button [variant]="item.variant || 'secondary'" size="sm" ariaLabel="Слот-кнопка">
+                      <span slot="start">★</span>
+                      Текст
+                      <span slot="end">★</span>
+                    </app-button>
+                  }
                 }
 
                 @if (group.title === 'Inputs') {
                   @if (item.code === 'i-02') {
                     <app-input
-                      label="Пример"
-                      placeholder="Введите значение..."
-                      [error]="'error'"
-                      [showErrorText]="false"
+                      placeholder="example@mail.com"
+                      variant="error"
+                      hint="Неверный формат email"
+                      ariaLabel="Email с ошибкой"
+                    />
+                  } @else if (item.code === 'i-03') {
+                    <app-input
+                      placeholder="Загрузка..."
+                      [disabled]="true"
+                      [loading]="true"
+                      ariaLabel="Disabled loading input"
                     />
                   } @else {
-                    <app-input label="Пример" placeholder="Введите значение..." />
+                    <app-input placeholder="Введите значение..." ariaLabel="Input c prefix suffix">
+                      <span slot="prefix">@</span>
+                      <span slot="suffix">✓</span>
+                    </app-input>
                   }
                 }
 
                 @if (group.title === 'Cards') {
-                  <app-card title="Card title" subtitle="Card subtitle">
-                    <p>Пример содержимого карточки.</p>
-                  </app-card>
+                  @if (item.code === 'c-02') {
+                    <app-card [footer]="true" [hoverable]="false">
+                      <div slot="header"><strong>Header slot</strong></div>
+                      <div slot="body">Body slot content</div>
+                      <div slot="footer">Footer slot content</div>
+                    </app-card>
+                  } @else {
+                    <app-card title="Заголовок карточки" subtitle="hoverable">
+                      <div slot="body">
+                        <p>Контент карточки в едином API.</p>
+                      </div>
+                    </app-card>
+                  }
                 }
 
-                @if (group.title === 'ConfirmDialog') {
+                @if (group.title === 'Dialog' && item.code === 'd-01') {
                   <app-button variant="danger" size="sm" (clicked)="showConfirmPreview.set(true)">
                     Открыть confirm
                   </app-button>
                 }
-                @if (group.title === 'QuickAddDialog') {
-                  <app-button variant="secondary" size="sm" (clicked)="showQuickAddPreview.set(true)">
-                    Открыть quick-add
+                @if (group.title === 'Dialog' && item.code === 'd-02') {
+                  <app-button variant="secondary" size="sm" (clicked)="showContentPreview.set(true)">
+                    Открыть content
                   </app-button>
                 }
               </article>
@@ -84,6 +111,58 @@
         }
       </div>
 
+      <h2 class="catalog-section-title">Артикулы окон (D-серия)</h2>
+      <div class="catalog-grid">
+        @for (a of dialogArticles; track a.code) {
+          <section class="catalog-group">
+            <article class="catalog-item">
+              <div class="item-head">
+                <code>{{ a.code }}</code>
+                <span>{{ a.title }}</span>
+              </div>
+              <p class="catalog-pattern-path">{{ a.description }}</p>
+
+              @if (a.code === 'D001') {
+                <app-button variant="secondary" size="sm" (clicked)="showConfirmPreview.set(true)">
+                  Показать пример
+                </app-button>
+              }
+
+              @if (a.code === 'D002') {
+                <app-button variant="secondary" size="sm" (clicked)="showContentPreview.set(true)">
+                  Показать пример
+                </app-button>
+              }
+
+              @if (a.code === 'D003') {
+                <div class="catalog-article-mock">Большое окно с таблицей/деталями (lg)</div>
+              }
+              @if (a.code === 'D004') {
+                <div class="catalog-article-mock">Всплывашка над полем со списком</div>
+              }
+              @if (a.code === 'D005') {
+                <div class="catalog-article-mock">Боковая панель фильтров (drawer)</div>
+              }
+              @if (a.code === 'D006') {
+                <div class="catalog-article-mock">Успех! Данные сохранены.</div>
+              }
+
+              <p class="catalog-article-hint">
+                Скажи мне: "сделай {{ a.code }}, но с формой клиента" — и я пойму.
+              </p>
+            </article>
+          </section>
+        }
+      </div>
+
+      <h2 class="catalog-section-title">Почему так: один файл — одна истина</h2>
+      <article class="catalog-item">
+        <p class="catalog-pattern-path">
+          Все компоненты живут в одной папке, один API, варианты через пропсы, слоты для композиции,
+          a11y и анимации через shared. Нет дублей: меняем в одном месте — обновляется везде.
+        </p>
+      </article>
+
       <h2 class="catalog-section-title">Паттерны CRUD (каталог)</h2>
       <p class="catalog-pattern-path">
         Стили: <code>features/catalog-shared/catalog-crud-patterns.scss</code> · страницы подключают
@@ -92,9 +171,9 @@
       <div class="catalog-grid">
         <section class="catalog-group">
           <h3>Таблица и действия</h3>
-          <article class="catalog-item">
+          <article class="catalog-item catalog-item--pattern-table">
+            <span class="pattern-code-corner">p-tbl</span>
             <div class="item-head">
-              <code>p-tbl</code>
               <span>catalog-table, link-btn</span>
             </div>
             <div class="table-wrap catalog-pattern-table-wrap">
@@ -123,9 +202,9 @@
 
         <section class="catalog-group">
           <h3>Состояния списка и баннеры</h3>
-          <article class="catalog-item">
+          <article class="catalog-item catalog-item--pattern-table">
+            <span class="pattern-code-corner">p-state</span>
             <div class="item-head">
-              <code>p-state</code>
               <span>list-state, state-banner</span>
             </div>
             <p class="list-state list-state--loading">Загрузка списка…</p>
@@ -143,9 +222,9 @@
 
         <section class="catalog-group">
           <h3>Пагинация</h3>
-          <article class="catalog-item">
+          <article class="catalog-item catalog-item--pattern-table">
+            <span class="pattern-code-corner">p-page</span>
             <div class="item-head">
-              <code>p-page</code>
               <span>pagination-bar</span>
             </div>
             <div class="pagination-bar">
@@ -159,29 +238,24 @@
         </section>
 
         <section class="catalog-group">
-          <h3>Модальная оболочка</h3>
-          <article class="catalog-item">
+          <h3>Окно посередине</h3>
+          <article class="catalog-item catalog-item--pattern-table">
+            <span class="pattern-code-corner">p-modal</span>
             <div class="item-head">
-              <code>p-modal</code>
-              <span>modal-backdrop + modal-panel</span>
+              <span>app-dialog + slots</span>
             </div>
-            <p class="catalog-pattern-path">В каталоге — усечённый sandbox; на странице — на весь viewport.</p>
-            <div class="catalog-modal-sandbox" aria-hidden="true">
-              <div class="modal-backdrop">
-                <div class="modal-panel modal-panel--md">
-                  <strong>Заголовок панели</strong>
-                  <p>Содержимое модалки; в фичах внутри — <code>catalog-form-host</code> + форма.</p>
-                </div>
-              </div>
-            </div>
+            <p class="catalog-pattern-path">
+              Используем только <code>app-dialog</code>: <code>mode="content"</code>,
+              <code>size</code>, слоты <code>header/body/footer</code>.
+            </p>
           </article>
         </section>
 
         <section class="catalog-group">
           <h3>Сетка «Детали»</h3>
-          <article class="catalog-item">
+          <article class="catalog-item catalog-item--pattern-table">
+            <span class="pattern-code-corner">p-dl</span>
             <div class="item-head">
-              <code>p-dl</code>
               <span>details-grid</span>
             </div>
             <dl class="details-grid">
@@ -205,9 +279,9 @@
       <div class="catalog-grid">
         <section class="catalog-group">
           <h3>Полоса вкладок</h3>
-          <article class="catalog-item">
+          <article class="catalog-item catalog-item--pattern-table">
+            <span class="pattern-code-corner">f-tabs</span>
             <div class="item-head">
-              <code>f-tabs</code>
               <span>как org-form-tabs</span>
             </div>
             <div class="catalog-demo-tabs" role="tablist" aria-label="Демо вкладок">
@@ -225,35 +299,40 @@
         </section>
       </div>
 
-      <div class="catalog-actions">
-        <app-button variant="secondary" size="md" (clicked)="isOpen.set(false)">Закрыть</app-button>
-      </div>
-    </app-card>
-  </div>
-}
+    </div>
+  </app-card>
+</div>
 
-<app-confirm-dialog
+<app-dialog
+  mode="confirm"
   [open]="showConfirmPreview()"
-  title="Демо ConfirmDialog"
+  title="Демо Dialog / confirm"
   message="Пример подтверждающего диалога из ui-kit."
   confirmText="Понятно"
   confirmVariant="primary"
+  [loading]="true"
+  [trapFocus]="true"
+  [closeOnEsc]="true"
+  ariaLabel="Подтверждающий диалог"
   (confirmed)="showConfirmPreview.set(false)"
   (cancelled)="showConfirmPreview.set(false)"
 />
 
-<app-quick-add-dialog
-  [open]="showQuickAddPreview()"
-  size="sm"
-  title="Демо quick-add"
-  closeAriaLabel="Закрыть диалог"
-  (closed)="showQuickAddPreview.set(false)"
+<app-dialog
+  mode="content"
+  [open]="showContentPreview()"
+  size="md"
+  ariaLabel="Демо content dialog"
+  [trapFocus]="true"
+  [closeOnEsc]="true"
+  (closed)="showContentPreview.set(false)"
 >
-  <app-card title="Новая запись">
-    <p>Переиспользуемый диалог для сценариев по кнопке «+».</p>
-    <div class="catalog-actions">
-      <app-button variant="secondary" size="md" (clicked)="showQuickAddPreview.set(false)">Отмена</app-button>
-      <app-button variant="primary" size="md" (clicked)="showQuickAddPreview.set(false)">Сохранить</app-button>
-    </div>
-  </app-card>
-</app-quick-add-dialog>
+  <h3 slot="header">Демо Dialog / content</h3>
+  <div slot="body">
+    <p>Пример content-режима со слотами и a11y-параметрами.</p>
+  </div>
+  <div slot="footer" class="catalog-actions">
+    <app-button variant="secondary" size="md" (clicked)="showContentPreview.set(false)">Отмена</app-button>
+    <app-button variant="primary" size="md" (clicked)="showContentPreview.set(false)">Сохранить</app-button>
+  </div>
+</app-dialog>

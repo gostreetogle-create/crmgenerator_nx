@@ -1,1 +1,17 @@
 @use "tokens";
+
+.card-body {
+  padding: 16px;
+  min-height: 100px;
+  display: block;
+}
+
+.dialog-body {
+  padding: 24px;
+  overflow-y: auto;
+}
+
+.button,
+.btn {
+  min-width: 80px;
+}

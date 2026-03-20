@@ -1,3 +1,4 @@
+// Eve-arch: 000 — без выделенного паттерна
 import { isPlatformBrowser } from '@angular/common';
 import { Injectable, PLATFORM_ID, effect, inject, signal } from '@angular/core';
 import { Product } from '@domain';

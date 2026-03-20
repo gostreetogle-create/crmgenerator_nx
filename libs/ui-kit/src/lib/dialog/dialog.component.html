@@ -1,0 +1,78 @@
+@if (rendered()) {
+  <div
+    class="dialog-backdrop"
+    [class.dialog-backdrop--closing]="closing()"
+    role="button"
+    tabindex="0"
+    [attr.aria-label]="ariaLabel()"
+    (click)="onOverlayClose($event)"
+    (keydown.enter)="onOverlayClose($event)"
+    (keydown.space)="onOverlayClose($event)"
+  >
+    <div class="dialog-backdrop-layer"></div>
+    <section
+      #dialogPanel
+      class="dialog-panel"
+      [class.dialog-panel--closing]="closing()"
+      [class.dialog-panel--sm]="size() === 'sm'"
+      [class.dialog-panel--md]="size() === 'md'"
+      [class.dialog-panel--lg]="size() === 'lg'"
+      [class.dialog-panel--xl]="size() === 'xl'"
+      role="dialog"
+      aria-modal="true"
+      [attr.aria-label]="labelledBy() ? null : ariaLabel()"
+      [attr.aria-labelledby]="labelledBy()"
+      [uiFocusTrap]="trapFocus()"
+      [closeOnEsc]="closeOnEsc()"
+      (escapePressed)="onEscapeClose()"
+      (click)="$event.stopPropagation()"
+      (keydown.enter)="$event.stopPropagation()"
+      (keydown.space)="$event.stopPropagation()"
+    >
+      @if (mode() === 'confirm') {
+        <header class="dialog-header">
+          @if (title()) {
+            <h3 [id]="labelledBy() || null">{{ title() }}</h3>
+          }
+        </header>
+        <div class="dialog-body">
+          <ng-content select="[slot=body]">
+            <p class="dialog-message">{{ message() }}</p>
+          </ng-content>
+          <ng-content></ng-content>
+        </div>
+        <footer class="dialog-footer">
+          <app-button
+            #cancelButton
+            variant="secondary"
+            [disabled]="disableCancel() || loading()"
+            (clicked)="onCancel()"
+          >
+            {{ cancelText() }}
+          </app-button>
+          <app-button
+            #confirmButton
+            [variant]="confirmVariant()"
+            [loading]="loading()"
+            [disabled]="disableConfirm() || loading()"
+            (clicked)="onConfirm()"
+          >
+            {{ confirmText() }}
+          </app-button>
+        </footer>
+      } @else {
+        <header class="dialog-header">
+          <ng-content select="[slot=header]"></ng-content>
+        </header>
+        <div class="dialog-body">
+          <!-- Eve-arch: SLOT-003 — тело модалки: slot=body + запасная проекция -->
+          <ng-content select="[slot=body]"></ng-content>
+          <ng-content></ng-content>
+        </div>
+        <footer class="dialog-footer">
+          <ng-content select="[slot=footer]"></ng-content>
+        </footer>
+      }
+    </section>
+  </div>
+}

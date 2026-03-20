@@ -1,26 +1,19 @@
+// Eve-arch: 000 — без выделенного паттерна
 @use '../catalog-shared/catalog-crud-patterns';
 
 app-product-form {
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-  min-height: 0;
+  display: block;
   width: 100%;
 }
 
 app-card.product-form-card {
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-  min-height: 0;
+  display: block;
   width: 100%;
 }
 
 app-card.product-form-card .card {
   display: flex;
   flex-direction: column;
-  flex: 1;
-  min-height: 0;
   padding: var(--spacing-4);
 }
 
@@ -32,8 +25,8 @@ app-card.product-form-card .card-header {
 }
 
 app-card.product-form-card .card-body {
-  flex: 1;
-  min-height: 0;
+  flex: 1 1 auto;
+  min-height: 180px;
   display: flex;
   flex-direction: column;
 }

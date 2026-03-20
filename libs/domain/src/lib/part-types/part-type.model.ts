@@ -1,3 +1,4 @@
+// Eve-arch: 000 — без выделенного паттерна
 export interface PartType {
   _id?: string;
   name: string;

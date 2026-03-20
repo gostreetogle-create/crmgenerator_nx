@@ -1,3 +1,4 @@
+// Eve-arch: 000 — без выделенного паттерна
 @use '../catalog-shared/catalog-crud-page';
 
 .products-layout {
@@ -109,6 +110,17 @@
 .product-row--context {
   background: color-mix(in oklch, var(--primary) 12%, transparent);
   box-shadow: inset 3px 0 0 0 var(--primary);
+}
+
+.table-wrap {
+  min-height: var(--table-min-height);
+  display: block;
+}
+
+.pagination-bar {
+  position: sticky;
+  bottom: 0;
+  background: var(--card);
 }
 
 .products-col-picker-backdrop {

@@ -1,3 +1,4 @@
+// Eve-arch: 000 — без выделенного паттерна
 /** Ключи LS — совпадают с feature-сервисами каталога (фаза 1). */
 export const CATALOG_LS_KEYS = {
   categories: 'crmgenerator_nx_categories_v1',

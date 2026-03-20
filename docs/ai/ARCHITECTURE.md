@@ -3,6 +3,8 @@
 **Важно для ИИ и разработчика:**  
 Любое изменение структуры, слоёв, импортов, фич и публичных API должно отражаться в этом файле.
 
+**Eve-Arch:** реестр паттернов с артикулами и маркерами в коде — **`docs/ai/EVE_ARCH_INDEX.md`**. Перед любым фиксом/фичей: **`grep Eve-arch`** → переиспользуй существующий артикул или добавь новый в индекс; без паттерна — **`000`**. Глобальные правки — снова grep и согласованное обновление маркеров.
+
 ## Цель
 Поддерживать предсказуемый и масштабируемый Angular/Nx фронтенд:  
 - переиспользуемый UI в `ui-kit`  
@@ -59,7 +61,11 @@
 
 Правило потока: **Smart -> Dumb через `input`**, **Dumb -> Smart через `output`**.
 
+<a id="api-base-url"></a>
+
 ## Контракт API для фронта (ведение вручную)
+
+Префикс относительных путей HTTP через `apiBaseUrl` (interceptor) — см. **`API-005`** в `EVE_ARCH_INDEX.md` и `apps/web/src/app/core/api/api-base-url.interceptor.ts`.
 
 - **Истина по API, уже внедрённому во фронте:** `docs/api/FRONTEND_CONTRACT.md` — эндпоинты и поля под текущий код (`domain`, `core/api`).
 - **Черновик / backlog API:** `docs/api/API_FUTURE_CHECKLIST.md` — не считать контрактом до переноса в `FRONTEND_CONTRACT.md`; **перед внедрением** уточнять поля.
@@ -89,9 +95,15 @@
 - Каждый reusable модуль имеет `index.ts` как публичный entry point.
 - Импортировать только через публичный API, не через глубокие пути файлов.
 - Для `ui-kit`:
-  - внешний импорт из app: `@ui-kit/button`, `@ui-kit/input`, `@ui-kit/card`, `@ui-kit/confirm-dialog`
+  - внешний импорт из app: `@ui-kit/button`, `@ui-kit/input`, `@ui-kit/card`, `@ui-kit/dialog`
   - внутренние импорты внутри `ui-kit`: относительные (`../button`, `../card`)
 - Запрещены deep-importы вида `libs/.../src/lib/.../file.ts`.
+
+<a id="routes-map"></a>
+
+### Карта маршрутов (Eve-Arch ROUTES-004)
+
+- Единая точка правды по маршрутам приложения: `apps/web/src/app/app.routes.ts` (standalone, при необходимости вложенный каталог `catalog/*`).
 
 ## Стандарт структуры папок
 
@@ -117,30 +129,182 @@ docs/ai/
 ```text
 libs/ui-kit/src/lib/
   button/
-    button.ts
-    button.html
-    button.scss
-    button.spec.ts
+    button.component.ts
+    button.component.html
+    button.component.scss
+    button.component.spec.ts
     index.ts
   input/
-    input.ts
-    input.html
-    input.scss
-    input.spec.ts
+    input.component.ts
+    input.component.html
+    input.component.scss
+    input.component.spec.ts
     index.ts
   card/
-    card.ts
-    card.html
-    card.scss
-    card.spec.ts
+    card.component.ts
+    card.component.html
+    card.component.scss
+    card.component.spec.ts
     index.ts
-  confirm-dialog/
-    confirm-dialog.ts
-    confirm-dialog.html
-    confirm-dialog.scss
-    confirm-dialog.spec.ts
+  dialog/
+    dialog.component.ts
+    dialog.component.html
+    dialog.component.scss
+    dialog.component.spec.ts
     index.ts
 ```
+
+## Стандарт Eve для UI-kit (обязательно)
+
+1. Один компонент = одна истина:
+   - одна папка, один публичный entry (`index.ts`)
+   - никакого `ButtonPrimary`/`ButtonDanger` отдельными файлами
+2. API сначала:
+   - минимальный универсальный контракт: `variant`, `size`, `disabled`, `loading`, `ariaLabel`
+   - для оверлеев дополнительно: `open`, `closeOnOverlay`, `closeOnEsc`, `trapFocus`
+   - выходы только абстрактные: `clicked`, `closed`, `confirmed`, `changed`
+3. Варианты через пропсы/режимы:
+   - `variant`, `size`, `mode/preset`; не feature-специфичные названия
+4. Композиция через слоты:
+   - использовать `ng-content` с `select` (например `[slot=header]`, `[slot=body]`, `[slot=footer]`, `[slot=start]`, `[slot=end]`)
+5. Анимации только через shared:
+   - `libs/ui-kit/src/lib/shared/animations.scss` (dialog enter/exit, button press, fade)
+6. A11y по умолчанию:
+   - `role`, `aria-*`, корректный keyboard flow
+   - для диалогов обязателен `FocusTrapDirective`
+7. Сигналы и lifecycle:
+   - состояние на сигналах
+   - delayed-unmount ~150ms для exit-анимации оверлеев
+8. Миграция:
+   - legacy-компоненты сначала как thin-wrapper над новым ядром
+   - удаление legacy только после проверки страниц и каталога
+
+## Баг: пустые компоненты после рефактора
+
+Причина:
+- После рефакторов в `ui-kit` страница может быть визуально "пустой", если в базовом компоненте отсутствует или сломан `ng-content` (например в `Card`/`Dialog`), даже когда родительский `.html` содержит таблицы, кнопки и формы.
+
+Решение:
+- В `Card` всегда держать проекцию контента:
+  - `ng-content select="[slot=body]"`
+  - `ng-content` (fallback по умолчанию)
+- В `Dialog` для content-режима всегда держать:
+  - `ng-content select="[slot=header]"`
+  - `ng-content select="[slot=body]"`
+  - `ng-content` (fallback по умолчанию)
+  - `ng-content select="[slot=footer]"`
+
+Пример:
+```html
+<div class="card__content">
+  <ng-content select="[slot=body]" />
+  <ng-content />
+</div>
+```
+
+Обязательное правило:
+- Каждый контейнерный компонент (`Card`, `Dialog`, `Drawer`, `Popover`) должен иметь fallback-проекцию `ng-content` по умолчанию, даже если используются именованные слоты.
+
+### CSS-рефактор: причина и решение
+
+Причина:
+- После удаления/переезда старых стилей часть scoped-правил перестала явно задавать базовую геометрию контейнеров, из-за чего визуально казалось, что контент "пропал" (контент в DOM есть, но блоки выглядят пустыми).
+
+Решение:
+- Вернули базовые стили контейнеров:
+  - `.card-body { padding: 16px; min-height: 100px; display: block; }`
+  - `.dialog-body { padding: 24px; overflow-y: auto; }`
+  - `:host { display: block; }` для базовых ui-kit компонентов
+- Для карточки и диалога закрепили нейтральный фон от токенов (`var(--card)`), исключив случайные визуальные "провалы" на hover.
+
+### Финальный CSS-добив: 90% -> 100%
+
+- Для таблиц list-страниц закреплять базовую видимость контейнера (`.table-wrap { display: block; }`) при любых локальных переопределениях.
+- Для контейнерных слотов в `Card`/`Dialog` оставлять fallback-контент (`Нет данных`) в `ng-content` по умолчанию.
+- После style-фиксов обязательно проверять минимум `/clients`, `/products`, `/ui` и делать hard refresh.
+
+<a id="fixed-layout"></a>
+
+### Stable Layout System
+
+Проблема:
+- Layout shift при разном объёме контента: карточки, таблицы и модалки меняют высоту, из-за чего элементы "прыгают".
+
+Решение:
+- Фиксированные `min-height` через токены (`--card-min-height`, `--modal-min-height`, `--table-min-height`) и ограничение модалок по `--modal-max-height`.
+- Контейнеры `Card`/`Dialog` строятся как `flex`-колонка, где body имеет `flex: 1` и внутренний скролл.
+- Нижняя панель действий/пагинации фиксируется в потоке (`flex-shrink: 0`) и для таблиц используется `sticky`-низ (`.pagination-bar`).
+
+Применять:
+- Все карточки, модалки и таблицы: всегда `flex + min-height`, скролл только у body-области.
+
+Цель:
+- Высота страницы и модалок не меняется при загрузке, фильтрации и переключении контента.
+
+## Паттерн Eve: как делать любой компонент
+
+### 1) Структура папки
+```text
+libs/ui-kit/src/lib/<component-name>/
+  <name>.component.ts
+  <name>.component.html
+  <name>.component.scss
+  <name>.component.spec.ts
+  index.ts
+```
+
+`index.ts` всегда экспортирует только публичный API компонента:
+`export * from './<name>.component';`
+
+### 2) API-контракт (всегда сначала)
+- Минимальный универсальный набор:
+  - `open` (для overlay-компонентов)
+  - `size`: `'sm' | 'md' | 'lg' | 'xl'`
+  - `variant`: `'primary' | 'secondary' | 'danger' | 'ghost'` (или тип, релевантный компоненту)
+  - `disabled`, `loading`, `ariaLabel`
+- Outputs:
+  - `clicked`, `closed`, `confirmed`, `changed`
+- Не использовать feature-специфичные имена (`deleteButton`, `clientOnlyState` и т.д.).
+
+### 3) Варианты через пропсы, не через отдельные файлы
+- `ButtonPrimary/ButtonDanger` запрещены -> один `Button` с `variant`.
+- `CardHoverable/CardStatic` запрещены -> один `Card` с `hoverable`.
+- Для поведения использовать `mode/preset` (`mode="icon"`, `mode="confirm"` и т.д.).
+
+<a id="slot-body"></a>
+
+### 4) Слоты и композиция
+- Использовать `ng-content` + `select` (`[slot=header]`, `[slot=body]`, `[slot=footer]`, `[slot=start]`, `[slot=end]`).
+- Сложный контент — через `TemplateRef`/`ng-template` при необходимости.
+- Не копировать однотипную разметку в новые компоненты, а композиционно расширять существующие.
+
+<a id="dialog-life"></a>
+
+### 5) Анимации
+- Общие анимации хранятся в `libs/ui-kit/src/lib/shared/animations.scss`.
+- Использовать миксины (`dialog-enter/exit`, `button-press`, `fade-in-out`).
+- Для hover/press: краткие и предсказуемые переходы (`~0.1-0.2s`, `scale`/`opacity`).
+
+<a id="a11y-ui-kit"></a>
+
+### 6) Доступность (a11y) по умолчанию
+- Явные `role`, `aria-label`/`aria-labelledby`, `aria-disabled`, `aria-invalid`, `aria-describedby` при необходимости.
+- Для overlay-компонентов обязателен focus-trap (`FocusTrapDirective`).
+- Keyboard-first: `Enter/Space` для action-элементов, `Esc` для закрытия диалогов.
+- Tab-порядок логичный и не выходит за пределы активного overlay.
+
+### 7) Состояние и lifecycle (диалоги, delayed unmount)
+- Локальное UI-состояние на signals (`open()`, `loading()` и т.д.).
+- Для закрытия overlay — delayed unmount (~150ms) под exit-анимацию.
+- Side-effects синхронизировать через `effect`/`ngOnChanges`.
+
+### 8) Правила миграции legacy -> new
+1. Сначала делаем **thin-wrapper** на новый компонент, сохраняя старый внешний контракт.
+2. Переводим usage в фичах на новый компонент/контракт.
+3. Проверяем каталог, lint/test и ключевые экраны.
+4. Удаляем legacy-файлы только после прохождения проверок.
+
+<a id="forms-signal-effect"></a>
 
 ### Feature-шаблон (эталон)
 ```text
@@ -192,10 +356,14 @@ apps/web/src/app/features/<feature>/
 - Тёмная тема (`.dark`) — образ **«пантера»**: уголь/ночь, сталь как `secondary`, янтарный блик как `primary`/`outline`.
 - Все правки сочетаний цветов — **только** в `libs/design-tokens/src/styles/tokens.scss`; артикулы `col-*` в Component Catalog отражают эти же CSS-переменные.
 
+<a id="theme-dark"></a>
+
 ### Переключение темы (light/dark)
 - Тема управляется классом `dark` на `document.documentElement`.
 - Значение темы сохраняется в `localStorage` (ключ `theme`), чтобы выбор восстанавливался после перезагрузки.
 - Любые UI-изменения должны опираться на `design-tokens` (разные значения в `:root` и `.dark`), а не на прямую подстановку цветов в фичах.
+
+<a id="input-api"></a>
 
 ### Обязательные поля в ui-kit формах
 - Для обязательных полей в `ui-kit` используйте `app-input`:
@@ -300,6 +468,8 @@ apps/web/src/app/features/<feature>/
 3. Контент CRUD-страницы (`catalog-crud-page`) имеет минимальную рабочую высоту; карточка списка заполняет доступную область по высоте.
 4. Нельзя оставлять страницы в состоянии, где контент занимает только верхнюю часть экрана, а основной viewport визуально пуст.
 
+<a id="actions-state"></a>
+
 ### UX-стандарты для CRUD-таблиц (обязательно)
 
 1. В строке действий таблицы использовать `app-button`, а не локальные `link-btn`:
@@ -345,6 +515,8 @@ apps/web/src/app/features/<feature>/
 - `shared` -> нельзя зависеть от `features/*` и `ui-kit`.
 - `apps/web/core` -> может оркестрировать feature-маршруты и app-level провайдеры, но не дублирует feature-сервисы.
 
+<a id="ui-catalog"></a>
+
 ## Component Catalog
 
 - Кнопка `UI` в хедере открывает каталог компонентов.
@@ -363,12 +535,12 @@ apps/web/src/app/features/<feature>/
 Чтобы ускорять разработку и синхронизировать команду, по каждой фиче ведётся отдельный чек-лист состояния.
 
 Читай:
-- промпты для ИИ: `docs/PROMPTS.md`
+- промпты для ИИ: `docs/ai/PROMPTS.md`
 - playbook для ИИ: `docs/ai/AI_PROJECT_PLAYBOOK.md`
 - **паттерн data-фичи + API:** `docs/ai/FEATURE_WITH_API_PATTERN.md`
 - базовый шаблон: `docs/ai/FEATURE_CHECKLIST_BASE.md`
 - пример для текущей фичи: `docs/ai/FEATURE_CLIENTS_CHECKLIST.md`
-- архив: `docs/ai/archive/`
+- архив чек-листов: `docs/ai/archive/` (при необходимости; активные чек-листы — в `docs/ai/`)
 
 ## Базовые команды
 
@@ -385,3 +557,7 @@ apps/web/src/app/features/<feature>/
 - Нет хардкода дизайн-значений вне `design-tokens`.
 - Нет создания архитектурных сущностей без обновления этого документа.
 - Нет «голых» глобальных селекторов в SCSS форм фич при `ViewEncapsulation.None` без уникального корневого класса (см. раздел «Стили форм в features» выше).
+
+---
+
+**Синхронизация:** при правках кода по паттернам Eve-Arch обновляй связанные разделы — [`DOCS_SYNC_RULES.md`](./DOCS_SYNC_RULES.md) · [`EVE_ARCH_INDEX.md`](./EVE_ARCH_INDEX.md)

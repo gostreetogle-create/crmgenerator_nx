@@ -1,3 +1,4 @@
+// Eve-arch: 000 — без выделенного паттерна
 import { CommonModule } from '@angular/common';
 import {
   Component,
@@ -80,6 +81,8 @@ export class ProductFormComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    console.log('Форма init, данные =', this.formData());
+    console.log('Форма открыта, данные загружены?');
     this.catalogLookup.ensureLoaded();
   }
 

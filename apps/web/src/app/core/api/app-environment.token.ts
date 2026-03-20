@@ -1,3 +1,4 @@
+// Eve-arch: 000 — без выделенного паттерна
 import { InjectionToken } from '@angular/core';
 import type { AppEnvironment } from './app-environment.model';
 

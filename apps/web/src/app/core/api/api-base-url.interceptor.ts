@@ -6,6 +6,7 @@ import { APP_ENVIRONMENT } from './app-environment.token';
  * Добавляет `environment.apiBaseUrl` к относительным URL (`organizations`, `/clients`).
  * Абсолютные `http(s)://` не трогает.
  */
+// Eve-arch: API-005 — auto-prefix apiBaseUrl для относительных API путей
 export const apiBaseUrlInterceptor: HttpInterceptorFn = (req, next) => {
   const env = inject(APP_ENVIRONMENT);
   const base = env.apiBaseUrl?.trim() ?? '';

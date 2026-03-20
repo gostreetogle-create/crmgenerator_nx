@@ -1,9 +1,9 @@
+// Eve-arch: 000 — без выделенного паттерна
 import { Component } from '@angular/core';
 import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
-import { UiCatalogComponent } from './features/ui-catalog/ui-catalog.component';
 
 @Component({
-  imports: [RouterLink, RouterLinkActive, RouterOutlet, UiCatalogComponent],
+  imports: [RouterLink, RouterLinkActive, RouterOutlet],
   selector: 'app-root',
   template: `
     <header class="app-header">
@@ -60,7 +60,9 @@ import { UiCatalogComponent } from './features/ui-catalog/ui-catalog.component';
           </a>
         </nav>
         <div class="app-header-actions">
-          <app-ui-catalog />
+          <a class="app-header-nav-link" routerLink="/ui" routerLinkActive="app-header-nav-link--active">
+            UI
+          </a>
         </div>
       </div>
     </header>

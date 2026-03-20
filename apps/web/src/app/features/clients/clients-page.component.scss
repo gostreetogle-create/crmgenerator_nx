@@ -22,8 +22,11 @@
   color: var(--muted-foreground);
 }
 
+// Eve-arch: FIXED-LAYOUT-001 — min-height/flex: таблица (.table-wrap), устойчивые границы
 /* Скругление на обёртке: у <table> border-radius + overflow:hidden ломают линии в Chromium. */
 .table-wrap {
+  display: block;
+  min-height: var(--table-min-height);
   margin-top: var(--spacing-2);
   overflow-x: auto;
   border-radius: var(--radius-sm);
@@ -189,6 +192,9 @@
 
 .pagination-bar {
   margin-top: var(--spacing-2);
+  position: sticky;
+  bottom: 0;
+  background: var(--card);
   display: flex;
   justify-content: space-between;
   align-items: center;

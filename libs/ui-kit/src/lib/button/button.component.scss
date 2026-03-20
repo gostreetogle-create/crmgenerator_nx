@@ -1,0 +1,113 @@
+// Eve-arch: 000 — без выделенного паттерна
+@use "tokens";
+@use "../shared/animations";
+
+:host {
+  display: block;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-2);
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  min-height: 28px;
+  min-width: 80px;
+  padding: var(--spacing-1) var(--spacing-2);
+  background: var(--primary);
+  color: var(--text-on-primary);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-tight);
+  font-weight: var(--font-weight-medium, 500);
+  cursor: pointer;
+  box-sizing: border-box;
+
+  &:hover:not(:disabled) {
+    background: color-mix(in oklch, var(--primary) 85%, black 15%);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--outline);
+    outline-offset: 2px;
+  }
+}
+
+.btn--full {
+  width: 100%;
+}
+
+.btn--sm {
+  min-height: 28px;
+  padding: var(--spacing-1) var(--spacing-2);
+}
+
+.btn--md {
+  min-height: 34px;
+  padding: var(--spacing-2) var(--spacing-3);
+}
+
+.btn--lg {
+  min-height: 40px;
+  padding: var(--spacing-2) var(--spacing-4);
+}
+
+.btn--icon {
+  min-width: 34px;
+  padding-inline: var(--spacing-2);
+}
+
+.btn--primary {
+  background: var(--primary);
+  color: var(--text-on-primary);
+}
+
+.btn--secondary {
+  background: var(--secondary);
+  color: var(--foreground);
+}
+
+.btn--outline {
+  border-color: var(--outline);
+  background: transparent;
+  color: var(--foreground);
+}
+
+.btn--danger {
+  background: var(--danger);
+  color: var(--text-on-primary);
+}
+
+.btn--ghost {
+  background: transparent;
+  color: var(--accent);
+}
+
+.btn--disabled,
+.btn[disabled],
+.btn--loading {
+  cursor: not-allowed;
+  opacity: 0.65;
+}
+
+.btn-content {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-2);
+}
+
+.btn-spinner {
+  width: 1em;
+  height: 1em;
+  border: 2px solid currentColor;
+  border-top-color: transparent;
+  border-radius: 50%;
+  animation: btn-spin 1s linear infinite;
+}
+
+@keyframes btn-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

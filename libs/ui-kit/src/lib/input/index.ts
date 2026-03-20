@@ -1,1 +1,2 @@
-export * from './input';
+// Eve-arch: 000 — без выделенного паттерна
+export * from './input.component';

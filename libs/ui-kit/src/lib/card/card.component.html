@@ -1,0 +1,35 @@
+<section [class]="cardClasses()" [attr.aria-label]="ariaLabel()">
+  @if (sections()) {
+    <header class="card-header card__header">
+      <ng-content select="[slot=header]"></ng-content>
+      @if (title() || subtitle()) {
+        <ng-template [ngTemplateOutlet]="titleFallbackTpl" />
+      }
+    </header>
+
+    <div class="card-body card__body">
+      <div class="card__content">
+        <!-- Eve-arch: SLOT-003 — основной слот тела + дефолтная проекция -->
+        <ng-content select="[slot=body]"></ng-content>
+        <ng-content></ng-content>
+      </div>
+    </div>
+
+    @if (footer()) {
+      <footer class="card-footer card__footer">
+        <ng-content select="[slot=footer]"></ng-content>
+      </footer>
+    }
+  } @else {
+    <ng-content></ng-content>
+  }
+</section>
+
+<ng-template #titleFallbackTpl>
+  @if (title()) {
+    <h3>{{ title() }}</h3>
+  }
+  @if (subtitle()) {
+    <p>{{ subtitle() }}</p>
+  }
+</ng-template>

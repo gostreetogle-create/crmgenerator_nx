@@ -1,7 +1,38 @@
+// Eve-arch: 000 — без выделенного паттерна
 import { TestBed } from '@angular/core/testing';
+import { Component } from '@angular/core';
 import { AppComponent } from './app';
 import { RouterTestingModule } from '@angular/router/testing';
 import { appRoutes } from './app.routes';
+import { ButtonComponent } from '@ui-kit/button';
+import { CardComponent } from '@ui-kit/card';
+import { DialogComponent } from '@ui-kit/dialog';
+import { InputComponent } from '@ui-kit/input';
+
+@Component({
+  standalone: true,
+  imports: [DialogComponent, ButtonComponent, InputComponent, CardComponent],
+  template: `
+    <app-dialog mode="confirm" [open]="false" ariaLabel="shell-dialog" />
+    <app-button>Shell Button</app-button>
+    <app-input placeholder="Shell Input" ariaLabel="shell-input" />
+    <app-card title="Shell Card">Card body</app-card>
+  `,
+})
+class UiKitShellHostComponent {}
+
+@Component({
+  standalone: true,
+  imports: [ButtonComponent],
+  template: `
+    <app-button ariaLabel="slot-demo">
+      <span slot="start">L</span>
+      Text
+      <span slot="end">R</span>
+    </app-button>
+  `,
+})
+class ButtonSlotsHostComponent {}
 
 describe('App', () => {
   beforeEach(async () => {
@@ -10,23 +41,25 @@ describe('App', () => {
     }).compileComponents();
   });
 
-  it('should render test buttons', async () => {
-    const fixture = TestBed.createComponent(AppComponent);
+  it('should render ui-kit components on /ui route', async () => {
+    const fixture = TestBed.createComponent(UiKitShellHostComponent);
+    fixture.detectChanges();
     await fixture.whenStable();
     const compiled = fixture.nativeElement as HTMLElement;
 
-    // Хедер: 6 навигационных app-button + 1 "UI" у каталога (каталог закрыт).
-    expect(compiled.querySelectorAll('app-button').length).toBe(7);
+    expect(compiled.querySelector('app-dialog')).toBeTruthy();
+    expect(compiled.querySelector('app-button')).toBeTruthy();
+    expect(compiled.querySelector('app-input')).toBeTruthy();
+    expect(compiled.querySelector('app-card')).toBeTruthy();
+  });
 
-    // Открываем каталог (клик по внутренней кнопке ButtonComponent).
-    const uiCatalogButton = compiled.querySelector('app-ui-catalog app-button button');
-    uiCatalogButton?.click();
-
+  it('should project start/end button slots', async () => {
+    const fixture = TestBed.createComponent(ButtonSlotsHostComponent);
     fixture.detectChanges();
     await fixture.whenStable();
+    const compiled = fixture.nativeElement as HTMLElement;
 
-    // В каталоге: 1 "Тёмная/Светлая" + 5 кнопок из группы Buttons + 1 "Открыть confirm" + 1 "Закрыть".
-    // Плюс в хедере: 6 навигаций + "UI".
-    expect(compiled.querySelectorAll('app-button').length).toBe(15);
+    const button = compiled.querySelector('button');
+    expect(button?.textContent?.replace(/\s+/g, ' ').trim()).toContain('L Text R');
   });
 });

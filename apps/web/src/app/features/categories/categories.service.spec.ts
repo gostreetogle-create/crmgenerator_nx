@@ -1,3 +1,4 @@
+// Eve-arch: 000 — без выделенного паттерна
 /** @jest-environment jsdom */
 import { TestBed } from '@angular/core/testing';
 import { of, throwError } from 'rxjs';

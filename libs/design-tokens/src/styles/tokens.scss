@@ -42,6 +42,11 @@
   --shadow-glow: 0 1px 3px rgba(0, 0, 0, 0.1);
   --overlay-backdrop: rgba(0, 0, 0, 0.45);
   --overlay-backdrop-strong: rgba(0, 0, 0, 0.7);
+  // Eve-arch: FIXED-LAYOUT-001 — токены min-height для карточки/модалки/таблицы (без layout shift)
+  --card-min-height: 180px;
+  --modal-min-height: 480px;
+  --modal-max-height: 80vh;
+  --table-min-height: 300px;
 }
 
 .dark {

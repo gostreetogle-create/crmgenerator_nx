@@ -1,3 +1,4 @@
+// Eve-arch: 000 — без выделенного паттерна
 @use "tokens";
 
 :host {
@@ -23,6 +24,8 @@
 }
 
 .table-wrap {
+  display: block;
+  min-height: var(--table-min-height);
   margin-top: var(--spacing-2);
   overflow-x: auto;
   border-radius: var(--radius-sm);
@@ -243,6 +246,9 @@
 
 .pagination-bar {
   margin-top: var(--spacing-2);
+  position: sticky;
+  bottom: 0;
+  background: var(--card);
   display: flex;
   justify-content: space-between;
   align-items: center;

@@ -2,9 +2,8 @@ import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { Component, computed, inject, PLATFORM_ID, signal } from '@angular/core';
 import { ButtonComponent } from '@ui-kit/button';
 import { CardComponent } from '@ui-kit/card';
-import { ConfirmDialogComponent } from '@ui-kit/confirm-dialog';
+import { DialogComponent } from '@ui-kit/dialog';
 import { InputComponent } from '@ui-kit/input';
-import { QuickAddDialogComponent } from '@ui-kit/quick-add-dialog';
 
 type ButtonVariant = 'primary' | 'secondary' | 'outline' | 'danger' | 'ghost';
 
@@ -21,26 +20,31 @@ interface CatalogFooterColor {
   cssVar: string; // CSS custom property, e.g. '--background'
 }
 
+interface DialogArticle {
+  code: string;
+  title: string;
+  description: string;
+}
+
 const BUTTONS: CatalogItem[] = [
-  { code: 'b-01', name: 'Primary', spanLabel: 'Основная', variant: 'primary' },
-  { code: 'b-02', name: 'Secondary', spanLabel: 'Вторичная', variant: 'secondary' },
-  { code: 'b-03', name: 'Outline', spanLabel: 'Контурная', variant: 'outline' },
-  { code: 'b-04', name: 'Danger', spanLabel: 'Опасная', variant: 'danger' },
-  { code: 'b-05', name: 'Ghost', spanLabel: 'Призрачная', variant: 'ghost' },
+  { code: 'b-01', name: 'Primary loading', spanLabel: 'variant=primary + loading', variant: 'primary' },
+  { code: 'b-02', name: 'Slot composition', spanLabel: 'prefix/suffix slots', variant: 'secondary' },
 ];
 
 const INPUTS: CatalogItem[] = [
-  { code: 'i-01', name: 'Default input', spanLabel: 'Стандартный ввод' },
-  { code: 'i-02', name: 'Input with error', spanLabel: 'Ввод с ошибкой' },
+  { code: 'i-01', name: 'Prefix/suffix', spanLabel: 'slots + ariaLabel' },
+  { code: 'i-02', name: 'Error + hint', spanLabel: 'variant=error + hint' },
+  { code: 'i-03', name: 'Disabled loading', spanLabel: 'disabled + loading' },
 ];
 
-const CARDS: CatalogItem[] = [{ code: 'c-01', name: 'Default card', spanLabel: 'Карточка по умолчанию' }];
-
-const CONFIRM_DIALOGS: CatalogItem[] = [
-  { code: 'd-01', name: 'Danger confirm', spanLabel: 'Опасное подтверждение', subtitle: 'Удаление' },
+const CARDS: CatalogItem[] = [
+  { code: 'c-01', name: 'Hoverable', spanLabel: 'hoverable=true' },
+  { code: 'c-02', name: 'Sections', spanLabel: 'header/body/footer slots' },
 ];
-const QUICK_ADD_DIALOGS: CatalogItem[] = [
-  { code: 'q-01', name: 'Quick add dialog', spanLabel: 'Верхний диалог +' },
+
+const DIALOGS: CatalogItem[] = [
+  { code: 'd-01', name: 'Confirm loading', spanLabel: 'mode=confirm + loading', subtitle: 'confirm' },
+  { code: 'd-02', name: 'Content slots', spanLabel: 'header/footer slots', subtitle: 'content' },
 ];
 
 const FOOTER_COLORS_BUTTONS: CatalogFooterColor[] = [
@@ -74,17 +78,12 @@ const FOOTER_COLORS_CARDS: CatalogFooterColor[] = [
   { code: 'col-09', cssVar: '--primary' }, // hover mix
 ];
 
-const FOOTER_COLORS_CONFIRM: CatalogFooterColor[] = [
+const FOOTER_COLORS_DIALOG: CatalogFooterColor[] = [
   { code: 'col-18', cssVar: '--overlay-backdrop' },
   { code: 'col-19', cssVar: '--overlay-backdrop-strong' },
   { code: 'col-04', cssVar: '--foreground' },
   { code: 'col-02', cssVar: '--card' },
   { code: 'col-07', cssVar: '--border' },
-];
-const FOOTER_COLORS_QUICK_ADD: CatalogFooterColor[] = [
-  { code: 'col-18', cssVar: '--overlay-backdrop' },
-  { code: 'col-07', cssVar: '--border' },
-  { code: 'col-02', cssVar: '--card' },
 ];
 
 @Component({
@@ -95,16 +94,14 @@ const FOOTER_COLORS_QUICK_ADD: CatalogFooterColor[] = [
     ButtonComponent,
     InputComponent,
     CardComponent,
-    ConfirmDialogComponent,
-    QuickAddDialogComponent,
+    DialogComponent,
   ],
   templateUrl: './ui-catalog.component.html',
   styleUrl: './ui-catalog.component.scss',
 })
 export class UiCatalogComponent {
-  readonly isOpen = signal(false);
   readonly showConfirmPreview = signal(false);
-  readonly showQuickAddPreview = signal(false);
+  readonly showContentPreview = signal(false);
   private readonly platformId = inject(PLATFORM_ID);
 
   readonly theme = signal<'light' | 'dark'>('light');
@@ -141,15 +138,45 @@ export class UiCatalogComponent {
     }
   }
 
+  // Eve-arch: CATALOG-006 — каталог как единый источник правды UI-kit
   readonly catalogGroups = computed(() => [
     { title: 'Buttons', items: BUTTONS, footerColors: FOOTER_COLORS_BUTTONS },
     { title: 'Inputs', items: INPUTS, footerColors: FOOTER_COLORS_INPUTS },
     { title: 'Cards', items: CARDS, footerColors: FOOTER_COLORS_CARDS },
-    { title: 'ConfirmDialog', items: CONFIRM_DIALOGS, footerColors: FOOTER_COLORS_CONFIRM },
-    { title: 'QuickAddDialog', items: QUICK_ADD_DIALOGS, footerColors: FOOTER_COLORS_QUICK_ADD },
+    { title: 'Dialog', items: DIALOGS, footerColors: FOOTER_COLORS_DIALOG },
   ]);
 
-  openCatalog() {
-    this.isOpen.set(true);
-  }
+  readonly dialogArticles: DialogArticle[] = [
+    {
+      code: 'D001',
+      title: 'Диалоговое окно подтверждения',
+      description: 'sm, кнопки Да/Нет',
+    },
+    {
+      code: 'D002',
+      title: 'Среднее окно с формой',
+      description: 'md, поля + кнопки',
+    },
+    {
+      code: 'D003',
+      title: 'Большое окно с таблицей',
+      description: 'lg, просмотр деталей',
+    },
+    {
+      code: 'D004',
+      title: 'Всплывашка над полем',
+      description: 'sm, список выбора',
+    },
+    {
+      code: 'D005',
+      title: 'Окно сбоку (Drawer)',
+      description: 'md, фильтры',
+    },
+    {
+      code: 'D006',
+      title: 'Уведомление (Alert)',
+      description: 'sm, "Успех!"',
+    },
+  ];
+
 }

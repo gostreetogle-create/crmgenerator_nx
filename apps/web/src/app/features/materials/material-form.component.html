@@ -1,4 +1,6 @@
+<!-- Eve-arch: 000 — без выделенного паттерна -->
 <app-card [title]="material() ? 'Редактировать материал' : 'Новый материал'" class="material-form-card">
+  <div slot="body">
   <form class="material-form material-form--dialog" (submit)="onNgSubmit($event)">
     <div class="material-form-inner">
       <div class="field">
@@ -41,4 +43,5 @@
       <app-button variant="primary" type="submit" size="md">Сохранить</app-button>
     </div>
   </form>
+  </div>
 </app-card>

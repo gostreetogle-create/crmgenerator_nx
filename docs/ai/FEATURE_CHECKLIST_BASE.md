@@ -1,6 +1,6 @@
 # Чек-лист состояния фич (Feature State)
 
-См. также: `docs/ai/AI_PROJECT_PLAYBOOK.md`, **`docs/PROMPTS.md`** (готовые промпты P1–P8).
+См. также: `docs/ai/AI_PROJECT_PLAYBOOK.md`, **`docs/ai/PROMPTS.md`** (готовые промпты P1–P8).
 
 ## Зачем это нужно
 Этот документ — “единый источник правды” по каждой фиче: что уже сделано, что в процессе, что заблокировано, и какие решения/ограничения сейчас действуют.  
@@ -152,3 +152,21 @@
 - [ ] `npm run ui:lint`, `nx build web --configuration development`, при наличии тестов — `nx test web`.
 - [ ] Ручная проверка сценариев MVP в браузере.
 
+## Ui-kit component template (P4)
+
+Короткий чек-лист для нового компонента в `libs/ui-kit` (раньше отдельный `COMPONENT_TEMPLATE.md`).
+
+- Команда: `nx g @nx/angular:component --project=ui-kit --style=scss --standalone --export`
+- `encapsulation: ViewEncapsulation.None`
+- Импорт: `@import "@design-tokens/styles/tokens";` или `@use` токенов в `.scss`
+- Классы: на реальном элементе, через `[class]="computedClasses()"`
+- Цвета/тени/шрифты: только `var(--...)` из tokens
+- **UI-каталог:** после добавления — демо в `apps/web/src/app/features/ui-catalog/` и правило в `docs/ai/UI_CATALOG_AND_DESIGN_SYSTEM.md`
+- Тест: `nx serve web` + hard refresh — видно ли изменения?
+- Линтинг: `npm run ui:lint`
+
+Промпт **P4:** `docs/ai/PROMPTS.md`. Общий процесс: `docs/ai/AI_PROJECT_PLAYBOOK.md`.
+
+---
+
+**Синхронизация:** при правках кода по паттернам Eve-Arch обновляй связанные разделы — [`DOCS_SYNC_RULES.md`](./DOCS_SYNC_RULES.md) · [`EVE_ARCH_INDEX.md`](./EVE_ARCH_INDEX.md)

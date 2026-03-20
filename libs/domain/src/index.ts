@@ -1,3 +1,4 @@
+// Eve-arch: 000 — без выделенного паттерна
 export * from './lib/categories';
 export * from './lib/clients';
 export * from './lib/materials';

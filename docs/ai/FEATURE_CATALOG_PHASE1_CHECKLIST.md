@@ -22,3 +22,8 @@
 ## Следующий шаг (фаза 2)
 
 - Товары (`Product`) и спецификации (`ProductSpecification`) — см. бизнес-док и backlog.
+
+
+---
+
+**Синхронизация:** при правках кода по паттернам Eve-Arch обновляй связанные разделы — [DOCS_SYNC_RULES.md](./DOCS_SYNC_RULES.md) · [EVE_ARCH_INDEX.md](./EVE_ARCH_INDEX.md)

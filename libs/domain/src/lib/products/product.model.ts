@@ -1,3 +1,4 @@
+// Eve-arch: 000 — без выделенного паттерна
 export interface Product {
   _id?: string;
   /** Обязательное в UI при создании */

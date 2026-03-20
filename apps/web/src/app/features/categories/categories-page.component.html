@@ -1,4 +1,6 @@
+<!-- Eve-arch: 000 — без выделенного паттерна -->
 <app-card title="Категории товаров">
+  <div slot="body">
   @if (categoriesService.listLoading() && categoriesService.categories().length === 0) {
     <p class="list-state list-state--loading" aria-live="polite">Загрузка категорий…</p>
   }
@@ -101,28 +103,12 @@
       </app-button>
     </div>
   </div>
+  </div>
 </app-card>
 
 @if (showModal()) {
-  <div
-    class="modal-backdrop"
-    role="button"
-    tabindex="0"
-    aria-label="Закрыть форму"
-    (click)="closeEditModal()"
-    (keydown.enter)="closeEditModal()"
-    (keydown.space)="closeEditModal()"
-  >
-    <div
-      class="modal-panel modal-panel--md"
-      role="button"
-      tabindex="0"
-      aria-label="Содержимое формы категории"
-      #editModalPanel
-      (click)="$event.stopPropagation()"
-      (keydown.enter)="$event.stopPropagation()"
-      (keydown.space)="$event.stopPropagation()"
-    >
+  <app-dialog mode="content" [open]="showModal()" size="md" ariaLabel="Содержимое формы категории" (closed)="closeEditModal()">
+    <div slot="body">
       <div class="catalog-form-host">
         <app-category-form
           [category]="editingCategory()"
@@ -132,29 +118,16 @@
         />
       </div>
     </div>
-  </div>
+  </app-dialog>
 }
 
 @if (selectedCategory(); as s) {
-  <div
-    class="modal-backdrop details-backdrop"
-    role="button"
-    tabindex="0"
-    aria-label="Закрыть"
-    (click)="closeDetailsModal()"
-    (keydown.enter)="closeDetailsModal()"
-    (keydown.space)="closeDetailsModal()"
-  >
-    <app-card
-      #detailsModalCard
-      title="Категория"
-      class="details-card"
-      role="dialog"
-      aria-modal="true"
-      (click)="$event.stopPropagation()"
-    >
-      <div class="details-body">
-        <dl class="details-grid">
+  <app-dialog mode="content" [open]="!!selectedCategory()" size="md" ariaLabel="Категория" (closed)="closeDetailsModal()">
+    <div slot="body">
+      <app-card title="Категория" class="details-card">
+      <div slot="body">
+        <div class="details-body">
+          <dl class="details-grid">
           <dt>Название</dt>
           <dd>{{ s.name }}</dd>
           <dt>Родитель</dt>
@@ -163,16 +136,19 @@
           <dd>{{ s.sortOrder ?? '—' }}</dd>
           <dt>Активна</dt>
           <dd>{{ s.isActive === false ? 'нет' : 'да' }}</dd>
-        </dl>
+          </dl>
+        </div>
+        <div class="details-actions">
+          <app-button variant="secondary" size="md" (clicked)="closeDetailsModal()">Закрыть</app-button>
+        </div>
       </div>
-      <div class="details-actions">
-        <app-button variant="secondary" size="md" (clicked)="closeDetailsModal()">Закрыть</app-button>
-      </div>
-    </app-card>
-  </div>
+      </app-card>
+    </div>
+  </app-dialog>
 }
 
-<app-confirm-dialog
+<app-dialog
+  mode="confirm"
   [open]="showConfirm()"
   title="Удалить категорию?"
   message="Категория будет удалена. Продолжить?"

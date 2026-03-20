@@ -1,4 +1,7 @@
 <app-card title="Заказчики">
+  <!-- Eve-arch: SLOT-003 — контент карточки только через slot=body -->
+  <div slot="body">
+  <!-- Eve-arch: ACTIONS-STATE-002 — баннеры list-state/state-banner + Retry/Hide; ниже — кнопки в строке таблицы -->
   @if (clientsService.listLoading() && clientsService.clients().length === 0) {
     <p class="list-state list-state--loading" aria-live="polite">Загрузка клиентов…</p>
   }
@@ -146,57 +149,28 @@
       </app-button>
     </div>
   </div>
+  </div>
 </app-card>
 
 @if (showModal()) {
-  <div
-    class="modal-backdrop"
-    role="button"
-    tabindex="0"
-    aria-label="Закрыть форму клиента"
-    (click)="closeEditModal()"
-    (keydown.enter)="closeEditModal()"
-    (keydown.space)="closeEditModal()"
-  >
-    <div
-      class="modal-panel modal-panel--lg"
-      role="button"
-      tabindex="0"
-      aria-label="Содержимое формы клиента"
-      #editModalPanel
-      (click)="$event.stopPropagation()"
-      (keydown.enter)="$event.stopPropagation()"
-      (keydown.space)="$event.stopPropagation()"
-    >
+  <app-dialog mode="content" [open]="showModal()" size="lg" ariaLabel="Содержимое формы клиента" (closed)="closeEditModal()">
+    <div slot="body">
       <app-client-form
         [client]="editingClient()"
         (save)="onSave($event)"
         (cancel)="closeEditModal()"
       />
     </div>
-  </div>
+  </app-dialog>
 }
 
 @if (selectedClient(); as s) {
-  <div
-    class="modal-backdrop details-backdrop"
-    role="button"
-    tabindex="0"
-    aria-label="Закрыть детали клиента"
-    (click)="closeDetailsModal()"
-    (keydown.enter)="closeDetailsModal()"
-    (keydown.space)="closeDetailsModal()"
-  >
-    <app-card
-      #detailsModalCard
-      title="Детали клиента"
-      class="details-card"
-      role="dialog"
-      aria-modal="true"
-      (click)="$event.stopPropagation()"
-    >
-      <div class="details-body">
-        <dl class="details-grid">
+  <app-dialog mode="content" [open]="!!selectedClient()" size="lg" ariaLabel="Детали клиента" (closed)="closeDetailsModal()">
+    <div slot="body">
+      <app-card title="Детали клиента" class="details-card">
+      <div slot="body">
+        <div class="details-body">
+          <dl class="details-grid">
         <dt class="dt-with-icon">
           <svg class="icon-sm" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
@@ -230,18 +204,21 @@
         <dd class="whitespace-pre-wrap">{{ s.notes || '-' }}</dd>
         <dt class="dt-with-icon">Реквизиты</dt>
         <dd class="whitespace-pre-wrap">{{ s.requisites || '-' }}</dd>
-        </dl>
+          </dl>
+        </div>
+        <div class="details-actions">
+          <app-button variant="secondary" size="md" (clicked)="selectedClient.set(null)">
+            Закрыть
+          </app-button>
+        </div>
       </div>
-      <div class="details-actions">
-        <app-button variant="secondary" size="md" (clicked)="selectedClient.set(null)">
-          Закрыть
-        </app-button>
-      </div>
-    </app-card>
-  </div>
+      </app-card>
+    </div>
+  </app-dialog>
 }
 
-<app-confirm-dialog
+<app-dialog
+  mode="confirm"
   [open]="showConfirm()"
   title="Удалить клиента?"
   message="Клиент будет удалён навсегда. Продолжить?"

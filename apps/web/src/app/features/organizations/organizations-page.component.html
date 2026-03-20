@@ -1,4 +1,6 @@
+<!-- Eve-arch: 000 — без выделенного паттерна -->
 <app-card title="Организации">
+  <div slot="body">
   @if (organizationsService.listLoading() && organizationsService.organizations().length === 0) {
     <p class="list-state list-state--loading" aria-live="polite">Загрузка организаций…</p>
   }
@@ -138,57 +140,28 @@
       </app-button>
     </div>
   </div>
+  </div>
 </app-card>
 
 @if (showModal()) {
-  <div
-    class="modal-backdrop"
-    role="button"
-    tabindex="0"
-    aria-label="Закрыть форму организации"
-    (click)="closeEditModal()"
-    (keydown.enter)="closeEditModal()"
-    (keydown.space)="closeEditModal()"
-  >
-    <div
-      class="modal-panel modal-panel--xl"
-      role="button"
-      tabindex="0"
-      aria-label="Содержимое формы организации"
-      #editModalPanel
-      (click)="$event.stopPropagation()"
-      (keydown.enter)="$event.stopPropagation()"
-      (keydown.space)="$event.stopPropagation()"
-    >
+  <app-dialog mode="content" [open]="showModal()" size="xl" ariaLabel="Содержимое формы организации" (closed)="closeEditModal()">
+    <div slot="body">
       <app-organization-form
         [organization]="editingOrganization()"
         (save)="onSave($event)"
         (cancel)="closeEditModal()"
       />
     </div>
-  </div>
+  </app-dialog>
 }
 
 @if (selectedOrganization(); as s) {
-  <div
-    class="modal-backdrop details-backdrop"
-    role="button"
-    tabindex="0"
-    aria-label="Закрыть детали организации"
-    (click)="closeDetailsModal()"
-    (keydown.enter)="closeDetailsModal()"
-    (keydown.space)="closeDetailsModal()"
-  >
-    <app-card
-      #detailsModalCard
-      title="Детали организации"
-      class="details-card"
-      role="dialog"
-      aria-modal="true"
-      (click)="$event.stopPropagation()"
-    >
-      <div class="details-body">
-        <dl class="details-grid">
+  <app-dialog mode="content" [open]="!!selectedOrganization()" size="xl" ariaLabel="Детали организации" (closed)="closeDetailsModal()">
+    <div slot="body">
+      <app-card title="Детали организации" class="details-card">
+      <div slot="body">
+        <div class="details-body">
+          <dl class="details-grid">
         @if (s.logoUrl || s.signatureUrl || s.stampUrl) {
           <dt class="dt-with-icon">Логотип / подпись / печать</dt>
           <dd class="details-media-row">
@@ -254,18 +227,21 @@
         <dd class="whitespace-pre-wrap">{{ s.requisites || '—' }}</dd>
         <dt class="dt-with-icon">Заметки</dt>
         <dd class="whitespace-pre-wrap">{{ s.notes || '—' }}</dd>
-        </dl>
+          </dl>
+        </div>
+        <div class="details-actions">
+          <app-button variant="secondary" size="md" (clicked)="selectedOrganization.set(null)">
+            Закрыть
+          </app-button>
+        </div>
       </div>
-      <div class="details-actions">
-        <app-button variant="secondary" size="md" (clicked)="selectedOrganization.set(null)">
-          Закрыть
-        </app-button>
-      </div>
-    </app-card>
-  </div>
+      </app-card>
+    </div>
+  </app-dialog>
 }
 
-<app-confirm-dialog
+<app-dialog
+  mode="confirm"
   [open]="showConfirm()"
   title="Удалить организацию?"
   message="Организация будет удалена навсегда. Продолжить?"

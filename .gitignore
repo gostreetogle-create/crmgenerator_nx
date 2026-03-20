@@ -46,3 +46,9 @@ Thumbs.db
 .angular
 
 vitest.config.*.timestamp*
+
+# Local / secrets (не коммитить)
+backend/.env
+backend/.env.development
+backend/storage/
+local-files/

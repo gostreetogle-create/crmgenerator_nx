@@ -1,3 +1,4 @@
+// Eve-arch: 000 — без выделенного паттерна
 import { isPlatformBrowser } from '@angular/common';
 import { Injectable, PLATFORM_ID, effect, inject, signal } from '@angular/core';
 import { Client } from '@domain';
@@ -17,6 +18,27 @@ export class ClientsService {
   readonly mutationError = signal<string | null>(null);
 
   constructor() {
+    console.log('ClientsService init, clients =', this.clients());
+    if (!this.clients().length) {
+      this.clients.set([
+        {
+          _id: '1',
+          name: 'Тестовый клиент',
+          phone: '+7 (999) 123-45-67',
+          inn: '1234567890',
+          discount: 5,
+        },
+        {
+          _id: '2',
+          name: 'Другой заказчик',
+          phone: '—',
+          inn: '—',
+          discount: 10,
+        },
+      ]);
+      console.log('Сид загружен:', this.clients());
+    }
+
     effect(() => {
       if (this.api.isRemoteEnabled()) return;
       this.saveClients(this.clients());

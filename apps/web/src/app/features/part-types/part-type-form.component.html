@@ -1,7 +1,9 @@
+<!-- Eve-arch: 000 — без выделенного паттерна -->
 <app-card
   [title]="partType() ? 'Редактировать тип детали' : 'Новый тип детали'"
   class="part-type-form-card"
 >
+  <div slot="body">
   <form class="part-type-form part-type-form--dialog" (submit)="onNgSubmit($event)">
     <div class="part-type-form-inner">
       <div class="field">
@@ -39,4 +41,5 @@
       <app-button variant="primary" type="submit" size="md">Сохранить</app-button>
     </div>
   </form>
+  </div>
 </app-card>

@@ -1,0 +1,38 @@
+<!-- Eve-arch: 000 — без выделенного паттерна -->
+<div class="ui-input-wrap">
+  @if (label()) {
+    <label class="ui-input-label" [for]="inputId()">{{ label() }}</label>
+  }
+
+  <div class="ui-input-shell">
+    <span class="ui-input-prefix">
+      <ng-content select="[slot=prefix]" />
+    </span>
+
+    <input
+      [id]="inputId()"
+      [class]="inputClasses()"
+      [type]="type()"
+      [value]="value()"
+      [placeholder]="placeholder()"
+      [disabled]="disabled() || loading()"
+      [attr.aria-label]="ariaLabel()"
+      [attr.aria-invalid]="isError() ? 'true' : 'false'"
+      [attr.aria-describedby]="hasHint() ? hintId() : null"
+      (input)="onInput($event)"
+      (focus)="onFocus()"
+      (blur)="onBlur()"
+    />
+
+    <span class="ui-input-suffix">
+      <ng-content select="[slot=suffix]" />
+      @if (loading()) {
+        <span class="ui-input-spinner" aria-hidden="true"></span>
+      }
+    </span>
+  </div>
+
+  @if (hasHint()) {
+    <p class="ui-input-hint" [id]="hintId()">{{ resolvedHint() }}</p>
+  }
+</div>

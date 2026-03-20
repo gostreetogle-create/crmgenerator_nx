@@ -1,3 +1,4 @@
+// Eve-arch: 000 — без выделенного паттерна
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { DesignTokens } from './design-tokens';
 

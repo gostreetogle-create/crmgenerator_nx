@@ -58,3 +58,8 @@
 | Дата | Что |
 |------|-----|
 | 2026-03-20 | Первый вариант + вынос страниц/данных в `BL_PAGES_AND_DATA_MODEL.md`. |
+
+
+---
+
+**Синхронизация:** при правках кода по паттернам Eve-Arch обновляй связанные разделы — [../ai/DOCS_SYNC_RULES.md](../ai/DOCS_SYNC_RULES.md) · [../ai/EVE_ARCH_INDEX.md](../ai/EVE_ARCH_INDEX.md)

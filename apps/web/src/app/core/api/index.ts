@@ -1,3 +1,4 @@
+// Eve-arch: 000 — без выделенного паттерна
 export type { AppEnvironment } from './app-environment.model';
 export { APP_ENVIRONMENT } from './app-environment.token';
 export { apiBaseUrlInterceptor } from './api-base-url.interceptor';

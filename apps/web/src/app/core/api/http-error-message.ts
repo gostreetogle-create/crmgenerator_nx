@@ -1,3 +1,4 @@
+// Eve-arch: 000 — без выделенного паттерна
 import { HttpErrorResponse } from '@angular/common/http';
 
 /** Человекочитаемое сообщение из ответа Angular HttpClient. */

@@ -1,10 +1,9 @@
+// Eve-arch: 000 — без выделенного паттерна
 import { CommonModule } from '@angular/common';
 import {
   Component,
-  ElementRef,
   HostListener,
   OnInit,
-  ViewChild,
   computed,
   effect,
   inject,
@@ -13,9 +12,8 @@ import {
 import { ActivatedRoute, Router } from '@angular/router';
 import { ButtonComponent } from '@ui-kit/button';
 import { CardComponent } from '@ui-kit/card';
-import { ConfirmDialogComponent } from '@ui-kit/confirm-dialog';
+import { DialogComponent } from '@ui-kit/dialog';
 import { InputComponent } from '@ui-kit/input';
-import { QuickAddDialogComponent } from '@ui-kit/quick-add-dialog';
 import { Category, Material, PartType, Product } from '@domain';
 import { finalize } from 'rxjs';
 import { CatalogLookupService } from '../../core/catalog';
@@ -36,9 +34,8 @@ import { ProductsService } from './products.service';
     ButtonComponent,
     CardComponent,
     InputComponent,
-    QuickAddDialogComponent,
+    DialogComponent,
     ProductFormComponent,
-    ConfirmDialogComponent,
     CategoryFormComponent,
     PartTypeFormComponent,
     MaterialFormComponent,
@@ -83,11 +80,6 @@ export class ProductsPageComponent implements OnInit {
   readonly showPartTypeColModal = signal(false);
   readonly showMaterialColModal = signal(false);
   readonly colPickerBusy = signal(false);
-
-  @ViewChild('editModalPanel', { read: ElementRef })
-  private editModalPanel?: ElementRef<HTMLElement>;
-  @ViewChild('detailsModalCard', { read: ElementRef })
-  private detailsModalCard?: ElementRef<HTMLElement>;
 
   readonly contextProduct = computed(() => {
     const id = this.contextProductId();
@@ -205,7 +197,7 @@ export class ProductsPageComponent implements OnInit {
     if (!cid) return;
     const t = event.target as HTMLElement | null;
     if (!t) return;
-    if (t.closest('.modal-backdrop')) return;
+    if (t.closest('.dialog-backdrop') || t.closest('.modal-backdrop')) return;
     const row = t.closest('tr[data-product-id]');
     const rid = row?.getAttribute('data-product-id') ?? null;
     if (rid === cid) return;
@@ -232,12 +224,10 @@ export class ProductsPageComponent implements OnInit {
     this.editingProduct.set(p ?? null);
     this.productFormInteractionLocked.set(false);
     this.showModal.set(true);
-    setTimeout(() => this.focusFirst(this.editModalPanel?.nativeElement), 0);
   }
 
   onSelectProduct(p: Product) {
     this.selectedProduct.set(p);
-    setTimeout(() => this.focusFirst(this.detailsModalCard?.nativeElement), 0);
   }
 
   private closeEditModal() {
@@ -502,70 +492,6 @@ export class ProductsPageComponent implements OnInit {
       queryParamsHandling: 'merge',
       replaceUrl: true,
     });
-  }
-
-  @HostListener('document:keydown', ['$event'])
-  onDocumentKeydown(event: KeyboardEvent) {
-    if (event.key === 'Escape') {
-      if (this.showCategoryColModal()) {
-        this.closeColCategoryPicker();
-        return;
-      }
-      if (this.showPartTypeColModal()) {
-        this.closeColPartTypePicker();
-        return;
-      }
-      if (this.showMaterialColModal()) {
-        this.closeColMaterialPicker();
-        return;
-      }
-      /* Форму товара закрываем только кнопками Отмена / Сохранить, не по Escape. */
-      if (this.selectedProduct()) this.closeDetailsModal();
-    }
-    if (event.key !== 'Tab') return;
-    const container = this.showModal()
-      ? this.editModalPanel?.nativeElement
-      : this.selectedProduct()
-        ? this.detailsModalCard?.nativeElement
-        : null;
-    if (!container) return;
-    this.trapTab(event, container);
-  }
-
-  private trapTab(event: KeyboardEvent, container: HTMLElement) {
-    const focusables = Array.from(
-      container.querySelectorAll<HTMLElement>(
-        'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
-      )
-    ).filter((el) => !el.hasAttribute('aria-hidden') && el.offsetParent !== null);
-    if (!focusables.length) return;
-    const active = document.activeElement as HTMLElement | null;
-    const first = focusables[0];
-    const last = focusables[focusables.length - 1];
-    if (!(active && container.contains(active))) {
-      event.preventDefault();
-      first.focus();
-      return;
-    }
-    if (event.shiftKey) {
-      if (active === first) {
-        event.preventDefault();
-        last.focus();
-      }
-    } else if (active === last) {
-      event.preventDefault();
-      first.focus();
-    }
-  }
-
-  private focusFirst(container?: HTMLElement) {
-    if (!container) return;
-    const nodes = Array.from(
-      container.querySelectorAll<HTMLElement>(
-        'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
-      )
-    ).filter((el) => !el.hasAttribute('aria-hidden') && el.offsetParent !== null);
-    nodes[0]?.focus?.();
   }
 
   private unlockProductFormInteractionSoon() {

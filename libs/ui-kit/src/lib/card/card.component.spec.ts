@@ -1,5 +1,6 @@
+// Eve-arch: 000 — без выделенного паттерна
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { CardComponent } from './card';
+import { CardComponent } from './card.component';
 
 describe('CardComponent', () => {
   let component: CardComponent;
@@ -12,7 +13,7 @@ describe('CardComponent', () => {
 
     fixture = TestBed.createComponent(CardComponent);
     component = fixture.componentInstance;
-    await fixture.whenStable();
+    fixture.detectChanges();
   });
 
   it('should create', () => {
