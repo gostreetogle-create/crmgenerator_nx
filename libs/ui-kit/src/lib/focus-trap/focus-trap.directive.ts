@@ -1,4 +1,5 @@
-// Eve-arch: 000 — без выделенного паттерна
+// Eve-arch: 000 — без выделенного паттерна (директива — вспомогательная обвязка)
+// Eve-UX: UX-ACCESS-003 — focus-trap в overlay (Tab-цикл, Esc при необходимости)
 import {
   Directive,
   ElementRef,

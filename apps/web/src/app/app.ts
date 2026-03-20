@@ -1,4 +1,5 @@
 // Eve-arch: 000 — без выделенного паттерна
+// Eve-UX: UX-FEEDBACK-002 — ненавязчивый feedback: до toast/snackbar — баннеры на страницах фич (см. EVE_UX_INDEX)
 import { Component } from '@angular/core';
 import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 

@@ -1,4 +1,7 @@
-// Eve-arch: 000 — без выделенного паттерна
+// Eve-arch: QUERY-008 — поиск/страница ↔ query params (матрица товаров)
+// Eve-BL: BL-PRODUCTS-HUB-001 — экран-матрица: четыре колонки, выбор строки, quick-add справочников
+// Eve-BL: BL-BANNER-STATE-001 — уведомления по панелям и таблице
+// Eve-BL: BL-ENTITY-DELETE-001 — удаление товара после confirm
 import { CommonModule } from '@angular/common';
 import {
   Component,

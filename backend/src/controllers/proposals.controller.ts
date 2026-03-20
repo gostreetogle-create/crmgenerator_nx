@@ -1,3 +1,5 @@
+// Eve-BE: API-CRUD-PROPOSAL-001 — КП: версии, статусы, строки items[]
+// Eve-BE: API-VALID-ZOD-002 — zod-схемы создания/обновления и позиций
 import type { Request, Response } from 'express';
 import { z } from 'zod';
 import { prisma } from '../services/prisma';

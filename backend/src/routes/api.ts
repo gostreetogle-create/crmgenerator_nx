@@ -1,3 +1,4 @@
+// Eve-BE: API-MOUNT-001 — корневой роутер `/api/*`: подключение всех ресурсных routes
 import { Router } from 'express';
 import { organizationsRouter } from './organizations.routes';
 import { clientsRouter } from './clients.routes';

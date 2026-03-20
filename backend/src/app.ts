@@ -1,3 +1,4 @@
+// Eve-BE: SEC-CORS-004 — CORS, лимит JSON body, static PDF из storage
 import express from 'express';
 import cors from 'cors';
 import path from 'node:path';

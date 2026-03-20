@@ -1,3 +1,4 @@
+// Eve-BE: API-MOUNT-001 — `/api/clients` → clients.controller
 import { Router } from 'express';
 import {
   createClient,

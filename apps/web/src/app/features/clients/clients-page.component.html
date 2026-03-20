@@ -1,6 +1,8 @@
 <app-card title="Заказчики">
   <!-- Eve-arch: SLOT-003 — контент карточки только через slot=body -->
   <div slot="body">
+  <!-- Eve-BL: BL-BANNER-STATE-001 — видимое состояние списка и ошибок для пользователя -->
+  <!-- Eve-BL: BL-ENTITY-DELETE-001 — удаление клиента после подтверждения в диалоге -->
   <!-- Eve-arch: ACTIONS-STATE-002 — баннеры list-state/state-banner + Retry/Hide; ниже — кнопки в строке таблицы -->
   @if (clientsService.listLoading() && clientsService.clients().length === 0) {
     <p class="list-state list-state--loading" aria-live="polite">Загрузка клиентов…</p>

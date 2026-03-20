@@ -26,6 +26,7 @@ type InitialFocus = 'first' | 'confirm' | 'cancel';
   styleUrl: './dialog.component.scss',
 })
 // Eve-arch: DIALOG-LIFE-009 — lifecycle (open/unmount/события) + shared animations
+// Eve-UX: UX-ANIM-001 — режим confirm: опасные действия, тексты и кнопки Подтвердить/Отмена
 export class DialogComponent implements OnDestroy {
   mode = input<DialogMode>('content');
   open = input<boolean>(false);

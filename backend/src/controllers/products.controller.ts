@@ -1,3 +1,5 @@
+// Eve-BE: API-CRUD-PRODUCT-001 — товары: list/search/CRUD + clone (mounts/functionalities)
+// Eve-BE: API-VALID-ZOD-002 — валидация тела/параметров через zod
 import type { Request, Response } from 'express';
 import { z } from 'zod';
 import { prisma } from '../services/prisma';

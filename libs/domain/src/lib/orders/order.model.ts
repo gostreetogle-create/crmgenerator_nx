@@ -1,4 +1,5 @@
 // Eve-arch: 000 — без выделенного паттерна
+// Eve-BL: BL-DOMAIN-MODELS-001 — заказ/производство: snapshot строк (будущий BL поток)
 export interface OrderStatus {
   key: string;
   name: string;

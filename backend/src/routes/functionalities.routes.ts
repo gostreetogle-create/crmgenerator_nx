@@ -1,3 +1,4 @@
+// Eve-BE: API-MOUNT-001 — `/api/functionalities`
 import { Router } from 'express';
 import {
   createFunctionality,

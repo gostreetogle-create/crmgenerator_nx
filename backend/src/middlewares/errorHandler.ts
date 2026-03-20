@@ -1,3 +1,4 @@
+// Eve-BE: ERROR-HANDLER-003 — HttpError/Zod/500 → JSON клиенту без stack; 500 → console.error
 import type { ErrorRequestHandler } from 'express';
 import { ZodError } from 'zod';
 import { HttpError } from '../errors/HttpError';

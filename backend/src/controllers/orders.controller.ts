@@ -1,3 +1,5 @@
+// Eve-BE: API-CRUD-ORDER-001 — заказы: list/get + смена статуса
+// Eve-BE: API-VALID-ZOD-002 — zod для id/статуса
 import type { Request, Response } from 'express';
 import { z } from 'zod';
 import { prisma } from '../services/prisma';

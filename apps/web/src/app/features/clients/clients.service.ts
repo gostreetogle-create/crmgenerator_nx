@@ -1,4 +1,5 @@
 // Eve-arch: 000 — без выделенного паттерна
+// Eve-BL: BL-CLIENTS-CRUD-001 — заказчики: список, CRUD, optional API/localStorage, баннеры состояния
 import { isPlatformBrowser } from '@angular/common';
 import { Injectable, PLATFORM_ID, effect, inject, signal } from '@angular/core';
 import { Client } from '@domain';

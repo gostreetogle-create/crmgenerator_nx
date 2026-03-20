@@ -1,3 +1,5 @@
+// Eve-BE: API-CRUD-MATERIAL-001 — CRUD материалов
+// Eve-BE: API-VALID-ZOD-002 — zod-схемы
 import type { Request, Response } from 'express';
 import { z } from 'zod';
 import { prisma } from '../services/prisma';

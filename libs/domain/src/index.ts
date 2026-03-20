@@ -1,4 +1,5 @@
 // Eve-arch: 000 — без выделенного паттерна
+// Eve-BL: BL-DOMAIN-MODELS-001 — единый домен: сущности для CRM/каталога/производства (контракт данных)
 export * from './lib/categories';
 export * from './lib/clients';
 export * from './lib/materials';

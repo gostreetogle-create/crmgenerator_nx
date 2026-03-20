@@ -7,6 +7,7 @@ import { APP_ENVIRONMENT } from './app-environment.token';
  * Абсолютные `http(s)://` не трогает.
  */
 // Eve-arch: API-005 — auto-prefix apiBaseUrl для относительных API путей
+// Eve-SEC: SEC-ENV-API-001 — префикс только из inject(APP_ENVIRONMENT), не из тела запроса
 export const apiBaseUrlInterceptor: HttpInterceptorFn = (req, next) => {
   const env = inject(APP_ENVIRONMENT);
   const base = env.apiBaseUrl?.trim() ?? '';

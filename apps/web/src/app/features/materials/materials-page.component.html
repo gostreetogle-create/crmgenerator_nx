@@ -1,6 +1,9 @@
-<!-- Eve-arch: 000 — без выделенного паттерна -->
+<!-- Eve-arch: SLOT-003 — контент карточки через slot=body -->
+<!-- Eve-arch: ACTIONS-STATE-002 — list-state/state-banner + Retry/Hide; кнопки Действия в строке -->
 <app-card title="Материалы">
   <div slot="body">
+  <!-- Eve-BL: BL-BANNER-STATE-001 — состояние списка и ошибок -->
+  <!-- Eve-BL: BL-ENTITY-DELETE-001 — удаление материала после подтверждения -->
   @if (materialsService.listLoading() && materialsService.materials().length === 0) {
     <p class="list-state list-state--loading" aria-live="polite">Загрузка материалов…</p>
   }

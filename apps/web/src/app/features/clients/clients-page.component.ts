@@ -1,3 +1,6 @@
+// Eve-BL: BL-CLIENTS-CRUD-001 — страница заказчиков: таблица, модалки, URL-state, скидка
+// Eve-BL: BL-BANNER-STATE-001 — бизнес-уведомления загрузки/ошибок списка и мутаций
+// Eve-BL: BL-ENTITY-DELETE-001 — удаление записи после confirm
 import { CommonModule } from '@angular/common';
 import {
   Component,

@@ -1,3 +1,4 @@
+// Eve-BE: LOG-ERROR-005 — listen, seed статусов, планировщик PDF-cleanup; логи старта/ошибок
 import { createApp } from './app';
 import { config } from './config';
 import { seedStatuses } from './seed';

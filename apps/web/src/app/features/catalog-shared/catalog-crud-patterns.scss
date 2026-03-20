@@ -1,4 +1,4 @@
-// Eve-arch: 000 — без выделенного паттерна
+// Eve-arch: FIXED-LAYOUT-001 — общие таблицы каталога: .table-wrap, sticky thead, пагинация без скачков
 @use 'tokens';
 
 /* Общие визуальные паттерны CRUD-страниц каталога (без :host). Подключать в страницах каталога и в UI-каталоге. */
@@ -8,6 +8,8 @@
 }
 
 .table-wrap {
+  display: block;
+  min-height: var(--table-min-height);
   margin-top: var(--spacing-2);
   overflow-x: auto;
   border-radius: var(--radius-sm);

@@ -25,6 +25,7 @@ type ClientFormTab = 'general' | 'requisites' | 'terms';
   encapsulation: ViewEncapsulation.None,
 })
 // Eve-arch: FORMS-014 — formData через signals/effect и output на сохранение
+// Eve-BL: BL-FORM-ENTITY-001 — форма заказчика: вкладки, скидка, реквизиты, валидация
 export class ClientFormComponent implements OnInit {
   readonly client = input<Client | null>(null);
 

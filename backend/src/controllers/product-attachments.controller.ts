@@ -1,3 +1,5 @@
+// Eve-BE: API-PRODUCT-ATTACH-001 — связи товара: mounts / functionalities
+// Eve-BE: API-VALID-ZOD-002 — zod для тел set-операций
 import type { Request, Response } from 'express';
 import { z } from 'zod';
 import { prisma } from '../services/prisma';

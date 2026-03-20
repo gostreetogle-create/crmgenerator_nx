@@ -1,3 +1,4 @@
+// Eve-BE: API-MOUNT-001 — `/api` PDF jobs (pdf.controller)
 import { Router } from 'express';
 import { getPdfJob, previewProposalPdf } from '../controllers/pdf.controller';
 

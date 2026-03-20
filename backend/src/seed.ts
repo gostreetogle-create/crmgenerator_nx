@@ -1,3 +1,4 @@
+// Eve-BE: LOG-ERROR-005 — upsert бизнес-статусов при старте API
 import { prisma } from './services/prisma';
 
 const statuses: Array<{ key: string; name: string }> = [

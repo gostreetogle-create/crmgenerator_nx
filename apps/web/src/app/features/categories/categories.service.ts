@@ -1,4 +1,5 @@
 // Eve-arch: 000 — без выделенного паттерна
+// Eve-BL: BL-CATEGORIES-CRUD-001 — категории товаров: список, CRUD, optional API
 import { isPlatformBrowser } from '@angular/common';
 import { Injectable, PLATFORM_ID, effect, inject, signal } from '@angular/core';
 import { Category } from '@domain';

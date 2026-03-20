@@ -1,4 +1,5 @@
 // Eve-arch: 000 — без выделенного паттерна
+// Eve-BL: BL-FORM-ENTITY-001 — форма организации: вкладки, реквизиты, плотный enterprise-layout
 import { CommonModule } from '@angular/common';
 import {
   Component,

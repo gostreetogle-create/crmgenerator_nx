@@ -1,3 +1,4 @@
+// Eve-BE: API-MOUNT-001 — `/api/categories`
 import { Router } from 'express';
 import {
   createCategory,

@@ -1,6 +1,9 @@
-<!-- Eve-arch: 000 — без выделенного паттерна -->
+<!-- Eve-arch: SLOT-003 — контент карточки через slot=body -->
+<!-- Eve-arch: ACTIONS-STATE-002 — баннеры панелей + мутации; кнопки Действия справа в таблице товаров -->
 <app-card title="Товары">
   <div slot="body">
+  <!-- Eve-BL: BL-BANNER-STATE-001 — состояние загрузки/ошибок по товарам и боковым спискам -->
+  <!-- Eve-BL: BL-ENTITY-DELETE-001 — удаление товара после подтверждения -->
   @if (productsService.listLoading() && productsService.products().length === 0) {
     <p class="list-state list-state--loading" aria-live="polite">Загрузка товаров…</p>
   }

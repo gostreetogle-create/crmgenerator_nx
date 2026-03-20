@@ -1,3 +1,5 @@
+// Eve-BE: API-CRUD-CATEGORY-001 — CRUD категорий товаров
+// Eve-BE: API-VALID-ZOD-002 — zod-схемы
 import type { Request, Response } from 'express';
 import { z } from 'zod';
 import { prisma } from '../services/prisma';

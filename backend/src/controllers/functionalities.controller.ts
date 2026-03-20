@@ -1,3 +1,5 @@
+// Eve-BE: API-CRUD-FUNCTIONALITY-001 — CRUD функциональностей
+// Eve-BE: API-VALID-ZOD-002 — zod-схемы
 import type { Request, Response } from 'express';
 import { z } from 'zod';
 import { prisma } from '../services/prisma';

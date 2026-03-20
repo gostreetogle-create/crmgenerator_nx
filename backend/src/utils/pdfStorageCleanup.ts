@@ -1,3 +1,4 @@
+// Eve-BE: LOG-ERROR-005 — фоновая очистка старых PDF в storage
 import fs from 'node:fs';
 import path from 'node:path';
 

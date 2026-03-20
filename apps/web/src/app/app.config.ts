@@ -1,4 +1,5 @@
-// Eve-arch: 000 — без выделенного паттерна
+// Eve-arch: API-005 — провайдер APP_ENVIRONMENT для interceptor (см. core/api)
+// Eve-SEC: SEC-ENV-API-001 — apiBaseUrl только из environment, не из пользовательского ввода
 import {
   ApplicationConfig,
   provideBrowserGlobalErrorListeners,

@@ -73,6 +73,12 @@
 - **Цель:** договорённости по **текущему** коду — **`FRONTEND_CONTRACT.md`** + **`libs/domain`** + **`core/api`**. План на будущее ведётся в **`API_FUTURE_CHECKLIST.md`** до промоции в контракт. Старый `docs/Пример полей схем бд/api.ts` не обязателен — сверка с чеклистом, затем можно удалить папку.
 - **Бизнес-требования и поэтапный план страниц / данных:** **`docs/business/BL_PAGES_AND_DATA_MODEL.md`** (+ кратко **`docs/business/BUSINESS_LOGIC.md`**). При новой фиче сверяться с матрицей фаз и доп. сущностями до проектирования DTO.
 
+### Backend (Node / Express / Prisma)
+
+- Код: **`backend/src/`** — **`controllers/`**, **`routes/`** (в т.ч. единый **`routes/api.ts`**), **`services/`** (клиент Prisma), **`middlewares/`**, **`utils/`**; схема данных — **`backend/prisma/schema.prisma`**.
+- Реестр артикулов и маркеров **`// Eve-BE: …`** в коде: **`docs/ai/EVE_BACKEND_INDEX.md`** → подфайлы **`EVE_BE_API.md`**, **`EVE_BE_SEC.md`**, **`EVE_BE_LOG.md`**. Перед правкой бэка: **`grep Eve-BE`**, затем обнови таблицу и комментарий.
+- Согласование с фронтом: **`docs/api/FRONTEND_CONTRACT.md`**.
+
 ### Производство / Заказы (`Order`)
 
 При внедрении страницы производства (`/production/orders*`) считать “истиной” **табличные snapshot’ы**, а не PDF:
@@ -104,6 +110,7 @@
 ### Карта маршрутов (Eve-Arch ROUTES-004)
 
 - Единая точка правды по маршрутам приложения: `apps/web/src/app/app.routes.ts` (standalone, при необходимости вложенный каталог `catalog/*`).
+- **Ленивая загрузка страниц (Eve-PERF PERF-LAZY-ROUTES-001):** фичи подключаются через `loadComponent` + динамический `import()`, чтобы уменьшить initial bundle; дочерние маршруты каталога грузятся отдельными чанками.
 
 ## Стандарт структуры папок
 
@@ -561,3 +568,5 @@ apps/web/src/app/features/<feature>/
 ---
 
 **Синхронизация:** при правках кода по паттернам Eve-Arch обновляй связанные разделы — [`DOCS_SYNC_RULES.md`](./DOCS_SYNC_RULES.md) · [`EVE_ARCH_INDEX.md`](./EVE_ARCH_INDEX.md)
+
+**Презентация / аудит:** `npx nx test web` + `npx nx test ui-kit`; визуально — маршруты из `app.routes.ts` (clients, organizations, catalog/*, ui). Экран **proposals** в SPA пока отсутствует — см. **`EVE_BL_INDEX.md` → BL-GAP-PROPOSALS-001**.

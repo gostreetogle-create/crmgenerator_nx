@@ -1,3 +1,5 @@
+// Eve-BE: API-CRUD-CLIENT-001 — CRUD клиентов (list/get/create/update/delete)
+// Eve-BE: API-VALID-ZOD-002 — zod-схемы create/update
 import type { Request, Response } from 'express';
 import { z } from 'zod';
 import { prisma } from '../services/prisma';

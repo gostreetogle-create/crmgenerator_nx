@@ -1,3 +1,4 @@
+// Eve-BE: API-MAP-001 — маппинг Prisma → JSON (`_id`, плоские DTO для фронта)
 import type {
   Category,
   Client,

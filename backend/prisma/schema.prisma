@@ -1,3 +1,4 @@
+// Eve-BE: API-MAP-001 — схема БД Prisma (источник моделей для API; клиент в services/prisma.ts)
 generator client {
   provider = "prisma-client-js"
 }

@@ -1,3 +1,4 @@
+// Eve-BE: API-MOUNT-001 — `/api/products` (товары)
 import { Router } from 'express';
 import {
   createProduct,

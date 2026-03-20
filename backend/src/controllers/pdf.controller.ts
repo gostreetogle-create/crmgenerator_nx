@@ -1,3 +1,4 @@
+// Eve-BE: API-PDF-GEN-001 — очередь/статус генерации PDF для КП (без zod)
 import type { Request, Response } from 'express';
 import fs from 'node:fs';
 import path from 'node:path';

@@ -9,7 +9,9 @@
 | [ai/AI_PROJECT_PLAYBOOK.md](./ai/AI_PROJECT_PLAYBOOK.md) | Как агенту работать с репозиторием |
 | [ai/FEATURE_CHECKLIST_BASE.md](./ai/FEATURE_CHECKLIST_BASE.md) | Шаблон чек-листа фичи + шаблон компонента ui-kit (P4) |
 | [ai/DOCS_SYNC_RULES.md](./ai/DOCS_SYNC_RULES.md) | Сторож: синхронизация доков с кодом и Eve-Arch |
-| [ai/EVE_ARCH_INDEX.md](./ai/EVE_ARCH_INDEX.md) | Реестр артикулов паттернов (маркеры `Eve-arch` в коде) |
+| [ai/EVE_ARCH_INDEX.md](./ai/EVE_ARCH_INDEX.md) | Реестр артикулов структурных паттернов (маркеры `Eve-arch` в коде) |
+| [ai/EVE_INDEXES.md](./ai/EVE_INDEXES.md) | Оглавление Eve-BL / Eve-UX / Eve-PERF / Eve-SEC (`Eve-*` в коде) |
+| [ai/EVE_BACKEND_INDEX.md](./ai/EVE_BACKEND_INDEX.md) | Бэкенд: API / SEC / LOG (`Eve-BE:` в `backend/src`) |
 
 Остальные материалы — в папке [`ai/`](./ai/), контракт API — [`api/`](./api/), бизнес — [`business/`](./business/).
 

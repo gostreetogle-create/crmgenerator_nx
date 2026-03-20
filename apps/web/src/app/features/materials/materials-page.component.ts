@@ -1,4 +1,7 @@
-// Eve-arch: 000 — без выделенного паттерна
+// Eve-arch: QUERY-008 — поиск/сорт/страница ↔ query params
+// Eve-BL: BL-MATERIALS-CRUD-001 — страница материалов
+// Eve-BL: BL-BANNER-STATE-001 — уведомления списка/мутаций
+// Eve-BL: BL-ENTITY-DELETE-001 — удаление после confirm
 import { CommonModule } from '@angular/common';
 import {
   Component,

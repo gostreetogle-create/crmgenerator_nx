@@ -1,3 +1,4 @@
+// Eve-BE: SEC-ENV-005 — загрузка `.env*`, DATABASE_URL, CORS_ORIGIN без секретов в коде
 import fs from 'node:fs';
 import path from 'node:path';
 import { config as dotenvConfig } from 'dotenv';

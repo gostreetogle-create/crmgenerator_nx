@@ -1,3 +1,5 @@
+// Eve-BE: API-CRUD-ORG-001 — CRUD организаций
+// Eve-BE: API-VALID-ZOD-002 — zod-схемы полей организации
 import type { Request, Response } from 'express';
 import { z } from 'zod';
 import { prisma } from '../services/prisma';

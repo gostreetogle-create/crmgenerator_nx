@@ -1,28 +1,58 @@
 import { Route } from '@angular/router';
-import { CategoriesPageComponent } from './features/categories/categories-page.component';
-import { CatalogShellComponent } from './features/catalog/catalog-shell.component';
-import { ClientsPageComponent } from './features/clients/clients-page.component';
-import { MaterialsPageComponent } from './features/materials/materials-page.component';
-import { OrganizationsPageComponent } from './features/organizations/organizations-page.component';
-import { PartTypesPageComponent } from './features/part-types/part-types-page.component';
-import { ProductsPageComponent } from './features/products/products-page.component';
-import { UiCatalogComponent } from './features/ui-catalog/ui-catalog.component';
 
 // Eve-arch: ROUTES-004 — единая карта standalone маршрутов
+// Eve-PERF: PERF-LAZY-ROUTES-001 — loadComponent: меньше initial bundle, чанки по фичам
 export const appRoutes: Route[] = [
   { path: '', pathMatch: 'full', redirectTo: 'clients' },
-  { path: 'clients', component: ClientsPageComponent },
-  { path: 'organizations', component: OrganizationsPageComponent },
-  { path: 'ui', component: UiCatalogComponent },
+  {
+    path: 'clients',
+    loadComponent: () =>
+      import('./features/clients/clients-page.component').then((m) => m.ClientsPageComponent),
+  },
+  {
+    path: 'organizations',
+    loadComponent: () =>
+      import('./features/organizations/organizations-page.component').then(
+        (m) => m.OrganizationsPageComponent
+      ),
+  },
+  {
+    path: 'ui',
+    loadComponent: () =>
+      import('./features/ui-catalog/ui-catalog.component').then((m) => m.UiCatalogComponent),
+  },
   {
     path: 'catalog',
-    component: CatalogShellComponent,
+    loadComponent: () =>
+      import('./features/catalog/catalog-shell.component').then((m) => m.CatalogShellComponent),
     children: [
       { path: '', pathMatch: 'full', redirectTo: 'categories' },
-      { path: 'categories', component: CategoriesPageComponent },
-      { path: 'materials', component: MaterialsPageComponent },
-      { path: 'part-types', component: PartTypesPageComponent },
-      { path: 'products', component: ProductsPageComponent },
+      {
+        path: 'categories',
+        loadComponent: () =>
+          import('./features/categories/categories-page.component').then(
+            (m) => m.CategoriesPageComponent
+          ),
+      },
+      {
+        path: 'materials',
+        loadComponent: () =>
+          import('./features/materials/materials-page.component').then(
+            (m) => m.MaterialsPageComponent
+          ),
+      },
+      {
+        path: 'part-types',
+        loadComponent: () =>
+          import('./features/part-types/part-types-page.component').then(
+            (m) => m.PartTypesPageComponent
+          ),
+      },
+      {
+        path: 'products',
+        loadComponent: () =>
+          import('./features/products/products-page.component').then((m) => m.ProductsPageComponent),
+      },
     ],
   },
 ];

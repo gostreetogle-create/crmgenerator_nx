@@ -1,3 +1,4 @@
+// Eve-BE: API-UTIL-002 — обёртка async route → catch(next) для Express
 import type { RequestHandler } from 'express';
 
 export const asyncHandler =
