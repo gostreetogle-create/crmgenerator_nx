@@ -10,13 +10,15 @@
   margin-top: var(--spacing-2);
   overflow-x: auto;
   border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: var(--card);
 }
 
 .catalog-table {
   width: 100%;
   border-collapse: separate;
   border-spacing: 0;
-  border: 1px solid var(--border);
+  border: none;
 }
 
 .catalog-table th,
@@ -34,6 +36,9 @@
 
 .catalog-table thead th {
   background: color-mix(in oklch, var(--background) 85%, var(--secondary));
+  position: sticky;
+  top: 0;
+  z-index: 1;
 }
 
 .sortable {
@@ -53,6 +58,10 @@
   background: color-mix(in oklch, var(--background) 80%, var(--secondary));
 }
 
+.catalog-table tbody tr:focus-within {
+  background: color-mix(in oklch, var(--primary) 10%, var(--card));
+}
+
 .table-empty-row td {
   text-align: center;
   color: var(--muted-foreground);
@@ -69,21 +78,6 @@
   white-space: nowrap;
 }
 
-.link-btn {
-  border: 1px solid var(--border);
-  background: var(--card);
-  color: var(--foreground);
-  border-radius: var(--radius-sm);
-  padding: var(--spacing-1) var(--spacing-2);
-  font-size: var(--font-size-sm);
-  cursor: pointer;
-}
-
-.link-btn.danger {
-  color: var(--danger);
-  border-color: color-mix(in oklch, var(--danger) 30%, var(--border));
-}
-
 .modal-backdrop {
   position: fixed;
   inset: 0;
@@ -92,6 +86,7 @@
   align-items: center;
   justify-content: center;
   padding: var(--spacing-2);
+  backdrop-filter: blur(2px);
 }
 
 .modal-panel {
@@ -103,6 +98,8 @@
   overflow: hidden;
   display: flex;
   flex-direction: column;
+  border-radius: var(--radius-md);
+  box-shadow: 0 12px 40px color-mix(in oklch, var(--foreground) 18%, transparent);
 }
 
 .modal-panel--sm {
@@ -166,6 +163,18 @@
   font-size: var(--font-size-sm);
 }
 
+.details-grid dt {
+  margin: 0;
+  font-weight: var(--font-weight-medium);
+  color: var(--muted-foreground);
+}
+
+.details-grid dd {
+  margin: 0;
+  color: var(--foreground);
+  line-height: 1.4;
+}
+
 .details-actions {
   display: flex;
   justify-content: flex-end;
@@ -180,6 +189,8 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  flex-wrap: wrap;
+  gap: var(--spacing-2);
   font-size: var(--font-size-sm);
   color: var(--muted-foreground);
 }
@@ -248,17 +259,17 @@
   gap: var(--spacing-2);
 }
 
-.banner-dismiss {
-  padding: var(--spacing-2) var(--spacing-3);
-  border: none;
-  border-radius: var(--radius-sm);
-  background: transparent;
-  color: var(--secondary);
-  font: inherit;
-  cursor: pointer;
-  text-decoration: underline;
+@media (max-width: 900px) {
+  .actions {
+    flex-wrap: wrap;
+  }
 
-  &:hover {
-    color: var(--secondary-hover);
+  .details-grid {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-1);
+  }
+
+  .details-grid dd {
+    margin-bottom: var(--spacing-2);
   }
 }

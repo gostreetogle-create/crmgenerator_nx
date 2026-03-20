@@ -75,8 +75,9 @@ import { UiCatalogComponent } from './features/ui-catalog/ui-catalog.component';
       z-index: 40;
       padding: 0 var(--spacing-4);
       border-bottom: 1px solid var(--border);
-      background: var(--card);
+      background: color-mix(in oklch, var(--card) 90%, var(--background));
       box-shadow: var(--shadow-sm);
+      backdrop-filter: blur(6px);
     }
 
     .app-header-inner {
@@ -116,6 +117,9 @@ import { UiCatalogComponent } from './features/ui-catalog/ui-catalog.component';
       flex: 1;
       justify-content: center;
       min-width: 0;
+      overflow-x: auto;
+      scrollbar-width: thin;
+      padding-bottom: 2px;
     }
 
     .app-header-nav-link {
@@ -127,7 +131,8 @@ import { UiCatalogComponent } from './features/ui-catalog/ui-catalog.component';
       color: var(--foreground);
       font-size: var(--font-size-sm);
       border: 1px solid transparent;
-      transition: background-color 0.2s ease, border-color 0.2s ease;
+      white-space: nowrap;
+      transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
     }
 
     .app-header-nav-link:hover {
@@ -143,6 +148,7 @@ import { UiCatalogComponent } from './features/ui-catalog/ui-catalog.component';
       background: color-mix(in oklch, var(--primary) 12%, transparent);
       border-color: color-mix(in oklch, var(--primary) 35%, var(--border));
       box-shadow: inset 0 -1px 0 0 var(--primary);
+      color: color-mix(in oklch, var(--foreground) 88%, var(--primary));
     }
 
     .app-header-actions {
@@ -159,6 +165,27 @@ import { UiCatalogComponent } from './features/ui-catalog/ui-catalog.component';
       min-height: calc(100vh - 76px);
       width: 100%;
       box-sizing: border-box;
+    }
+
+    @media (max-width: 900px) {
+      .app-header {
+        padding: 0 var(--spacing-3);
+      }
+
+      .app-header-inner {
+        justify-content: flex-start;
+      }
+
+      .app-header-nav {
+        order: 3;
+        flex: 1 1 100%;
+        justify-content: flex-start;
+        padding-top: var(--spacing-1);
+      }
+
+      .app-main {
+        padding: var(--spacing-3);
+      }
     }
   `,
 })
