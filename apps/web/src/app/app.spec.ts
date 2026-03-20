@@ -25,8 +25,8 @@ describe('App', () => {
     fixture.detectChanges();
     await fixture.whenStable();
 
-    // В каталоге: 5 кнопок из группы Buttons + 1 "Открыть confirm" + 1 "Закрыть".
+    // В каталоге: 1 "Тёмная/Светлая" + 5 кнопок из группы Buttons + 1 "Открыть confirm" + 1 "Закрыть".
     // Плюс исходный app-button в хедере ("UI") остаётся в DOM.
-    expect(compiled.querySelectorAll('app-button').length).toBe(8);
+    expect(compiled.querySelectorAll('app-button').length).toBe(9);
   });
 });

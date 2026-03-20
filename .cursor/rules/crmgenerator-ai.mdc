@@ -24,5 +24,6 @@ alwaysApply: false
 - Доменные типы: `libs/domain`, импорт `@domain`.  
 - UI переиспользуемый: `@ui-kit/*`, без знания о доменных сущностях.  
 - Для обязательных полей в формах используйте подсветку через `app-input` (красная рамка + красная надпись label) и скрывайте текст ошибки через `showErrorText=false`.
+- Формы в `features/*` с `ViewEncapsulation.None`: все селекторы в SCSS только под уникальным корневым классом (например `.org-form .field`), без «голых» `.field` / `.notes-area` — иначе стили одной фичи перетирают другую.
 - После изменений фичи — обновляй её чек-лист в `docs/ai/`.  
 - Проверки: `npm run ui:lint`, `npx nx build web --configuration development`, при необходимости `npx nx test web` и `npx nx lint domain`.

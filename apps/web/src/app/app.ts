@@ -8,6 +8,7 @@ import { UiCatalogComponent } from './features/ui-catalog/ui-catalog.component';
   template: `
     <header class="app-header">
       <a routerLink="/clients">Заказчики</a>
+      <a routerLink="/organizations">Организации</a>
       <app-ui-catalog />
     </header>
     <main class="app-main">

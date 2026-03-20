@@ -1,25 +1,40 @@
 @use "tokens";
 
-.client-form-card {
+.org-form-card {
   width: min(640px, 95vw);
 }
 
-.client-form {
+.org-form {
+  display: grid;
+  gap: var(--spacing-3);
+}
+
+.form-block {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: var(--spacing-3);
   display: grid;
   gap: var(--spacing-2);
 }
 
-.client-form .field {
+.block-legend {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--muted-foreground);
+  padding: 0 var(--spacing-1);
+}
+
+.org-form .field {
   display: grid;
   gap: var(--spacing-1);
 }
 
-.client-form .notes-label {
+.org-form .notes-label {
   font-size: var(--font-size-sm);
   color: var(--muted-foreground);
 }
 
-.client-form .notes-area {
+.org-form .notes-area {
   min-height: 74px;
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
@@ -30,13 +45,13 @@
   resize: vertical;
 }
 
-.client-form .notes-area:focus {
+.org-form .notes-area:focus {
   outline: none;
   border-color: var(--primary);
   box-shadow: 0 0 0 2px color-mix(in oklch, var(--primary) 20%, transparent);
 }
 
-.client-form .form-actions {
+.org-form .form-actions {
   display: flex;
   justify-content: flex-end;
   gap: var(--spacing-2);
