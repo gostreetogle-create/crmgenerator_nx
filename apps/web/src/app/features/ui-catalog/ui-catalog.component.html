@@ -3,6 +3,11 @@
 @if (isOpen()) {
   <div class="catalog-overlay">
     <app-card title="Component Catalog" class="catalog-card">
+      <div class="catalog-top-actions">
+        <app-button variant="outline" size="sm" (clicked)="toggleTheme()">
+          {{ theme() === 'dark' ? 'Тёмная' : 'Светлая' }}
+        </app-button>
+      </div>
       <div class="catalog-grid">
         @for (group of catalogGroups(); track group.title) {
           <section class="catalog-group">
@@ -12,7 +17,7 @@
               <article class="catalog-item">
                 <div class="item-head">
                   <code>{{ item.code }}</code>
-                  <span>{{ item.name }}</span>
+                  <span>{{ item.spanLabel || item.name }}</span>
                 </div>
 
                 @if (group.title === 'Buttons') {
@@ -26,7 +31,8 @@
                     <app-input
                       label="Пример"
                       placeholder="Введите значение..."
-                      [error]="'Проверка поля'"
+                      [error]="'error'"
+                      [showErrorText]="false"
                     />
                   } @else {
                     <app-input label="Пример" placeholder="Введите значение..." />
@@ -48,7 +54,23 @@
                     Открыть confirm
                   </app-button>
                 }
+
               </article>
+            }
+
+            @if (group.footerColors.length) {
+              <div class="group-colors">
+                @for (c of group.footerColors; track c.code) {
+                  <div class="group-color-chip">
+                    <span class="group-color-code">{{ c.code }}</span>
+                    <span
+                      class="group-color-swatch"
+                      [style.background]="'var(' + c.cssVar + ')'"
+                      aria-hidden="true"
+                    ></span>
+                  </div>
+                }
+              </div>
             }
           </section>
         }

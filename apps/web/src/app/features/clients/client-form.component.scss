@@ -14,16 +14,6 @@
   gap: var(--spacing-1);
 }
 
-.field-error {
-  margin: 0;
-  font-size: var(--font-size-sm);
-  color: var(--danger);
-  background: color-mix(in oklch, var(--danger) 12%, transparent);
-  border: 1px solid color-mix(in oklch, var(--danger) 40%, var(--border));
-  border-radius: var(--radius-sm);
-  padding: var(--spacing-1) var(--spacing-2);
-}
-
 .notes-label {
   font-size: var(--font-size-sm);
   color: var(--muted-foreground);

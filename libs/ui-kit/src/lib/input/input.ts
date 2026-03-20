@@ -26,6 +26,11 @@ export class InputComponent {
   value = input<string>('');
   disabled = input<boolean>(false);
   error = input<string>('');
+  /**
+   * Управляет показом текста ошибки.
+   * Для обязательных полей обычно оставляем только красную рамку + красную надпись label.
+   */
+  showErrorText = input<boolean>(true);
   size = input<'sm' | 'md' | 'lg'>('sm');
   type = input<'text' | 'email' | 'password' | 'tel' | 'number'>('text');
   valueChange = output<string>();

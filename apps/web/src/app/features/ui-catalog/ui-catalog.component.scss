@@ -11,6 +11,12 @@
   padding: var(--spacing-3);
 }
 
+.catalog-top-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: var(--spacing-2);
+}
+
 .catalog-card {
   width: min(90vw, 1200px);
   height: 90vh;
@@ -23,6 +29,15 @@
   gap: var(--spacing-3);
 }
 
+.catalog-group {
+  border: 1px solid color-mix(in oklch, var(--border) 70%, var(--foreground));
+  border-radius: var(--radius-md);
+  padding: var(--spacing-2);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2);
+}
+
 .catalog-group h3 {
   margin: 0 0 var(--spacing-2);
   font-size: var(--font-size-base);
@@ -30,7 +45,7 @@
 }
 
 .catalog-item {
-  border: 1px solid var(--border);
+  border: 1px solid color-mix(in oklch, var(--border) 60%, var(--foreground));
   border-radius: var(--radius-md);
   background: var(--card);
   padding: var(--spacing-3);
@@ -62,4 +77,33 @@
   display: flex;
   justify-content: flex-end;
   margin-top: var(--spacing-3);
+}
+
+.group-colors {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-1);
+  margin-top: auto; // стремимся держать футер внизу внутри группы
+}
+
+.group-color-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-1);
+  padding-right: var(--spacing-1);
+}
+
+.group-color-code {
+  font-size: var(--font-size-sm);
+  color: var(--muted-foreground);
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.group-color-swatch {
+  width: 1.7em;
+  height: 1em; // по высоте букв артикула
+  border-radius: 3px;
+  border: 1px dashed color-mix(in oklch, var(--border) 70%, var(--foreground));
+  box-shadow: none;
 }

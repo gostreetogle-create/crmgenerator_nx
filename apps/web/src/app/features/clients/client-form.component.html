@@ -5,11 +5,9 @@
         label="Название / ФИО"
         [value]="formData().name || ''"
         [error]="errors().name"
+        [showErrorText]="false"
         (valueChange)="formData.update((v) => ({ ...v, name: $event }))"
       />
-      @if (errors().name) {
-        <p class="field-error">{{ errors().name }}</p>
-      }
     </div>
 
     <app-input
@@ -26,9 +24,6 @@
         [error]="errors().phone"
         (valueChange)="formData.update((v) => ({ ...v, phone: $event }))"
       />
-      @if (errors().phone) {
-        <p class="field-error">{{ errors().phone }}</p>
-      }
     </div>
 
     <div class="field">
@@ -39,9 +34,6 @@
         [error]="errors().email"
         (valueChange)="formData.update((v) => ({ ...v, email: $event }))"
       />
-      @if (errors().email) {
-        <p class="field-error">{{ errors().email }}</p>
-      }
     </div>
 
     <div class="field">
@@ -51,9 +43,6 @@
         [error]="errors().inn"
         (valueChange)="formData.update((v) => ({ ...v, inn: $event }))"
       />
-      @if (errors().inn) {
-        <p class="field-error">{{ errors().inn }}</p>
-      }
     </div>
 
     <div class="field">
@@ -63,9 +52,6 @@
         [error]="errors().kpp"
         (valueChange)="formData.update((v) => ({ ...v, kpp: $event }))"
       />
-      @if (errors().kpp) {
-        <p class="field-error">{{ errors().kpp }}</p>
-      }
     </div>
 
     <app-input
@@ -88,9 +74,6 @@
         [error]="errors().discount"
         (valueChange)="formData.update((v) => ({ ...v, discount: +$event || 0 }))"
       />
-      @if (errors().discount) {
-        <p class="field-error">{{ errors().discount }}</p>
-      }
     </div>
 
     <app-input

@@ -16,12 +16,17 @@
   font-weight: var(--font-weight-medium);
 }
 
+.input-label--error {
+  color: var(--danger);
+}
+
 .ui-input {
   height: 32px;
   padding: 0 var(--spacing-2);
   font-size: var(--font-size-sm);
   border: 1px solid var(--border);
-  background: var(--background);
+  /* Поля ввода должны быть "поверхностью" (card), а не фоном страницы. */
+  background: var(--card);
   color: var(--foreground);
   border-radius: var(--radius-sm);
   font: inherit;
