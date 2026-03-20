@@ -66,7 +66,7 @@
             <td>{{ c.inn || '—' }}</td>
             <td>{{ c.discount ?? 0 }}%</td>
             <td class="actions">
-              <app-button variant="ghost" size="sm" (clicked)="selectedClient.set(c)">
+              <app-button variant="ghost" size="sm" (clicked)="onSelectClient(c)">
                 Детали
               </app-button>
               <button type="button" class="link-btn" (click)="onOpenModal(c)">
@@ -118,15 +118,16 @@
     role="button"
     tabindex="0"
     aria-label="Закрыть форму клиента"
-    (click)="showModal.set(false)"
-    (keydown.enter)="showModal.set(false)"
-    (keydown.space)="showModal.set(false)"
+    (click)="closeEditModal()"
+    (keydown.enter)="closeEditModal()"
+    (keydown.space)="closeEditModal()"
   >
     <div
       class="modal-panel"
       role="button"
       tabindex="0"
       aria-label="Содержимое формы клиента"
+      #editModalPanel
       (click)="$event.stopPropagation()"
       (keydown.enter)="$event.stopPropagation()"
       (keydown.space)="$event.stopPropagation()"
@@ -134,7 +135,7 @@
       <app-client-form
         [client]="editingClient()"
         (save)="onSave($event)"
-        (cancel)="showModal.set(false)"
+        (cancel)="closeEditModal()"
       />
     </div>
   </div>
@@ -146,11 +147,18 @@
     role="button"
     tabindex="0"
     aria-label="Закрыть детали клиента"
-    (click)="selectedClient.set(null)"
-    (keydown.enter)="selectedClient.set(null)"
-    (keydown.space)="selectedClient.set(null)"
+    (click)="closeDetailsModal()"
+    (keydown.enter)="closeDetailsModal()"
+    (keydown.space)="closeDetailsModal()"
   >
-    <app-card title="Детали клиента" class="details-card" (click)="$event.stopPropagation()">
+    <app-card
+      #detailsModalCard
+      title="Детали клиента"
+      class="details-card"
+      role="dialog"
+      aria-modal="true"
+      (click)="$event.stopPropagation()"
+    >
       <dl class="details-grid">
         <dt class="dt-with-icon">
           <svg class="icon-sm" fill="none" stroke="currentColor" viewBox="0 0 24 24">

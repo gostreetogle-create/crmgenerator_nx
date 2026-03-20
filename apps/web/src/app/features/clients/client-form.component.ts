@@ -11,7 +11,7 @@ import {
 import { ButtonComponent } from '@ui-kit/button';
 import { CardComponent } from '@ui-kit/card';
 import { InputComponent } from '@ui-kit/input';
-import { Client } from './client.model';
+import { Client } from '@domain';
 
 @Component({
   selector: 'app-client-form',

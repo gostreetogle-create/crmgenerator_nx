@@ -15,9 +15,10 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
+      "@domain": ["libs/domain/src/index.ts"],
       "@crmgenerator-nx/ui-kit": ["libs/ui-kit/src/index.ts"],
       "@crmgenerator_nx/ui-kit/button": [
-        "libs/ui-kit/src/lib/button/button.ts"
+        "libs/ui-kit/src/lib/button/index.ts"
       ],
       "@ui-kit/*": ["libs/ui-kit/src/lib/*"],
       "@crmgenerator-nx/design-tokens": ["libs/design-tokens/src/index.ts"],

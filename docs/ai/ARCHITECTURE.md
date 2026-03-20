@@ -153,6 +153,16 @@ apps/web/src/app/features/<feature>/
 3. Проверка, что нет deep-import и нет новых дублирующих компонентов
 4. Обновление `docs/ai/ARCHITECTURE.md`, если менялась структура или правила
 
+## Документация состояния фич
+Чтобы ускорять разработку и синхронизировать команду, по каждой фиче ведётся отдельный чек-лист состояния.
+
+Читай:
+- промпты для ИИ: `docs/PROMPTS.md`
+- playbook для ИИ: `docs/ai/AI_PROJECT_PLAYBOOK.md`
+- базовый шаблон: `docs/ai/FEATURE_CHECKLIST_BASE.md`
+- пример для текущей фичи: `docs/ai/FEATURE_CLIENTS_CHECKLIST.md`
+- архив: `docs/ai/archive/`
+
 ## Базовые команды
 
 - `npx nx serve web`

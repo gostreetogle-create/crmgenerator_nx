@@ -1,6 +1,7 @@
 # COMPONENT_TEMPLATE
 
-Короткий чек-лист для создания UI-компонента в `ui-kit`.
+Короткий чек-лист для создания UI-компонента в `ui-kit`.  
+Для агентов: промпт **P4** в `docs/PROMPTS.md`, общий процесс — `docs/ai/AI_PROJECT_PLAYBOOK.md`.
 
 - Команда: `nx g @nx/angular:component --project=ui-kit --style=scss --standalone --export`
 - `encapsulation: ViewEncapsulation.None`

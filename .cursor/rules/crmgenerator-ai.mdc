@@ -1,0 +1,27 @@
+---
+description: CRM Generator Nx + Angular — архитектура, фичи, workflow для ИИ
+globs:
+  - "apps/**/*.{ts,html,scss}"
+  - "libs/**/*.{ts,html,scss}"
+  - "docs/ai/**/*.md"
+alwaysApply: false
+---
+
+# Работа с репозиторием crmgenerator_nx
+
+Перед нетривиальными правками **прочитай** (в указанном порядке):
+
+1. `docs/ai/ARCHITECTURE.md` — слои, импорты, запреты  
+2. `docs/ai/AI_PROJECT_PLAYBOOK.md` — процесс внедрения фич и антипаттерны  
+3. `docs/PROMPTS.md` — готовые формулировки задач  
+
+Для новой или активной фичи — `docs/ai/FEATURE_<NAME>_CHECKLIST.md` или шаблон `docs/ai/FEATURE_CHECKLIST_BASE.md`.
+
+## Краткие правила
+
+- **Нет** импортов `feature → feature`.  
+- **Нет** deep-import вида `libs/.../src/lib/.../file.ts` — только публичные entry (`index.ts`, алиасы из `tsconfig.base.json`).  
+- Доменные типы: `libs/domain`, импорт `@domain`.  
+- UI переиспользуемый: `@ui-kit/*`, без знания о доменных сущностях.  
+- После изменений фичи — обновляй её чек-лист в `docs/ai/`.  
+- Проверки: `npm run ui:lint`, `npx nx build web --configuration development`, при необходимости `npx nx test web` и `npx nx lint domain`.
