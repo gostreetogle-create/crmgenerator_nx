@@ -1,222 +1,396 @@
 <app-card [title]="organization() ? 'Редактировать организацию' : 'Новая организация'" class="org-form-card">
-  <form class="org-form" (ngSubmit)="onSubmit()">
-    <!-- Блок 1: Основное -->
-    <fieldset class="form-block">
-      <legend class="block-legend">Основное</legend>
-      <div class="field">
-        <app-input
-          label="Название (краткое)"
-          [value]="formData().name || ''"
-          [error]="errors().name"
-          [showErrorText]="false"
-          (valueChange)="formData.update((v) => ({ ...v, name: $event }))"
-        />
+  <form class="org-form org-form--dialog" (ngSubmit)="onSubmit()">
+    <div class="org-form-tabs" role="tablist" aria-label="Разделы формы">
+      <button
+        type="button"
+        class="org-tab"
+        role="tab"
+        [attr.aria-selected]="activeTab() === 'requisites'"
+        [class.org-tab--active]="activeTab() === 'requisites'"
+        (click)="setTab('requisites')"
+      >
+        Реквизиты
+      </button>
+      <button
+        type="button"
+        class="org-tab"
+        role="tab"
+        [attr.aria-selected]="activeTab() === 'address'"
+        [class.org-tab--active]="activeTab() === 'address'"
+        (click)="setTab('address')"
+      >
+        Адреса и банк
+      </button>
+      <button
+        type="button"
+        class="org-tab"
+        role="tab"
+        [attr.aria-selected]="activeTab() === 'people'"
+        [class.org-tab--active]="activeTab() === 'people'"
+        (click)="setTab('people')"
+      >
+        Контакты и руководитель
+      </button>
+      <button
+        type="button"
+        class="org-tab"
+        role="tab"
+        [attr.aria-selected]="activeTab() === 'files'"
+        [class.org-tab--active]="activeTab() === 'files'"
+        (click)="setTab('files')"
+      >
+        Файлы и настройки
+      </button>
+    </div>
+
+    @if (activeTab() === 'requisites') {
+      <div class="org-form-tab-panel" role="tabpanel">
+        <div class="org-form-tab-inner">
+          <fieldset class="form-block">
+            <legend class="block-legend">Основное</legend>
+            <div class="field">
+              <app-input
+                label="Название (краткое)"
+                [value]="formData().name || ''"
+                [error]="errors().name"
+                [showErrorText]="false"
+                (valueChange)="formData.update((v) => ({ ...v, name: $event }))"
+              />
+            </div>
+            <app-input
+              label="Полное наименование"
+              [value]="formData().fullName || ''"
+              (valueChange)="formData.update((v) => ({ ...v, fullName: $event }))"
+            />
+            <app-input
+              label="Краткое наименование"
+              [value]="formData().shortName || ''"
+              (valueChange)="formData.update((v) => ({ ...v, shortName: $event }))"
+            />
+          </fieldset>
+
+          <fieldset class="form-block">
+            <legend class="block-legend">Реквизиты</legend>
+            <app-input
+              label="ИНН"
+              [value]="formData().inn || ''"
+              [error]="errors().inn"
+              (valueChange)="formData.update((v) => ({ ...v, inn: $event }))"
+            />
+            <app-input
+              label="КПП"
+              [value]="formData().kpp || ''"
+              [error]="errors().kpp"
+              (valueChange)="formData.update((v) => ({ ...v, kpp: $event }))"
+            />
+            <app-input
+              label="ОГРН"
+              [value]="formData().ogrn || ''"
+              [error]="errors().ogrn"
+              (valueChange)="formData.update((v) => ({ ...v, ogrn: $event }))"
+            />
+            <app-input
+              label="ОКПО"
+              [value]="formData().okpo || ''"
+              [error]="errors().okpo"
+              (valueChange)="formData.update((v) => ({ ...v, okpo: $event }))"
+            />
+            <app-input
+              label="ОКВЭД"
+              [value]="formData().okved || ''"
+              (valueChange)="formData.update((v) => ({ ...v, okved: $event }))"
+            />
+          </fieldset>
+
+          <fieldset class="form-block form-block--tab-wide">
+            <legend class="block-legend">Регистрация (ФСС / ПФР)</legend>
+            <app-input
+              label="Рег. номер ФСС"
+              [value]="formData().fssNumber || ''"
+              (valueChange)="formData.update((v) => ({ ...v, fssNumber: $event }))"
+            />
+            <app-input
+              label="Рег. номер ПФР"
+              [value]="formData().pfrNumber || ''"
+              (valueChange)="formData.update((v) => ({ ...v, pfrNumber: $event }))"
+            />
+          </fieldset>
+        </div>
       </div>
-      <app-input
-        label="Полное наименование"
-        [value]="formData().fullName || ''"
-        (valueChange)="formData.update((v) => ({ ...v, fullName: $event }))"
-      />
-      <app-input
-        label="Краткое наименование"
-        [value]="formData().shortName || ''"
-        (valueChange)="formData.update((v) => ({ ...v, shortName: $event }))"
-      />
-    </fieldset>
+    }
 
-    <!-- Блок 2: Реквизиты -->
-    <fieldset class="form-block">
-      <legend class="block-legend">Реквизиты</legend>
-      <app-input
-        label="ИНН"
-        [value]="formData().inn || ''"
-        [error]="errors().inn"
-        (valueChange)="formData.update((v) => ({ ...v, inn: $event }))"
-      />
-      <app-input
-        label="КПП"
-        [value]="formData().kpp || ''"
-        [error]="errors().kpp"
-        (valueChange)="formData.update((v) => ({ ...v, kpp: $event }))"
-      />
-      <app-input
-        label="ОГРН"
-        [value]="formData().ogrn || ''"
-        [error]="errors().ogrn"
-        (valueChange)="formData.update((v) => ({ ...v, ogrn: $event }))"
-      />
-      <app-input
-        label="ОКПО"
-        [value]="formData().okpo || ''"
-        [error]="errors().okpo"
-        (valueChange)="formData.update((v) => ({ ...v, okpo: $event }))"
-      />
-      <app-input
-        label="ОКВЭД"
-        [value]="formData().okved || ''"
-        (valueChange)="formData.update((v) => ({ ...v, okved: $event }))"
-      />
-    </fieldset>
+    @if (activeTab() === 'address') {
+      <div class="org-form-tab-panel" role="tabpanel">
+        <div class="org-form-tab-inner">
+          <fieldset class="form-block form-block--tab-wide">
+            <legend class="block-legend">Адреса</legend>
+            <app-input
+              label="Юридический адрес"
+              [value]="formData().legalAddress || ''"
+              (valueChange)="formData.update((v) => ({ ...v, legalAddress: $event }))"
+            />
+            <app-input
+              label="Фактический адрес"
+              [value]="formData().actualAddress || ''"
+              (valueChange)="formData.update((v) => ({ ...v, actualAddress: $event }))"
+            />
+            <app-input
+              label="Почтовый адрес"
+              [value]="formData().postalAddress || ''"
+              (valueChange)="formData.update((v) => ({ ...v, postalAddress: $event }))"
+            />
+          </fieldset>
 
-    <!-- Блок 3: Адреса -->
-    <fieldset class="form-block">
-      <legend class="block-legend">Адреса</legend>
-      <app-input
-        label="Юридический адрес"
-        [value]="formData().legalAddress || ''"
-        (valueChange)="formData.update((v) => ({ ...v, legalAddress: $event }))"
-      />
-      <app-input
-        label="Фактический адрес"
-        [value]="formData().actualAddress || ''"
-        (valueChange)="formData.update((v) => ({ ...v, actualAddress: $event }))"
-      />
-      <app-input
-        label="Почтовый адрес"
-        [value]="formData().postalAddress || ''"
-        (valueChange)="formData.update((v) => ({ ...v, postalAddress: $event }))"
-      />
-    </fieldset>
-
-    <!-- Блок 4: Банк -->
-    <fieldset class="form-block">
-      <legend class="block-legend">Банк</legend>
-      <app-input
-        label="Банк"
-        [value]="formData().bankName || ''"
-        (valueChange)="formData.update((v) => ({ ...v, bankName: $event }))"
-      />
-      <app-input
-        label="БИК"
-        [value]="formData().bik || ''"
-        [error]="errors().bik"
-        (valueChange)="formData.update((v) => ({ ...v, bik: $event }))"
-      />
-      <app-input
-        label="Расчётный счёт"
-        [value]="formData().settlementAccount || ''"
-        (valueChange)="formData.update((v) => ({ ...v, settlementAccount: $event }))"
-      />
-      <app-input
-        label="Корреспондентский счёт"
-        [value]="formData().correspondentAccount || ''"
-        (valueChange)="formData.update((v) => ({ ...v, correspondentAccount: $event }))"
-      />
-    </fieldset>
-
-    <!-- Блок 5: Контакты -->
-    <fieldset class="form-block">
-      <legend class="block-legend">Контакты</legend>
-      <div class="field">
-        <app-input
-          label="Телефон"
-          type="tel"
-          [value]="formData().phone || ''"
-          [error]="errors().phone"
-          (valueChange)="formData.update((v) => ({ ...v, phone: $event }))"
-        />
+          <fieldset class="form-block form-block--tab-wide">
+            <legend class="block-legend">Банк</legend>
+            <div class="form-block-row-full">
+              <app-input
+                label="Банк"
+                [value]="formData().bankName || ''"
+                (valueChange)="formData.update((v) => ({ ...v, bankName: $event }))"
+              />
+            </div>
+            <app-input
+              label="БИК"
+              [value]="formData().bik || ''"
+              [error]="errors().bik"
+              (valueChange)="formData.update((v) => ({ ...v, bik: $event }))"
+            />
+            <app-input
+              label="Расчётный счёт"
+              [value]="formData().settlementAccount || ''"
+              (valueChange)="formData.update((v) => ({ ...v, settlementAccount: $event }))"
+            />
+            <app-input
+              label="Корреспондентский счёт"
+              [value]="formData().correspondentAccount || ''"
+              (valueChange)="formData.update((v) => ({ ...v, correspondentAccount: $event }))"
+            />
+          </fieldset>
+        </div>
       </div>
-      <app-input
-        label="Доп. телефон"
-        type="tel"
-        [value]="formData().extraPhone || ''"
-        (valueChange)="formData.update((v) => ({ ...v, extraPhone: $event }))"
-      />
-      <div class="field">
-        <app-input
-          label="E-mail"
-          type="email"
-          [value]="formData().email || ''"
-          [error]="errors().email"
-          (valueChange)="formData.update((v) => ({ ...v, email: $event }))"
-        />
-      </div>
-      <app-input
-        label="Сайт"
-        [value]="formData().website || ''"
-        (valueChange)="formData.update((v) => ({ ...v, website: $event }))"
-      />
-    </fieldset>
+    }
 
-    <!-- Блок 6: Руководитель -->
-    <fieldset class="form-block">
-      <legend class="block-legend">Руководитель</legend>
-      <app-input
-        label="ФИО руководителя"
-        [value]="formData().directorFio || ''"
-        (valueChange)="formData.update((v) => ({ ...v, directorFio: $event }))"
-      />
-      <app-input
-        label="ФИО (сокращённое)"
-        [value]="formData().directorFioShort || ''"
-        (valueChange)="formData.update((v) => ({ ...v, directorFioShort: $event }))"
-      />
-      <app-input
-        label="Должность"
-        [value]="formData().directorPosition || ''"
-        (valueChange)="formData.update((v) => ({ ...v, directorPosition: $event }))"
-      />
-      <app-input
-        label="Действует на основании"
-        [value]="formData().directorActingOn || ''"
-        (valueChange)="formData.update((v) => ({ ...v, directorActingOn: $event }))"
-      />
-    </fieldset>
+    @if (activeTab() === 'people') {
+      <div class="org-form-tab-panel" role="tabpanel">
+        <div class="org-form-tab-inner">
+          <fieldset class="form-block">
+            <legend class="block-legend">Контакты</legend>
+            <div class="field">
+              <app-input
+                label="Телефон"
+                type="tel"
+                [value]="formData().phone || ''"
+                [error]="errors().phone"
+                (valueChange)="formData.update((v) => ({ ...v, phone: $event }))"
+              />
+            </div>
+            <app-input
+              label="Доп. телефон"
+              type="tel"
+              [value]="formData().extraPhone || ''"
+              (valueChange)="formData.update((v) => ({ ...v, extraPhone: $event }))"
+            />
+            <div class="field">
+              <app-input
+                label="E-mail"
+                type="email"
+                [value]="formData().email || ''"
+                [error]="errors().email"
+                (valueChange)="formData.update((v) => ({ ...v, email: $event }))"
+              />
+            </div>
+            <app-input
+              label="Сайт"
+              [value]="formData().website || ''"
+              (valueChange)="formData.update((v) => ({ ...v, website: $event }))"
+            />
+          </fieldset>
 
-    <!-- Блок 7: Регистрация -->
-    <fieldset class="form-block">
-      <legend class="block-legend">Регистрация (ФСС / ПФР)</legend>
-      <app-input
-        label="Рег. номер ФСС"
-        [value]="formData().fssNumber || ''"
-        (valueChange)="formData.update((v) => ({ ...v, fssNumber: $event }))"
-      />
-      <app-input
-        label="Рег. номер ПФР"
-        [value]="formData().pfrNumber || ''"
-        (valueChange)="formData.update((v) => ({ ...v, pfrNumber: $event }))"
-      />
-    </fieldset>
+          <fieldset class="form-block">
+            <legend class="block-legend">Руководитель</legend>
+            <app-input
+              label="ФИО руководителя"
+              [value]="formData().directorFio || ''"
+              (valueChange)="formData.update((v) => ({ ...v, directorFio: $event }))"
+            />
+            <app-input
+              label="ФИО (сокращённое)"
+              [value]="formData().directorFioShort || ''"
+              (valueChange)="formData.update((v) => ({ ...v, directorFioShort: $event }))"
+            />
+            <app-input
+              label="Должность"
+              [value]="formData().directorPosition || ''"
+              (valueChange)="formData.update((v) => ({ ...v, directorPosition: $event }))"
+            />
+            <div class="form-block-row-full">
+              <app-input
+                label="Действует на основании"
+                [value]="formData().directorActingOn || ''"
+                (valueChange)="formData.update((v) => ({ ...v, directorActingOn: $event }))"
+              />
+            </div>
+          </fieldset>
+        </div>
+      </div>
+    }
 
-    <!-- Блок 8: Настройки и прочее -->
-    <fieldset class="form-block">
-      <legend class="block-legend">Настройки и прочее</legend>
-      <div class="field">
-        <app-input
-          label="Наценка, %"
-          type="number"
-          [value]="asText(formData().markup)"
-          [error]="errors().markup"
-          (valueChange)="formData.update((v) => ({ ...v, markup: +$event || 0 }))"
-        />
+    @if (activeTab() === 'files') {
+      <div class="org-form-tab-panel" role="tabpanel">
+        <div class="org-form-tab-inner org-form-uploads-settings">
+          <fieldset class="form-block form-block--uploads form-block--single-col">
+            <legend class="block-legend">Логотип, подпись, печать</legend>
+            <p class="org-upload-hint form-block-row-full">
+              JPG, PNG, WebP, GIF, до 512 КБ. Позже — API
+              <code>upload-logo</code> / <code>upload-signature</code> / <code>upload-stamp</code>.
+            </p>
+            @if (uploadError()) {
+              <p class="org-upload-error form-block-row-full" role="alert">{{ uploadError() }}</p>
+            }
+
+            <div class="org-upload-cell">
+              <span class="org-upload-title">Логотип</span>
+              <div class="org-upload-preview-wrap">
+                @if (formData().logoUrl) {
+                  <img [src]="formData().logoUrl!" alt="Логотип организации" class="org-upload-preview" />
+                } @else {
+                  <span class="org-upload-placeholder">Нет файла</span>
+                }
+              </div>
+              <input
+                #logoFile
+                type="file"
+                class="org-upload-input"
+                accept="image/jpeg,image/png,image/webp,image/gif"
+                (change)="onImageFile($event, 'logoUrl'); logoFile.value = ''"
+              />
+              <div class="org-upload-actions">
+                <app-button variant="secondary" size="sm" type="button" (clicked)="logoFile.click()">
+                  Загрузить
+                </app-button>
+                <app-button
+                  variant="ghost"
+                  size="sm"
+                  type="button"
+                  [disabled]="!formData().logoUrl"
+                  (clicked)="clearImage('logoUrl')"
+                >
+                  Убрать
+                </app-button>
+              </div>
+            </div>
+
+            <div class="org-upload-cell">
+              <span class="org-upload-title">Подпись</span>
+              <div class="org-upload-preview-wrap">
+                @if (formData().signatureUrl) {
+                  <img [src]="formData().signatureUrl!" alt="Подпись" class="org-upload-preview org-upload-preview--sig" />
+                } @else {
+                  <span class="org-upload-placeholder">Нет файла</span>
+                }
+              </div>
+              <input
+                #sigFile
+                type="file"
+                class="org-upload-input"
+                accept="image/jpeg,image/png,image/webp,image/gif"
+                (change)="onImageFile($event, 'signatureUrl'); sigFile.value = ''"
+              />
+              <div class="org-upload-actions">
+                <app-button variant="secondary" size="sm" type="button" (clicked)="sigFile.click()">
+                  Загрузить
+                </app-button>
+                <app-button
+                  variant="ghost"
+                  size="sm"
+                  type="button"
+                  [disabled]="!formData().signatureUrl"
+                  (clicked)="clearImage('signatureUrl')"
+                >
+                  Убрать
+                </app-button>
+              </div>
+            </div>
+
+            <div class="org-upload-cell">
+              <span class="org-upload-title">Печать</span>
+              <div class="org-upload-preview-wrap">
+                @if (formData().stampUrl) {
+                  <img [src]="formData().stampUrl!" alt="Печать" class="org-upload-preview org-upload-preview--stamp" />
+                } @else {
+                  <span class="org-upload-placeholder">Нет файла</span>
+                }
+              </div>
+              <input
+                #stampFile
+                type="file"
+                class="org-upload-input"
+                accept="image/jpeg,image/png,image/webp,image/gif"
+                (change)="onImageFile($event, 'stampUrl'); stampFile.value = ''"
+              />
+              <div class="org-upload-actions">
+                <app-button variant="secondary" size="sm" type="button" (clicked)="stampFile.click()">
+                  Загрузить
+                </app-button>
+                <app-button
+                  variant="ghost"
+                  size="sm"
+                  type="button"
+                  [disabled]="!formData().stampUrl"
+                  (clicked)="clearImage('stampUrl')"
+                >
+                  Убрать
+                </app-button>
+              </div>
+            </div>
+          </fieldset>
+
+          <fieldset class="form-block form-block--settings form-block--single-col">
+            <legend class="block-legend">Настройки и прочее</legend>
+            <div class="field">
+              <app-input
+                label="Наценка, %"
+                type="number"
+                [value]="asText(formData().markup)"
+                [error]="errors().markup"
+                (valueChange)="formData.update((v) => ({ ...v, markup: +$event || 0 }))"
+              />
+            </div>
+            <app-input
+              label="Префикс КП"
+              [value]="formData().prefix || ''"
+              (valueChange)="formData.update((v) => ({ ...v, prefix: $event }))"
+            />
+            <div class="field">
+              <app-input
+                label="НДС, %"
+                type="number"
+                [value]="asText(formData().vatPercent)"
+                [error]="errors().vatPercent"
+                (valueChange)="formData.update((v) => ({ ...v, vatPercent: +$event || 0 }))"
+              />
+            </div>
+            <div class="form-block-row-full">
+              <app-input
+                label="Реквизиты (текстом)"
+                [value]="formData().requisites || ''"
+                (valueChange)="formData.update((v) => ({ ...v, requisites: $event }))"
+              />
+            </div>
+            <div class="form-block-row-full">
+              <label class="notes-label" for="notes">Заметки</label>
+              <textarea
+                id="notes"
+                class="notes-area"
+                [value]="formData().notes || ''"
+                (input)="formData.update((v) => ({ ...v, notes: $any($event.target).value }))"
+              ></textarea>
+            </div>
+          </fieldset>
+        </div>
       </div>
-      <app-input
-        label="Префикс КП"
-        [value]="formData().prefix || ''"
-        (valueChange)="formData.update((v) => ({ ...v, prefix: $event }))"
-      />
-      <div class="field">
-        <app-input
-          label="НДС, %"
-          type="number"
-          [value]="asText(formData().vatPercent)"
-          [error]="errors().vatPercent"
-          (valueChange)="formData.update((v) => ({ ...v, vatPercent: +$event || 0 }))"
-        />
-      </div>
-      <app-input
-        label="Реквизиты (текстом)"
-        [value]="formData().requisites || ''"
-        (valueChange)="formData.update((v) => ({ ...v, requisites: $event }))"
-      />
-      <label class="notes-label" for="notes">Заметки</label>
-      <textarea
-        id="notes"
-        class="notes-area"
-        [value]="formData().notes || ''"
-        (input)="formData.update((v) => ({ ...v, notes: $any($event.target).value }))"
-      ></textarea>
-    </fieldset>
+    }
 
     <div class="form-actions">
       <app-button variant="secondary" type="button" (clicked)="cancel.emit()">

@@ -15,8 +15,8 @@ describe('App', () => {
     await fixture.whenStable();
     const compiled = fixture.nativeElement as HTMLElement;
 
-    // UI-каталог в хедере всегда закрыт: в DOM должен быть только один app-button ("UI").
-    expect(compiled.querySelectorAll('app-button').length).toBe(1);
+    // Хедер: 2 навигационные app-button + 1 "UI" у каталога (каталог закрыт).
+    expect(compiled.querySelectorAll('app-button').length).toBe(3);
 
     // Открываем каталог (клик по внутренней кнопке ButtonComponent).
     const uiCatalogButton = compiled.querySelector('app-ui-catalog app-button button');
@@ -26,7 +26,7 @@ describe('App', () => {
     await fixture.whenStable();
 
     // В каталоге: 1 "Тёмная/Светлая" + 5 кнопок из группы Buttons + 1 "Открыть confirm" + 1 "Закрыть".
-    // Плюс исходный app-button в хедере ("UI") остаётся в DOM.
-    expect(compiled.querySelectorAll('app-button').length).toBe(9);
+    // Плюс в хедере: 2 навигации + "UI".
+    expect(compiled.querySelectorAll('app-button').length).toBe(11);
   });
 });

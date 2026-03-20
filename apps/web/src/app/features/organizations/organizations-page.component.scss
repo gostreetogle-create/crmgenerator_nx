@@ -25,14 +25,14 @@
 .table-wrap {
   margin-top: var(--spacing-2);
   overflow-x: auto;
+  border-radius: var(--radius-sm);
 }
 
 .orgs-table {
   width: 100%;
-  border-collapse: collapse;
+  border-collapse: separate;
+  border-spacing: 0;
   border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  overflow: hidden;
 }
 
 .orgs-table th,
@@ -41,10 +41,38 @@
   border-bottom: 1px solid var(--border);
   text-align: left;
   font-size: var(--font-size-sm);
+  vertical-align: middle;
+}
+
+.orgs-table tbody tr:last-child td {
+  border-bottom: none;
 }
 
 .orgs-table thead th {
   background: color-mix(in oklch, var(--background) 85%, var(--secondary));
+}
+
+.th-logo {
+  width: 3rem;
+}
+
+.td-logo {
+  width: 3rem;
+  vertical-align: middle;
+}
+
+.org-list-logo {
+  width: 36px;
+  height: 36px;
+  object-fit: contain;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: var(--card);
+}
+
+.org-list-logo-empty {
+  color: var(--muted-foreground);
+  font-size: var(--font-size-sm);
 }
 
 .sortable {
@@ -66,7 +94,10 @@
 
 .actions {
   display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
   gap: var(--spacing-2);
+  white-space: nowrap;
 }
 
 .link-btn {
@@ -91,13 +122,30 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: var(--spacing-3);
+  padding: var(--spacing-2);
 }
 
+/*
+ * Фиксированная высота: при смене вкладок окно не «прыгает» по вертикали.
+ * Высота ~максимум по самому длинному разделу, на узком экране — не выше 92vh.
+ */
 .modal-panel {
-  width: min(680px, 95vw);
-  max-height: 90vh;
-  overflow-y: auto;
+  box-sizing: border-box;
+  width: min(960px, 96vw);
+  height: min(700px, 92vh);
+  min-height: min(700px, 92vh);
+  max-height: 92vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.modal-panel > app-organization-form {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
 }
 
 .details-backdrop {
@@ -115,6 +163,41 @@
   grid-template-columns: auto 1fr;
   gap: var(--spacing-2) var(--spacing-3);
   font-size: var(--font-size-sm);
+}
+
+.details-media-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-3);
+  align-items: flex-end;
+}
+
+.details-media-item {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-1);
+}
+
+.details-media-label {
+  font-size: var(--font-size-sm);
+  color: var(--muted-foreground);
+}
+
+.details-media-img {
+  max-width: 120px;
+  max-height: 72px;
+  object-fit: contain;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--background);
+}
+
+.details-media-img--sig {
+  max-height: 48px;
+}
+
+.details-media-img--stamp {
+  max-height: 64px;
 }
 
 .dt-with-icon {

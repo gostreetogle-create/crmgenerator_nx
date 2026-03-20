@@ -1,32 +1,183 @@
 @use "tokens";
 
-.org-form-card {
-  width: min(640px, 95vw);
+/* Хост внутри модалки: заполняем панель, без скролла всего окна */
+app-organization-form {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  width: 100%;
 }
 
-.org-form {
-  display: grid;
+app-card.org-form-card {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  width: 100%;
+}
+
+app-card.org-form-card .card {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  padding: var(--spacing-4);
+}
+
+app-card.org-form-card .card-header {
+  flex-shrink: 0;
+  margin-bottom: var(--spacing-1);
+  padding-bottom: 2px;
+  border-bottom-width: 1px;
+}
+
+app-card.org-form-card .card-body {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+app-card.org-form-card .card-header h3 {
+  margin: 0;
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-tight, 1.2);
+}
+
+.org-form-card {
+  width: 100%;
+  max-width: none;
+}
+
+.org-form app-input.input-wrapper {
+  max-width: none;
+  width: 100%;
+}
+
+/* Диалог: вкладки + прокрутка только у панели, кнопки снизу закреплены */
+.org-form.org-form--dialog {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
   gap: var(--spacing-3);
 }
 
-.form-block {
+.org-form-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-2);
+  flex-shrink: 0;
+  padding-bottom: var(--spacing-2);
+  border-bottom: 1px solid var(--border);
+}
+
+.org-tab {
+  border: 1px solid transparent;
+  background: color-mix(in oklch, var(--card) 70%, var(--secondary));
+  color: var(--foreground);
+  border-radius: var(--radius-sm);
+  padding: var(--spacing-1) var(--spacing-2);
+  font-size: var(--font-size-sm);
+  font-family: var(--font-sans);
+  font-weight: var(--font-weight-medium);
+  cursor: pointer;
+  line-height: var(--line-height-tight, 1.2);
+}
+
+.org-tab:hover {
+  border-color: var(--border);
+  background: var(--ghost-hover);
+}
+
+.org-tab--active,
+.org-tab[aria-selected='true'] {
+  border-color: var(--primary);
+  background: color-mix(in oklch, var(--primary) 12%, var(--card));
+  color: var(--foreground);
+}
+
+.org-form-tab-panel {
+  flex: 1;
+  min-height: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: var(--spacing-2);
+  padding-right: var(--spacing-2);
+}
+
+.org-form-tab-inner {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  /* Между соседними колонками — шире, чтобы рамки секций не визуально слипались */
+  column-gap: var(--spacing-4);
+  row-gap: var(--spacing-3);
+  align-items: start;
+}
+
+.org-form-tab-inner > .form-block--tab-wide {
+  grid-column: 1 / -1;
+}
+
+/* Явный «коридор» между файлами и настройками (не слипание по центру) */
+.org-form .org-form-tab-inner.org-form-uploads-settings {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: clamp(1.5rem, 4vw, 2.25rem);
+  row-gap: var(--spacing-3);
+  align-items: start;
+}
+
+.org-form .org-form-uploads-settings > .form-block {
+  min-width: 0;
+  width: 100%;
+}
+
+/* Доп. внутренний отступ к общему разделителю — контент не лезет к соседней колонке */
+.org-form .org-form-uploads-settings > .form-block.form-block--uploads {
+  padding-right: calc(var(--spacing-3) + var(--spacing-2));
+}
+
+.org-form .org-form-uploads-settings > .form-block.form-block--settings {
+  padding-left: calc(var(--spacing-3) + var(--spacing-2));
+}
+
+.org-form .form-block {
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
   padding: var(--spacing-3);
   display: grid;
   gap: var(--spacing-2);
+  column-gap: var(--spacing-3);
+  min-width: 0;
+  grid-template-columns: 1fr;
 }
 
-.block-legend {
+@media (min-width: 520px) {
+  .org-form .form-block:not(.form-block--single-col) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.org-form .block-legend {
   font-size: var(--font-size-sm);
   font-weight: var(--font-weight-medium);
   color: var(--muted-foreground);
   padding: 0 var(--spacing-1);
+  margin: 0 0 var(--spacing-1);
+  line-height: var(--line-height-tight, 1.2);
+  grid-column: 1 / -1;
+}
+
+.org-form .form-block-row-full {
+  grid-column: 1 / -1;
 }
 
 .org-form .field {
   display: grid;
-  gap: var(--spacing-1);
+  gap: 2px;
 }
 
 .org-form .notes-label {
@@ -35,14 +186,15 @@
 }
 
 .org-form .notes-area {
-  min-height: 74px;
+  min-height: 48px;
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
-  padding: var(--spacing-2);
+  padding: var(--spacing-1) var(--spacing-2);
   font-size: var(--font-size-sm);
   background: var(--background);
   color: var(--foreground);
   resize: vertical;
+  max-height: 120px;
 }
 
 .org-form .notes-area:focus {
@@ -55,5 +207,95 @@
   display: flex;
   justify-content: flex-end;
   gap: var(--spacing-2);
-  margin-top: var(--spacing-2);
+  flex-shrink: 0;
+  margin-top: auto;
+  padding-top: var(--spacing-3);
+  border-top: 1px solid var(--border);
+}
+
+.org-form .form-block.form-block--uploads {
+  grid-template-columns: 1fr;
+}
+
+.org-form .org-upload-hint {
+  color: var(--muted-foreground);
+  line-height: var(--line-height-tight, 1.35);
+  margin: 0;
+  font-size: var(--font-size-sm);
+}
+
+.org-form .org-upload-hint code {
+  font-size: 0.85em;
+}
+
+.org-form .org-upload-error {
+  color: var(--danger);
+  margin: 0;
+}
+
+.org-form .org-upload-cell {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-1);
+  min-width: 0;
+}
+
+.org-form .org-upload-title {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--foreground);
+}
+
+.org-form .org-upload-preview-wrap {
+  min-height: 36px;
+  max-height: 56px;
+  border: 1px dashed var(--border);
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2px var(--spacing-1);
+  background: color-mix(in oklch, var(--background) 92%, var(--secondary));
+}
+
+.org-form .org-upload-preview {
+  max-width: 100%;
+  max-height: 48px;
+  object-fit: contain;
+}
+
+.org-form .org-upload-preview--sig {
+  max-height: 40px;
+}
+
+.org-form .org-upload-preview--stamp {
+  max-height: 44px;
+}
+
+.org-form .org-upload-placeholder {
+  font-size: var(--font-size-xs, 0.75rem);
+  color: var(--muted-foreground);
+}
+
+.org-form .org-upload-input {
+  position: fixed;
+  left: -9999px;
+  top: 0;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+}
+
+.org-form .org-upload-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-1);
+  align-items: center;
+}
+
+@media (max-width: 640px) {
+  .org-form-tab-inner,
+  .org-form .org-form-tab-inner.org-form-uploads-settings {
+    grid-template-columns: 1fr;
+  }
 }

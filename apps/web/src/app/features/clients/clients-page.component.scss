@@ -22,17 +22,20 @@
   color: var(--muted-foreground);
 }
 
+/* Скругление на обёртке: у <table> border-radius + overflow:hidden ломают линии в Chromium. */
 .table-wrap {
   margin-top: var(--spacing-2);
   overflow-x: auto;
+  border-radius: var(--radius-sm);
 }
 
+/* separate + 0: в collapse Chromium иногда «ломает» общую линию между ячейками
+   с разной высотой контента (текст vs кнопки в «Действия»). */
 .clients-table {
   width: 100%;
-  border-collapse: collapse;
+  border-collapse: separate;
+  border-spacing: 0;
   border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  overflow: hidden;
 }
 
 .clients-table th,
@@ -41,6 +44,11 @@
   border-bottom: 1px solid var(--border);
   text-align: left;
   font-size: var(--font-size-sm);
+  vertical-align: middle;
+}
+
+.clients-table tbody tr:last-child td {
+  border-bottom: none;
 }
 
 .clients-table thead th {
@@ -66,7 +74,10 @@
 
 .actions {
   display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
   gap: var(--spacing-2);
+  white-space: nowrap;
 }
 
 .link-btn {

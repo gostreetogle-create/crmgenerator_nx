@@ -13,6 +13,11 @@ import { CardComponent } from '@ui-kit/card';
 import { InputComponent } from '@ui-kit/input';
 import { Organization } from '@domain';
 
+type OrgImageField = 'logoUrl' | 'signatureUrl' | 'stampUrl';
+
+/** Вкладки: без одной длинной колонки — как в типичных CRM-формах */
+type OrgFormTab = 'requisites' | 'address' | 'people' | 'files';
+
 @Component({
   selector: 'app-organization-form',
   standalone: true,
@@ -29,6 +34,12 @@ export class OrganizationFormComponent {
   readonly cancel = output<void>();
 
   readonly formData = signal<Partial<Organization>>({});
+
+  readonly activeTab = signal<OrgFormTab>('requisites');
+
+  /** Локально: до подключения API картинки кодируются в data URL (лимит — чтобы не забивать localStorage). */
+  readonly maxImageBytes = 512 * 1024;
+  readonly uploadError = signal<string | null>(null);
 
   readonly errors = computed(() => {
     const d = this.formData();
@@ -68,8 +79,14 @@ export class OrganizationFormComponent {
   constructor() {
     effect(() => {
       const value = this.organization();
+      this.uploadError.set(null);
       this.formData.set(value ? { ...value } : {});
+      this.activeTab.set('requisites');
     });
+  }
+
+  setTab(tab: OrgFormTab): void {
+    this.activeTab.set(tab);
   }
 
   onSubmit() {
@@ -86,5 +103,44 @@ export class OrganizationFormComponent {
   asText(value: unknown): string {
     if (value === null || value === undefined) return '';
     return String(value);
+  }
+
+  onImageFile(event: Event, field: OrgImageField): void {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0];
+    this.uploadError.set(null);
+    if (!file) return;
+
+    if (!file.type.startsWith('image/')) {
+      this.uploadError.set('Выберите файл изображения (JPG, PNG, WebP, GIF).');
+      return;
+    }
+    if (file.size > this.maxImageBytes) {
+      this.uploadError.set(
+        `Файл больше ${Math.round(this.maxImageBytes / 1024)} КБ. Сожмите изображение или выберите другой файл.`
+      );
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      const result = reader.result;
+      if (typeof result === 'string') {
+        this.formData.update((v) => ({ ...v, [field]: result }));
+      }
+    };
+    reader.onerror = () => {
+      this.uploadError.set('Не удалось прочитать файл.');
+    };
+    reader.readAsDataURL(file);
+  }
+
+  clearImage(field: OrgImageField): void {
+    this.uploadError.set(null);
+    this.formData.update((v) => {
+      const next = { ...v };
+      delete next[field];
+      return next;
+    });
   }
 }

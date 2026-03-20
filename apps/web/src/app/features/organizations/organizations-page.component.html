@@ -16,6 +16,7 @@
     <table class="orgs-table">
       <thead>
         <tr>
+          <th class="th-logo" aria-label="Логотип"></th>
           <th (click)="toggleSort('name')" class="sortable">
             Название
             <span class="sort-indicator">{{
@@ -37,6 +38,13 @@
       <tbody>
         @for (o of paginatedOrganizations(); track o._id) {
           <tr>
+            <td class="td-logo">
+              @if (o.logoUrl) {
+                <img [src]="o.logoUrl" alt="" class="org-list-logo" />
+              } @else {
+                <span class="org-list-logo-empty" aria-hidden="true">—</span>
+              }
+            </td>
             <td>
               <span class="cell-with-icon">
                 <svg class="icon-sm" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -144,6 +152,29 @@
       (click)="$event.stopPropagation()"
     >
       <dl class="details-grid">
+        @if (s.logoUrl || s.signatureUrl || s.stampUrl) {
+          <dt class="dt-with-icon">Логотип / подпись / печать</dt>
+          <dd class="details-media-row">
+            @if (s.logoUrl) {
+              <span class="details-media-item">
+                <span class="details-media-label">Логотип</span>
+                <img [src]="s.logoUrl" alt="Логотип" class="details-media-img" />
+              </span>
+            }
+            @if (s.signatureUrl) {
+              <span class="details-media-item">
+                <span class="details-media-label">Подпись</span>
+                <img [src]="s.signatureUrl" alt="Подпись" class="details-media-img details-media-img--sig" />
+              </span>
+            }
+            @if (s.stampUrl) {
+              <span class="details-media-item">
+                <span class="details-media-label">Печать</span>
+                <img [src]="s.stampUrl" alt="Печать" class="details-media-img details-media-img--stamp" />
+              </span>
+            }
+          </dd>
+        }
         <dt class="dt-with-icon">Название</dt>
         <dd>{{ s.name }}</dd>
         <dt class="dt-with-icon">Полное наименование</dt>

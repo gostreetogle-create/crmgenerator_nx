@@ -1,15 +1,37 @@
-import { Component } from '@angular/core';
-import { RouterLink, RouterOutlet } from '@angular/router';
+import { Component, inject } from '@angular/core';
+import { Router, RouterLink, RouterOutlet } from '@angular/router';
+import { ButtonComponent } from '@ui-kit/button';
 import { UiCatalogComponent } from './features/ui-catalog/ui-catalog.component';
 
 @Component({
-  imports: [RouterLink, RouterOutlet, UiCatalogComponent],
+  imports: [RouterLink, RouterOutlet, ButtonComponent, UiCatalogComponent],
   selector: 'app-root',
   template: `
     <header class="app-header">
-      <a routerLink="/clients">Заказчики</a>
-      <a routerLink="/organizations">Организации</a>
-      <app-ui-catalog />
+      <div class="app-header-inner">
+        <a routerLink="/" class="app-header-brand">CRM Generator</a>
+        <nav class="app-header-nav" aria-label="Основная навигация">
+          <span
+            class="app-header-nav-item"
+            [class.app-header-nav-item--active]="isNavActive('/clients')"
+          >
+            <app-button variant="ghost" size="sm" (clicked)="navigate('/clients')">
+              Заказчики
+            </app-button>
+          </span>
+          <span
+            class="app-header-nav-item"
+            [class.app-header-nav-item--active]="isNavActive('/organizations')"
+          >
+            <app-button variant="ghost" size="sm" (clicked)="navigate('/organizations')">
+              Организации
+            </app-button>
+          </span>
+        </nav>
+        <div class="app-header-actions">
+          <app-ui-catalog />
+        </div>
+      </div>
     </header>
     <main class="app-main">
       <router-outlet></router-outlet>
@@ -17,22 +39,84 @@ import { UiCatalogComponent } from './features/ui-catalog/ui-catalog.component';
   `,
   styles: `
     .app-header {
-      padding: var(--spacing-2) var(--spacing-3);
+      padding: 0 var(--spacing-3);
       border-bottom: 1px solid var(--border);
-      font-size: var(--font-size-sm);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: var(--spacing-2);
+      background: var(--card);
     }
-    .app-header a {
+
+    .app-header-inner {
+      max-width: 1280px;
+      margin: 0 auto;
+      min-height: 48px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: var(--spacing-2) var(--spacing-3);
+      padding: var(--spacing-2) 0;
+    }
+
+    .app-header-brand {
+      flex-shrink: 0;
+      font-size: var(--font-size-base);
+      font-weight: var(--font-weight-bold);
       color: var(--foreground);
       text-decoration: none;
-      font-weight: var(--font-weight-medium);
+      letter-spacing: 0.02em;
     }
+
+    .app-header-brand:hover {
+      color: var(--primary);
+    }
+
+    .app-header-brand:focus-visible {
+      outline: 2px solid var(--primary);
+      outline-offset: 2px;
+      border-radius: var(--radius-sm);
+    }
+
+    .app-header-nav {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-1);
+      flex: 1;
+      justify-content: center;
+      min-width: 0;
+    }
+
+    .app-header-nav-item {
+      display: inline-flex;
+      border-radius: var(--radius-sm);
+    }
+
+    .app-header-nav-item--active {
+      background: color-mix(in oklch, var(--primary) 12%, transparent);
+      box-shadow: inset 0 -2px 0 0 var(--primary);
+    }
+
+    .app-header-actions {
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-2);
+    }
+
     .app-main {
       padding: var(--spacing-2);
+      max-width: 1280px;
+      margin: 0 auto;
     }
   `,
 })
-export class AppComponent {}
+export class AppComponent {
+  private readonly router = inject(Router);
+
+  navigate(path: string): void {
+    void this.router.navigateByUrl(path);
+  }
+
+  /** Активный пункт меню (учитываем query string). */
+  isNavActive(path: string): boolean {
+    const tree = this.router.parseUrl(this.router.url);
+    return tree.root.children['primary']?.segments[0]?.path === path.slice(1);
+  }
+}

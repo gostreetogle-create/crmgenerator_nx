@@ -25,15 +25,20 @@
 
 ## Non-goals (сейчас)
 - Бэкенд/API: нет реального HTTP
-- Загрузка логотипа/подписи/печати (logoUrl, signatureUrl, stampUrl — только отображение)
+- Отправка файлов на сервер (`POST .../upload-logo` и т.д.) — в UI файлы кодируются в data URL и сохраняются в `localStorage` вместе с организацией
 - Импорт из Excel
 
 ## Implementation checklist
 
 ### Архитектура и стили
+- [x] Форма в модалке: **вкладки** (Реквизиты / Адреса и банк / Контакты и руководитель / Файлы и настройки) — без скролла всей панели; прокрутка только у области вкладки при необходимости; «Отмена»/«Сохранить» закреплены снизу
 - [x] Корневой класс формы `.org-form`, селекторы в SCSS вложены под ним (`ViewEncapsulation.None` без глобальных `.field` / `.notes-area`)
 - [x] Проверка пересечения с другими фичами: форма `clients` использует `.client-form` с вложенными селекторами (см. `ARCHITECTURE.md`)
 - [x] Нет `feature → feature`, deep-import, дублей ui-kit в фиче
+
+### Медиа (логотип / подпись / печать)
+- [x] Загрузка файла в форме (превью, лимит 512 КБ, `logoUrl` / `signatureUrl` / `stampUrl` как data URL)
+- [x] Сохранение полей при create/update, миниатюра в таблице, блок в деталях
 
 ### Данные / БЛ
 - [x] CRUD: `addOrganization`, `updateOrganization`, `removeOrganization` в `OrganizationsService`

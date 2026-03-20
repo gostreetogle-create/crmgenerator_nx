@@ -184,6 +184,9 @@ export class OrganizationsPageComponent implements OnInit {
         prefix: data.prefix,
         vatPercent: data.vatPercent,
         requisites: data.requisites,
+        logoUrl: data.logoUrl,
+        signatureUrl: data.signatureUrl,
+        stampUrl: data.stampUrl,
       });
     }
 

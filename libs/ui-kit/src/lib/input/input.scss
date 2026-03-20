@@ -20,8 +20,9 @@
   color: var(--danger);
 }
 
+/* Высота: −⅓ от прежних 32 / 34 / 36 px (каталог i-01, i-02 и все формы). */
 .ui-input {
-  height: 32px;
+  height: calc(32px * 2 / 3);
   padding: 0 var(--spacing-2);
   font-size: var(--font-size-sm);
   border: 1px solid var(--border);
@@ -34,12 +35,16 @@
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
+.ui-input--sm {
+  height: calc(32px * 2 / 3);
+}
+
 .ui-input--md {
-  height: 34px;
+  height: calc(34px * 2 / 3);
 }
 
 .ui-input--lg {
-  height: 36px;
+  height: calc(36px * 2 / 3);
   font-size: var(--font-size-base);
 }
 
