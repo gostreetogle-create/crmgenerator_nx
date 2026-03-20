@@ -1,7 +1,7 @@
 # Фича `organizations` — чек-лист состояния
 
 ## Summary
-Фича управления организациями: список, поиск, сортировка, пагинация, создание/редактирование в модальном окне, просмотр деталей и удаление с подтверждением. Поля из `docs/Пример полей схем бд/api.ts` (CreateOrganizationDto).
+Фича управления организациями: список, поиск, сортировка, пагинация, создание/редактирование в модальном окне, просмотр деталей и удаление с подтверждением. Поля и контракт API: `libs/domain` (`Organization`), **`docs/api/FRONTEND_CONTRACT.md`** (внедрено), при планировании расширений — **`docs/api/API_FUTURE_CHECKLIST.md`**, `OrganizationsApiService`.
 
 Расположение:
 - Страница: `apps/web/src/app/features/organizations/organizations-page.component.ts`
@@ -10,10 +10,11 @@
 
 ## Links
 - `docs/ai/ARCHITECTURE.md` (правила слоёв и Smart/Dumb)
+- `docs/ai/FEATURE_WITH_API_PATTERN.md` (норматив: CRUD + optional HTTP — эталонная фича)
 - `docs/ai/FEATURE_CHECKLIST_BASE.md` (как вести этот документ)
 - Роутинг: `apps/web/src/app/app.routes.ts` (маршрут `/organizations`)
 - Модель: `libs/domain/src/lib/organizations/organization.model.ts`
-- Схема БД: `docs/Пример полей схем бд/api.ts`
+- Контракт API / модель: `docs/api/FRONTEND_CONTRACT.md`, `libs/domain/src/lib/organizations/` (backlog API: `docs/api/API_FUTURE_CHECKLIST.md`)
 
 ## Definition of MVP (для текущей итерации)
 Пользователь может:
@@ -24,8 +25,8 @@
 - найти организацию по имени, ИНН, телефону, email, ФИО руководителя
 
 ## Non-goals (сейчас)
-- Бэкенд/API: нет реального HTTP
-- Отправка файлов на сервер (`POST .../upload-logo` и т.д.) — в UI файлы кодируются в data URL и сохраняются в `localStorage` вместе с организацией
+- Реальный бэк опционален: при **`apiBaseUrl`** CRUD идёт через **`OrganizationsApiService`**; без URL — `localStorage`
+- Отправка файлов на сервер (`POST .../upload-logo` и т.д.) — в UI data URL; при remote без upload-эндпоинтов большие поля уходят в JSON как есть
 - Импорт из Excel
 
 ## Implementation checklist
@@ -42,8 +43,8 @@
 
 ### Данные / БЛ
 - [x] CRUD: `addOrganization`, `updateOrganization`, `removeOrganization` в `OrganizationsService`
-- [x] Persistence: список в `localStorage` (`crmgenerator_nx_organizations_v1`)
-- [x] Генерация `_id` на создание: `crypto.randomUUID()`
+- [x] Persistence: без `apiBaseUrl` — `localStorage` (`crmgenerator_nx_organizations_v1`); с API — только HTTP (LS не пишется)
+- [x] Генерация `_id` на создание: локально `crypto.randomUUID()`; при API — id с сервера из ответа `create`
 - [x] Реактивное обновление через `signal`
 
 ### UI / UX
@@ -76,7 +77,7 @@
 - Поля logoUrl, signatureUrl, stampUrl — загрузка файлов при подключении API.
 
 ## History
-- 2026-03-20: старт фичи organizations (модель из api.ts, блоки полей)
+- 2026-03-20: старт фичи organizations (модель в `libs/domain`, блоки полей в форме)
 - 2026-03-20: MVP реализован (CRUD, поиск, сортировка, пагинация, форма по блокам, unit-тесты)
 
 ## Completion & Archiving

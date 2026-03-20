@@ -34,7 +34,7 @@ import { ClientsService } from './clients.service';
   styleUrl: './clients-page.component.scss',
 })
 export class ClientsPageComponent implements OnInit {
-  private readonly clientsService = inject(ClientsService);
+  protected readonly clientsService = inject(ClientsService);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private syncingFromUrl = false;

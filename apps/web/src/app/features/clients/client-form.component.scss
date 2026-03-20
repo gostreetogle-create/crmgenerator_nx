@@ -1,17 +1,157 @@
 @use "tokens";
 
-.client-form-card {
-  width: min(640px, 95vw);
+app-client-form {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  width: 100%;
 }
 
-.client-form {
+app-card.client-form-card {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  width: 100%;
+}
+
+app-card.client-form-card .card {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  padding: var(--spacing-4);
+}
+
+app-card.client-form-card .card-header {
+  flex-shrink: 0;
+  margin-bottom: var(--spacing-1);
+  padding-bottom: 2px;
+  border-bottom-width: 1px;
+}
+
+app-card.client-form-card .card-body {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+app-card.client-form-card .card-header h3 {
+  margin: 0;
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-tight, 1.2);
+}
+
+.client-form-card {
+  width: 100%;
+  max-width: none;
+}
+
+.client-form app-input.input-wrapper {
+  max-width: none;
+  width: 100%;
+}
+
+.client-form.client-form--dialog {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  gap: var(--spacing-3);
+}
+
+.client-form-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-2);
+  flex-shrink: 0;
+  padding-bottom: var(--spacing-2);
+  border-bottom: 1px solid var(--border);
+}
+
+.client-tab {
+  border: 1px solid transparent;
+  background: color-mix(in oklch, var(--card) 70%, var(--secondary));
+  color: var(--foreground);
+  border-radius: var(--radius-sm);
+  padding: var(--spacing-1) var(--spacing-2);
+  font-size: var(--font-size-sm);
+  font-family: var(--font-sans);
+  font-weight: var(--font-weight-medium);
+  cursor: pointer;
+  line-height: var(--line-height-tight, 1.2);
+}
+
+.client-tab:hover {
+  border-color: var(--border);
+  background: var(--ghost-hover);
+}
+
+.client-tab--active,
+.client-tab[aria-selected='true'] {
+  border-color: var(--primary);
+  background: color-mix(in oklch, var(--primary) 12%, var(--card));
+  color: var(--foreground);
+}
+
+.client-form-tab-panel {
+  flex: 1;
+  min-height: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: var(--spacing-2);
+  padding-right: var(--spacing-2);
+}
+
+.client-form-tab-inner {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: var(--spacing-4);
+  row-gap: var(--spacing-3);
+  align-items: start;
+}
+
+.client-form-tab-inner > .form-block--tab-wide {
+  grid-column: 1 / -1;
+}
+
+.client-form .form-block {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: var(--spacing-3);
   display: grid;
   gap: var(--spacing-2);
+  column-gap: var(--spacing-3);
+  min-width: 0;
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 520px) {
+  .client-form .form-block {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.client-form .block-legend {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--muted-foreground);
+  padding: 0 var(--spacing-1);
+  margin: 0 0 var(--spacing-1);
+  line-height: var(--line-height-tight, 1.2);
+  grid-column: 1 / -1;
+}
+
+.client-form .form-block-row-full {
+  grid-column: 1 / -1;
 }
 
 .client-form .field {
   display: grid;
-  gap: var(--spacing-1);
+  gap: 2px;
 }
 
 .client-form .notes-label {
@@ -20,10 +160,11 @@
 }
 
 .client-form .notes-area {
-  min-height: 74px;
+  min-height: 48px;
+  max-height: 120px;
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
-  padding: var(--spacing-2);
+  padding: var(--spacing-1) var(--spacing-2);
   font-size: var(--font-size-sm);
   background: var(--background);
   color: var(--foreground);
@@ -40,5 +181,14 @@
   display: flex;
   justify-content: flex-end;
   gap: var(--spacing-2);
-  margin-top: var(--spacing-2);
+  flex-shrink: 0;
+  margin-top: auto;
+  padding-top: var(--spacing-3);
+  border-top: 1px solid var(--border);
+}
+
+@media (max-width: 640px) {
+  .client-form-tab-inner {
+    grid-template-columns: 1fr;
+  }
 }

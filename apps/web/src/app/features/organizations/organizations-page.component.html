@@ -1,4 +1,36 @@
 <app-card title="Организации">
+  @if (organizationsService.listLoading() && organizationsService.organizations().length === 0) {
+    <p class="list-state list-state--loading" aria-live="polite">Загрузка организаций…</p>
+  }
+  @if (organizationsService.listLoading() && organizationsService.organizations().length > 0) {
+    <p class="list-state list-state--refresh" aria-live="polite">Обновление списка…</p>
+  }
+  @if (organizationsService.listLoadError(); as loadErr) {
+    <div class="state-banner state-banner--warning" role="alert">
+      <div class="state-banner__text">
+        <strong>Не удалось загрузить данные с сервера.</strong>
+        {{ loadErr }}
+        Показаны сохранённые локально данные (кэш или демо).
+      </div>
+      <div class="state-banner__actions">
+        <app-button variant="secondary" size="sm" (clicked)="organizationsService.refreshFromRemote()">
+          Повторить
+        </app-button>
+        <button type="button" class="banner-dismiss" (click)="organizationsService.dismissListLoadError()">
+          Скрыть
+        </button>
+      </div>
+    </div>
+  }
+  @if (organizationsService.mutationError(); as mutErr) {
+    <div class="state-banner state-banner--danger" role="alert">
+      <div class="state-banner__text">{{ mutErr }}</div>
+      <button type="button" class="banner-dismiss" (click)="organizationsService.dismissMutationError()">
+        Закрыть
+      </button>
+    </div>
+  }
+
   <app-button variant="primary" size="md" (clicked)="onOpenModal()">
     Добавить организацию
   </app-button>
@@ -151,7 +183,8 @@
       aria-modal="true"
       (click)="$event.stopPropagation()"
     >
-      <dl class="details-grid">
+      <div class="details-body">
+        <dl class="details-grid">
         @if (s.logoUrl || s.signatureUrl || s.stampUrl) {
           <dt class="dt-with-icon">Логотип / подпись / печать</dt>
           <dd class="details-media-row">
@@ -217,7 +250,8 @@
         <dd class="whitespace-pre-wrap">{{ s.requisites || '—' }}</dd>
         <dt class="dt-with-icon">Заметки</dt>
         <dd class="whitespace-pre-wrap">{{ s.notes || '—' }}</dd>
-      </dl>
+        </dl>
+      </div>
       <div class="details-actions">
         <app-button variant="secondary" size="md" (clicked)="selectedOrganization.set(null)">
           Закрыть

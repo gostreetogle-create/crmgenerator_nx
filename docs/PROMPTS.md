@@ -21,7 +21,8 @@
 5. Создай apps/web/src/app/features/<feature>/: *-page (smart), при необходимости *-form (dumb), *.service.ts. Не импортировать другие features.
 6. UI только из @ui-kit/* и design-tokens; не дублировать button/input/card/confirm-dialog в фиче.
 7. Если есть *-form с ViewEncapsulation.None: в SCSS все селекторы только под уникальным корнем (.<feature>-form), без «голых» .field/.notes-area (см. ARCHITECTURE.md). В чек-листе фичи включи блок «Архитектура и стили» из FEATURE_CHECKLIST_BASE.md.
-8. Обнови чек-лист и в конце предложи команды: npm run ui:lint, nx build web --configuration development, nx test web.
+8. Если фича = список + CRUD + опциональный бэк (как organizations/clients): строго следуй docs/ai/FEATURE_WITH_API_PATTERN.md — domain, FRONTEND_CONTRACT.md, core/api/*-api.service.ts, *Service с сигналами и баннерами на странице, тесты с моком API.
+9. Обнови чек-лист и в конце предложи команды: npm run ui:lint, nx build web --configuration development, nx test web.
 
 Не меняй поведение существующих фич без запроса. Покажи список изменённых/созданных файлов.
 ```

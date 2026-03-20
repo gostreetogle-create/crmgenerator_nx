@@ -11,6 +11,7 @@
 3. `docs/ai/AI_PROJECT_PLAYBOOK.md` (этот файл) — процесс  
 4. При UI в `ui-kit`: `docs/ai/COMPONENT_TEMPLATE.md`  
 5. Готовые формулировки задач: `docs/PROMPTS.md`  
+6. Если фича со **списком + CRUD + опциональным API** — **`docs/ai/FEATURE_WITH_API_PATTERN.md`** (единый паттерн с `organizations` / `clients`).
 
 Если задача касается **конкретной фичи** — открыть `docs/ai/FEATURE_<NAME>_CHECKLIST.md` (или создать по шаблону).
 
@@ -26,6 +27,8 @@
 | **Нет deep-import** | Не импортировать `libs/.../src/lib/.../file.ts`; только публичные entry (`index.ts`, алиасы в `tsconfig.base.json`) |
 | **ui-kit без домена** | Компоненты `@ui-kit/*` не знают о `Client` и прочих сущностях — только generic API |
 | **Документация = код** | Новый слой / правило / массовый паттерн → обновить `ARCHITECTURE.md` и при необходимости чек-лист |
+| **API и бэк** | Уже внедрённое во фронте → **`docs/api/FRONTEND_CONTRACT.md`** + `libs/domain`. Идеи до согласования → **`docs/api/API_FUTURE_CHECKLIST.md`**, затем перенос в контракт |
+| **Data-фича с HTTP** | Реализация строго по **`docs/ai/FEATURE_WITH_API_PATTERN.md`** (не выдумывать другой каркас без согласования) |
 
 ---
 
@@ -39,7 +42,8 @@
 | UI kit | `libs/ui-kit/src/lib/<component>/` | переиспользуемые презентационные компоненты |
 | Design tokens | `libs/design-tokens` | токены и глобальные стили дизайна |
 | Shared | `libs/shared` (когда появится) | pure utils, **не** бизнес-модели |
-| Data-access | `libs/data-access` (план) | HttpClient, DTO, мапперы DTO → domain |
+| Data-access | `apps/web/src/app/core/api` (**сейчас**) | Тонкие `*ApiService`; полный паттерн фичи — **`FEATURE_WITH_API_PATTERN.md`** |
+| Data-access | `libs/data-access` (план) | Будущее вынесение, если появится несколько приложений |
 
 **Импорты:**
 
@@ -59,14 +63,20 @@
    - Создать `docs/ai/FEATURE_<NAME>_CHECKLIST.md` из `FEATURE_CHECKLIST_BASE.md` (MVP, non-goals, чекбоксы).  
 3. **Domain (если нужна сущность)**  
    - Добавить `libs/domain/src/lib/<aggregate>/`, экспорт через `libs/domain/src/index.ts` (не раздувать публичный API).  
+3a. **Контракт API (если фича ходит на бэк)**  
+   - Дописать **`docs/api/FRONTEND_CONTRACT.md`**; черновик до согласования — **`API_FUTURE_CHECKLIST.md`**.  
+3b. **HTTP-слой (если как organizations/clients)**  
+   - По **`FEATURE_WITH_API_PATTERN.md`**: `core/api/<entity>-api.service.ts` + экспорт в `core/api/index.ts`.  
+3c. **Feature-сервис**  
+   - Один в один по паттерну: сигналы состояния, local vs remote, оптимизм, кэш LS — см. эталонные `*.service.ts`.  
 4. **Роутинг**  
    - Маршрут в `app.routes.ts` (и при SSR `app.routes.server.ts`, если используется).  
-5. **Feature-код**  
-   - `<name>-page`, при необходимости `<name>-form`, `<name>.service.ts`.  
+5. **Feature UI**  
+   - `<name>-page` (баннеры из эталона, `protected` inject сервиса), при необходимости `<name>-form`.  
 6. **Навигация**  
    - Ссылка в layout/header при необходимости.  
 7. **Тесты**  
-   - Минимум: сервис/критичная логика; не ломать существующие `nx test web`.  
+   - Минимум: `*.service.spec.ts` с моком `*ApiService`; для data-фичи — сценарии из **`FEATURE_WITH_API_PATTERN.md`**; не ломать `nx test web`.  
 8. **Проверки**  
    - `npm run ui:lint` или `nx lint web` + `nx lint domain` при изменении domain  
    - `nx build web`  
@@ -91,7 +101,8 @@
 ## 5. Антипаттерны (остановиться и переспроектировать)
 
 - Дублировать интерфейс сущности в фиче и в `shared` вместо `@domain`  
-- Вызывать `HttpClient` из компонента вместо сервиса / будущего `data-access`  
+- Вызывать `HttpClient` из компонента вместо **`core/api/*ApiService`** + feature `*Service` (см. **`FEATURE_WITH_API_PATTERN.md`**)
+- Делать data-фичу с бэком **иначе**, чем в **`FEATURE_WITH_API_PATTERN.md`**, без явного согласования в `ARCHITECTURE` / чек-листе  
 - Импортировать `Router` или фичевый сервис внутри `ui-kit`  
 - Добавлять в `@domain` Angular decorators, `inject()`, компоненты  
 - Пропускать обновление чек-листа после изменения кода фичи  
@@ -117,4 +128,5 @@ npx nx lint domain   # если менялся libs/domain
 | `docs/PROMPTS.md` | Готовые промпты под вставку в чат |
 | `docs/ai/FEATURE_CHECKLIST_BASE.md` | Шаблон состояния фичи |
 | `docs/ai/ARCHITECTURE.md` | Норматив по архитектуре |
+| `docs/ai/FEATURE_WITH_API_PATTERN.md` | Эталон CRUD + optional HTTP (как organizations/clients) |
 | `tsconfig.base.json` | Алиасы `@domain`, `@ui-kit/*`, … |

@@ -9,6 +9,7 @@
 - Сервис/БЛ фасад: `apps/web/src/app/features/clients/clients.service.ts`
 
 ## Links
+- `docs/ai/FEATURE_WITH_API_PATTERN.md` (норматив: CRUD + optional HTTP)
 - `docs/ai/ARCHITECTURE.md` (правила слоёв и “Smart/Dumb”)
 - `docs/ai/FEATURE_CHECKLIST_BASE.md` (как вести этот документ)
 - Роутинг: `apps/web/src/app/app.routes.ts` (маршрут `/clients`)
@@ -24,7 +25,7 @@
 
 ## Non-goals (сейчас)
 - Бэкенд/API: нет реального HTTP и нет БД
-- Персистентность через API/БД (пока не подключена)
+- Персистентность: при заданном `apiBaseUrl` — **HTTP** (`ClientsApiService`); иначе **`localStorage`**
 - Сложные статусы/воркфлоу клиента (новый/архив и т.п.) — не введены
 
 ## Implementation checklist
@@ -40,7 +41,7 @@
 - [x] Поиск по query: `searchQuery` и фильтрация по name/phone/inn/email/contactPerson
 - [x] Сортировка по `name` и `discount` с направлением (asc/desc)
 - [x] Пагинация (pageSize=10 по умолчанию)
-- [x] Создание/редактирование в модальном окне (через `app-client-form`)
+- [x] Создание/редактирование в модальном окне (`app-client-form`): вкладки **Общее / Реквизиты / Условия и заметки**, фиксированная высота `.modal-panel`, скролл только в области вкладки (см. `ARCHITECTURE.md` → модальные формы)
 - [x] Валидация формы и отключение submit при ошибках (`ClientFormComponent.errors/hasErrors`)
 - [x] Удаление через подтверждение (`app-confirm-dialog`)
 - [x] Доступность: `Escape` закрывает модалки, добавлена фокус-ловушка (Tab/Shift+Tab) внутри edit/details
@@ -63,7 +64,7 @@
 
 ## Risks / open questions
 - Валидация `phone` может быть недостаточно точной (зависит от формата, который нужен бизнесу)
-- “Настоящая” персистентность (API/БД) пока не подключена: `localStorage` остаётся временным решением
+- При пустом `apiBaseUrl` данные остаются в `localStorage`; для бэка задать URL в `environment.development.ts`
 
 ## History
 - 2026-03-20: старт итерации `clients` (list/search/sort/pagination + CRUD + modals + URL sync)

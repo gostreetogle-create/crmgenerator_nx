@@ -18,6 +18,14 @@
 - Связывает фичи между собой, но не хранит доменную бизнес-логику.
 - Не содержит дублирующие UI-компоненты, если они уже есть в `ui-kit`.
 
+#### `apps/web/src/app/core/api` (HTTP к бэкенду)
+- **`environments/`** — `environment.ts` / `environment.development.ts`: `production`, **`apiBaseUrl`** (пусто = без удалённого API, только текущие feature-сервисы).
+- Подключение в **`app.config.ts`**: `APP_ENVIRONMENT`, `provideHttpClient(withFetch(), withInterceptors([apiBaseUrlInterceptor]))`.
+- **`OrganizationsApiService`**, **`ClientsApiService`** — тонкие обёртки над `HttpClient` по путям из **`docs/api/FRONTEND_CONTRACT.md`** (только то, что уже внедрено); идеи на потом — **`docs/api/API_FUTURE_CHECKLIST.md`** (перед кодом — согласовать и перенести в контракт).
+- **`OrganizationsService` / `ClientsService`** при непустом **`apiBaseUrl`** используют эти API-сервисы (загрузка списка + CRUD); иначе — сид и **`localStorage`**.
+- **Норматив для любой новой такой фичи:** **`docs/ai/FEATURE_WITH_API_PATTERN.md`** — пошагово: `domain` → `XxxApiService` → `XxxService` (сигналы, оптимизм, кэш) → страница с баннерами и тесты.
+- Фичи **не** дублируют сырые URL: относительные строки для `HttpClient`, база задаётся один раз в `environment`.
+
 ### 2) `apps/web/src/app/features/*` (domain feature layer)
 - Каждая папка — отдельная предметная фича (`clients`, `organizations`, `products`...).
 - Внутри фичи: page/container, формы, локальные модели/мапперы, feature-сервис.
@@ -49,6 +57,22 @@
 - Не делают HTTP, не ходят в `Router`, не хранят бизнес-правила.
 
 Правило потока: **Smart -> Dumb через `input`**, **Dumb -> Smart через `output`**.
+
+## Контракт API для фронта (ведение вручную)
+
+- **Истина по API, уже внедрённому во фронте:** `docs/api/FRONTEND_CONTRACT.md` — эндпоинты и поля под текущий код (`domain`, `core/api`).
+- **Черновик / backlog API:** `docs/api/API_FUTURE_CHECKLIST.md` — не считать контрактом до переноса в `FRONTEND_CONTRACT.md`; **перед внедрением** уточнять поля.
+- **Когда обновлять:** при добавлении фичи с данными с сервера, при изменении полей форм/моделей, при появлении новых требований от бэка (загрузки файлов, пагинация, фильтры, ошибки).
+- **Цель:** договорённости по **текущему** коду — **`FRONTEND_CONTRACT.md`** + **`libs/domain`** + **`core/api`**. План на будущее ведётся в **`API_FUTURE_CHECKLIST.md`** до промоции в контракт. Старый `docs/Пример полей схем бд/api.ts` не обязателен — сверка с чеклистом, затем можно удалить папку.
+
+## Эталон: фича с CRUD и опциональным HTTP
+
+Все новые data-фичи (список + формы + опциональный бэк) делай **в одном стиле** с `organizations` и `clients`:
+
+1. Читай **`docs/ai/FEATURE_WITH_API_PATTERN.md`** — там таблица эталонных файлов, чек-лист по слоям, запреты и требования к тестам.
+2. Не отклоняйся без причины: иначе усложняется сопровождение и онбординг ИИ/людей.
+
+Кратко: **`libs/domain`** → **`docs/api/FRONTEND_CONTRACT.md`** → **`core/api/*-api.service.ts`** → **`features/<name>/*.service.ts`** (сигналы `listLoading` / `listLoadError` / `mutationError`, LS-кэш при remote, оптимистичный CRUD) → **страница** с баннерами (`protected` inject сервиса).
 
 ## Точки входа и публичный API
 
@@ -203,9 +227,12 @@ apps/web/src/app/features/<feature>/
    - Секции оформлять как **группы с рамкой** (`fieldset` + `legend` или эквивалент), без лишней декоративности — ближе к **компактной учётной форме**, не к маркетинговому лендингу.
 
 ### Эталон в репозитории
-- Форма: `apps/web/src/app/features/organizations/organization-form.component.{ts,html,scss}`  
+- Форма (много разделов): `apps/web/src/app/features/organizations/organization-form.component.{ts,html,scss}`  
 - Модалка (фиксированная высота, обёртка): `apps/web/src/app/features/organizations/organizations-page.component.{html,scss}`  
-- Состояние фичи: `docs/ai/FEATURE_ORGANIZATIONS_CHECKLIST.md`
+- Форма клиента (вкладки + та же схема модалки): `apps/web/src/app/features/clients/client-form.component.{ts,html,scss}` и `clients-page.component.scss` (`.modal-panel`)  
+- Карточка «Детали» (прокрутка `.details-body`, кнопка снизу): `clients-page` / `organizations-page` — класс `.details-body` вокруг `<dl>`  
+- Подтверждение действия: `libs/ui-kit/src/lib/confirm-dialog/confirm-dialog.{html,scss}`  
+- Состояние фичи: `docs/ai/FEATURE_ORGANIZATIONS_CHECKLIST.md`, `FEATURE_CLIENTS_CHECKLIST.md`
 
 ### Чек-лист для новой модалки с многими разделами
 - [ ] Вкладки или иной явный разбиение контента без одной бесконечной колонны  
@@ -232,7 +259,8 @@ apps/web/src/app/features/<feature>/
 1. `npm run ui:lint`
 2. `nx serve web` + hard refresh (`Ctrl+F5`) для визуальной проверки
 3. Проверка, что нет deep-import и нет новых дублирующих компонентов
-4. Обновление `docs/ai/ARCHITECTURE.md`, если менялась структура или правила
+4. Обновление `docs/ai/ARCHITECTURE.md`, если менялась структура или правила  
+5. При изменениях API/полей сущностей — актуализировать **`docs/api/FRONTEND_CONTRACT.md`**; новые идеи до согласования — в **`docs/api/API_FUTURE_CHECKLIST.md`**
 
 ## Документация состояния фич
 Чтобы ускорять разработку и синхронизировать команду, по каждой фиче ведётся отдельный чек-лист состояния.
@@ -240,6 +268,7 @@ apps/web/src/app/features/<feature>/
 Читай:
 - промпты для ИИ: `docs/PROMPTS.md`
 - playbook для ИИ: `docs/ai/AI_PROJECT_PLAYBOOK.md`
+- **паттерн data-фичи + API:** `docs/ai/FEATURE_WITH_API_PATTERN.md`
 - базовый шаблон: `docs/ai/FEATURE_CHECKLIST_BASE.md`
 - пример для текущей фичи: `docs/ai/FEATURE_CLIENTS_CHECKLIST.md`
 - архив: `docs/ai/archive/`

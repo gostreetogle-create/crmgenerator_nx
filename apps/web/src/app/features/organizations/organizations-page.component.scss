@@ -153,9 +153,33 @@
 }
 
 .details-card {
-  width: min(520px, 95vw);
-  max-height: 80vh;
+  box-sizing: border-box;
+  width: min(520px, 96vw);
+  max-height: min(560px, 88vh);
+}
+
+:host ::ng-deep app-card.details-card .card {
+  display: flex;
+  flex-direction: column;
+  max-height: min(560px, 88vh);
+  overflow: hidden;
+}
+
+:host ::ng-deep app-card.details-card .card-body {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  gap: 0;
+}
+
+.details-body {
+  flex: 1;
+  min-height: 0;
+  overflow-x: hidden;
   overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .details-grid {
@@ -211,7 +235,10 @@
 .details-actions {
   display: flex;
   justify-content: flex-end;
-  margin-top: var(--spacing-3);
+  flex-shrink: 0;
+  margin-top: 0;
+  padding-top: var(--spacing-3);
+  border-top: 1px solid var(--border);
 }
 
 .pagination-bar {
@@ -226,4 +253,78 @@
 .pagination-actions {
   display: flex;
   gap: var(--spacing-2);
+}
+
+.list-state {
+  margin: 0 0 var(--spacing-3);
+  padding: var(--spacing-3);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-sm);
+}
+
+.list-state--loading {
+  background: var(--ghost-hover);
+  color: var(--muted-foreground);
+}
+
+.list-state--refresh {
+  background: var(--card);
+  border: 1px solid var(--border);
+  color: var(--muted-foreground);
+}
+
+.state-banner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--spacing-3);
+  margin-bottom: var(--spacing-3);
+  padding: var(--spacing-3);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-sm);
+}
+
+.state-banner--warning {
+  background: color-mix(in oklab, var(--accent) 22%, var(--card));
+  border: 1px solid var(--border);
+  color: var(--foreground);
+}
+
+.state-banner--danger {
+  background: color-mix(in oklab, var(--danger) 12%, var(--card));
+  border: 1px solid var(--danger);
+  color: var(--foreground);
+}
+
+.state-banner__text {
+  flex: 1 1 12rem;
+  line-height: 1.45;
+
+  strong {
+    display: block;
+    margin-bottom: var(--spacing-1);
+  }
+}
+
+.state-banner__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--spacing-2);
+}
+
+.banner-dismiss {
+  padding: var(--spacing-2) var(--spacing-3);
+  border: none;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--secondary);
+  font: inherit;
+  cursor: pointer;
+  text-decoration: underline;
+
+  &:hover {
+    color: var(--secondary-hover);
+  }
 }

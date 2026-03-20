@@ -1,95 +1,149 @@
 <app-card [title]="client() ? 'Редактировать клиент' : 'Новый клиент'" class="client-form-card">
-  <form class="client-form" (ngSubmit)="onSubmit()">
-    <div class="field">
-      <app-input
-        label="Название / ФИО"
-        [value]="formData().name || ''"
-        [error]="errors().name"
-        [showErrorText]="false"
-        (valueChange)="formData.update((v) => ({ ...v, name: $event }))"
-      />
+  <form class="client-form client-form--dialog" (ngSubmit)="onSubmit()">
+    <div class="client-form-tabs" role="tablist" aria-label="Разделы формы">
+      <button
+        type="button"
+        class="client-tab"
+        role="tab"
+        [attr.aria-selected]="activeTab() === 'general'"
+        [class.client-tab--active]="activeTab() === 'general'"
+        (click)="setTab('general')"
+      >
+        Общее
+      </button>
+      <button
+        type="button"
+        class="client-tab"
+        role="tab"
+        [attr.aria-selected]="activeTab() === 'requisites'"
+        [class.client-tab--active]="activeTab() === 'requisites'"
+        (click)="setTab('requisites')"
+      >
+        Реквизиты
+      </button>
+      <button
+        type="button"
+        class="client-tab"
+        role="tab"
+        [attr.aria-selected]="activeTab() === 'terms'"
+        [class.client-tab--active]="activeTab() === 'terms'"
+        (click)="setTab('terms')"
+      >
+        Условия и заметки
+      </button>
     </div>
 
-    <app-input
-      label="Контактное лицо"
-      [value]="formData().contactPerson || ''"
-      (valueChange)="formData.update((v) => ({ ...v, contactPerson: $event }))"
-    />
+    @if (activeTab() === 'general') {
+      <div class="client-form-tab-panel" role="tabpanel">
+        <div class="client-form-tab-inner">
+          <fieldset class="form-block form-block--tab-wide">
+            <legend class="block-legend">Контакты</legend>
+            <div class="field">
+              <app-input
+                label="Название / ФИО"
+                [value]="formData().name || ''"
+                [error]="errors().name"
+                [showErrorText]="false"
+                (valueChange)="formData.update((v) => ({ ...v, name: $event }))"
+              />
+            </div>
+            <app-input
+              label="Контактное лицо"
+              [value]="formData().contactPerson || ''"
+              (valueChange)="formData.update((v) => ({ ...v, contactPerson: $event }))"
+            />
+            <div class="field">
+              <app-input
+                label="Телефон"
+                type="tel"
+                [value]="formData().phone || ''"
+                [error]="errors().phone"
+                (valueChange)="formData.update((v) => ({ ...v, phone: $event }))"
+              />
+            </div>
+            <div class="field">
+              <app-input
+                label="E-mail"
+                type="email"
+                [value]="formData().email || ''"
+                [error]="errors().email"
+                (valueChange)="formData.update((v) => ({ ...v, email: $event }))"
+              />
+            </div>
+          </fieldset>
+        </div>
+      </div>
+    }
 
-    <div class="field">
-      <app-input
-        label="Телефон"
-        type="tel"
-        [value]="formData().phone || ''"
-        [error]="errors().phone"
-        (valueChange)="formData.update((v) => ({ ...v, phone: $event }))"
-      />
-    </div>
+    @if (activeTab() === 'requisites') {
+      <div class="client-form-tab-panel" role="tabpanel">
+        <div class="client-form-tab-inner">
+          <fieldset class="form-block form-block--tab-wide">
+            <legend class="block-legend">Реквизиты</legend>
+            <div class="field">
+              <app-input
+                label="ИНН"
+                [value]="formData().inn || ''"
+                [error]="errors().inn"
+                (valueChange)="formData.update((v) => ({ ...v, inn: $event }))"
+              />
+            </div>
+            <div class="field">
+              <app-input
+                label="КПП"
+                [value]="formData().kpp || ''"
+                [error]="errors().kpp"
+                (valueChange)="formData.update((v) => ({ ...v, kpp: $event }))"
+              />
+            </div>
+            <app-input
+              label="Адрес"
+              [value]="formData().address || ''"
+              (valueChange)="formData.update((v) => ({ ...v, address: $event }))"
+            />
+            <app-input
+              label="Реквизиты"
+              [value]="formData().requisites || ''"
+              (valueChange)="formData.update((v) => ({ ...v, requisites: $event }))"
+            />
+          </fieldset>
+        </div>
+      </div>
+    }
 
-    <div class="field">
-      <app-input
-        label="E-mail"
-        type="email"
-        [value]="formData().email || ''"
-        [error]="errors().email"
-        (valueChange)="formData.update((v) => ({ ...v, email: $event }))"
-      />
-    </div>
-
-    <div class="field">
-      <app-input
-        label="ИНН"
-        [value]="formData().inn || ''"
-        [error]="errors().inn"
-        (valueChange)="formData.update((v) => ({ ...v, inn: $event }))"
-      />
-    </div>
-
-    <div class="field">
-      <app-input
-        label="КПП"
-        [value]="formData().kpp || ''"
-        [error]="errors().kpp"
-        (valueChange)="formData.update((v) => ({ ...v, kpp: $event }))"
-      />
-    </div>
-
-    <app-input
-      label="Адрес"
-      [value]="formData().address || ''"
-      (valueChange)="formData.update((v) => ({ ...v, address: $event }))"
-    />
-
-    <app-input
-      label="Реквизиты"
-      [value]="formData().requisites || ''"
-      (valueChange)="formData.update((v) => ({ ...v, requisites: $event }))"
-    />
-
-    <div class="field">
-      <app-input
-        label="Скидка, %"
-        type="number"
-        [value]="asText(formData().discount)"
-        [error]="errors().discount"
-        (valueChange)="formData.update((v) => ({ ...v, discount: +$event || 0 }))"
-      />
-    </div>
-
-    <app-input
-      label="Наценка клиента, %"
-      type="number"
-      [value]="asText(formData().clientMarkup)"
-      (valueChange)="formData.update((v) => ({ ...v, clientMarkup: +$event || 0 }))"
-    />
-
-    <label class="notes-label" for="notes">Заметки</label>
-    <textarea
-      id="notes"
-      class="notes-area"
-      [value]="formData().notes || ''"
-      (input)="formData.update((v) => ({ ...v, notes: $any($event.target).value }))"
-    ></textarea>
+    @if (activeTab() === 'terms') {
+      <div class="client-form-tab-panel" role="tabpanel">
+        <div class="client-form-tab-inner">
+          <fieldset class="form-block form-block--tab-wide">
+            <legend class="block-legend">Условия и заметки</legend>
+            <div class="field">
+              <app-input
+                label="Скидка, %"
+                type="number"
+                [value]="asText(formData().discount)"
+                [error]="errors().discount"
+                (valueChange)="formData.update((v) => ({ ...v, discount: +$event || 0 }))"
+              />
+            </div>
+            <app-input
+              label="Наценка клиента, %"
+              type="number"
+              [value]="asText(formData().clientMarkup)"
+              (valueChange)="formData.update((v) => ({ ...v, clientMarkup: +$event || 0 }))"
+            />
+            <div class="form-block-row-full">
+              <label class="notes-label" for="client-notes">Заметки</label>
+              <textarea
+                id="client-notes"
+                class="notes-area"
+                [value]="formData().notes || ''"
+                (input)="formData.update((v) => ({ ...v, notes: $any($event.target).value }))"
+              ></textarea>
+            </div>
+          </fieldset>
+        </div>
+      </div>
+    }
 
     <div class="form-actions">
       <app-button variant="secondary" type="button" (clicked)="cancel.emit()">

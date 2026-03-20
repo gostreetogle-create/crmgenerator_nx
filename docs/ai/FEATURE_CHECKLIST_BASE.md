@@ -21,6 +21,10 @@
 
 Практическое правило: если в коде фичи что-то поменялось, документ в той же сессии тоже должен быть обновлён.
 
+Если фича затрагивает **данные с бэка**: после согласования полей — **`docs/api/FRONTEND_CONTRACT.md`** + `libs/domain`; до этого черновик — **`docs/api/API_FUTURE_CHECKLIST.md`** (см. `ARCHITECTURE.md`).
+
+**Если фича = список + CRUD + опциональный HTTP (как организации/клиенты):** обязательно следуй **`docs/ai/FEATURE_WITH_API_PATTERN.md`** и в `Links` чек-листа укажи этот файл как норматив. Код пиши **однотипно** с эталонами из таблицы в том документе.
+
 ## Процесс завершения (архивация) — “всё готово”
 Фича считается завершённой и готовой к архивации, когда одновременно выполнены условия:
 - В `Implementation checklist` нет пунктов `- [!]` (blocked) и нет `- [-]` (частично) по критериям MVP.
@@ -80,7 +84,7 @@
      - `- [-]` частично (укажи, что именно отсутствует)
      - `- [ ]` не начато
 6. `Data/validation notes` — правила валидации/нормализации (если есть).
-7. `Integration points` — какие места будут меняться при подключении реального бэка/API (repository, DTO, persistence).
+7. `Integration points` — какие места будут меняться при подключении реального бэка/API (repository, DTO, persistence). Для стандартной data-фичи укажи соответствие **`FEATURE_WITH_API_PATTERN.md`** (уже реализовано / отличия).
 8. `Tests & QA` — какие тесты/проверки планируются и что уже есть.
 9. `Risks / open questions` — риски и вопросы.
 10. `History` — краткие записи “когда/что решили/что изменили”.
@@ -123,6 +127,16 @@
 
 - [ ] CRUD / фасад в `*.service.ts`, реактивность через `signal` (или согласованный паттерн проекта).
 - [ ] Persistence (если MVP): ключ `localStorage` уникален для фичи.
+
+### Данные + HTTP (если фича как `organizations` / `clients`)
+
+Используй **`docs/ai/FEATURE_WITH_API_PATTERN.md`** как чек-лист реализации. В `Implementation checklist` фичи минимум:
+
+- [ ] Модель в **`libs/domain`**, контракт в **`FRONTEND_CONTRACT.md`** (backlog предварительно в **`API_FUTURE_CHECKLIST.md`**).
+- [ ] **`core/api/<entity>-api.service.ts`**, экспорт из `core/api/index.ts`, без URL в feature-сервисе кроме как через этот API-сервис.
+- [ ] Feature `*Service`: ветка local (`localStorage` + `effect`) vs remote (`getAll`, оптимистичный CRUD, **`listLoading` / `listLoadError` / `mutationError`**, `persistRemoteCache`, fallback при сбое `getAll`).
+- [ ] Страница: **`protected readonly`** inject сервиса, баннеры загрузки/ошибок как в **`organizations-page`** / **`clients-page`**, стили `.state-banner` / `.list-state`.
+- [ ] **`*.service.spec.ts`**: мок API, сценарии remote success и **getAll fail → кэш**.
 
 ### UI / UX (пример)
 

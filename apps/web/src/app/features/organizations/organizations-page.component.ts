@@ -34,7 +34,7 @@ import { OrganizationsService } from './organizations.service';
   styleUrl: './organizations-page.component.scss',
 })
 export class OrganizationsPageComponent implements OnInit {
-  private readonly organizationsService = inject(OrganizationsService);
+  protected readonly organizationsService = inject(OrganizationsService);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private syncingFromUrl = false;

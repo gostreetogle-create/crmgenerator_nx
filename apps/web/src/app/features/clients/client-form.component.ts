@@ -1,9 +1,9 @@
 import { CommonModule } from '@angular/common';
 import {
   Component,
-  OnChanges,
   ViewEncapsulation,
   computed,
+  effect,
   input,
   output,
   signal,
@@ -13,6 +13,8 @@ import { CardComponent } from '@ui-kit/card';
 import { InputComponent } from '@ui-kit/input';
 import { Client } from '@domain';
 
+type ClientFormTab = 'general' | 'requisites' | 'terms';
+
 @Component({
   selector: 'app-client-form',
   standalone: true,
@@ -21,7 +23,7 @@ import { Client } from '@domain';
   styleUrl: './client-form.component.scss',
   encapsulation: ViewEncapsulation.None,
 })
-export class ClientFormComponent implements OnChanges {
+export class ClientFormComponent {
   readonly client = input<Client | null>(null);
 
   readonly save = output<Partial<Client>>();
@@ -29,6 +31,7 @@ export class ClientFormComponent implements OnChanges {
   readonly cancel = output<void>();
 
   readonly formData = signal<Partial<Client>>({});
+  readonly activeTab = signal<ClientFormTab>('general');
 
   readonly errors = computed(() => {
     const d = this.formData();
@@ -56,9 +59,16 @@ export class ClientFormComponent implements OnChanges {
     Object.values(this.errors()).some((v) => Boolean(v))
   );
 
-  ngOnChanges() {
-    const value = this.client();
-    this.formData.set(value ? { ...value } : {});
+  constructor() {
+    effect(() => {
+      const value = this.client();
+      this.formData.set(value ? { ...value } : {});
+      this.activeTab.set('general');
+    });
+  }
+
+  setTab(tab: ClientFormTab): void {
+    this.activeTab.set(tab);
   }
 
   onSubmit() {

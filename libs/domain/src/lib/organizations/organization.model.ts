@@ -32,6 +32,8 @@ export interface Organization {
   markup?: number;
   prefix?: string;
   vatPercent?: number;
+  /** Цвет акцента для КП/PDF (hex), например `#1d4ed8` */
+  accentColor?: string;
   requisites?: string;
   createdAt?: string;
   updatedAt?: string;
