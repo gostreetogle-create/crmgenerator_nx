@@ -10,8 +10,9 @@
 | Что | Где |
 |-----|-----|
 | Модели и поля | `libs/domain/src/lib/**` |
-| HTTP сейчас | `OrganizationsApiService`, `ClientsApiService` — только **CRUD** по таблицам ниже |
+| HTTP сейчас | `OrganizationsApiService`, `ClientsApiService`, `CategoriesApiService`, `MaterialsApiService`, `PartTypesApiService`, `ProductsApiService` — **CRUD** в UI. `ProductSpecificationsApiService` — каркас в `core/api` **без вызовов из фич** (страница спецификаций отключена). |
 | UI без бэка | `localStorage` + `*Service` в фичах; при `apiBaseUrl === ''` запросы к API не идут |
+| Бизнес-логика и план страниц | `docs/business/BL_PAGES_AND_DATA_MODEL.md`, `docs/business/BUSINESS_LOGIC.md` |
 
 > Старый `docs/Пример полей схем бд/api.ts` можно удалить после сверки с **`API_FUTURE_CHECKLIST.md`** (если нужен архив DTO — оставьте копию вне репо).
 
@@ -125,6 +126,207 @@
 
 ---
 
+## Категории товаров (`Category`)
+
+**Модель:** `libs/domain/src/lib/categories/category.model.ts`  
+**HTTP:** `categories-api.service.ts`  
+**UI:** `/catalog/categories` — `CategoriesService`, `CategoriesPageComponent`
+
+| Метод | Путь | Назначение |
+|--------|------|------------|
+| `GET` | `/categories` | Список |
+| `GET` | `/categories/:id` | Одна запись |
+| `POST` | `/categories` | Создание |
+| `PATCH` | `/categories/:id` | Обновление |
+| `DELETE` | `/categories/:id` | Удаление |
+
+### Поля JSON
+
+Обязательное в UI: **`name`**.
+
+| Поле | Тип | Смысл |
+|------|-----|--------|
+| `_id` | string | Id |
+| `name` | string | Название |
+| `parentId` | string | Родительская категория (опц.) |
+| `sortOrder` | number | Порядок сортировки |
+| `isActive` | boolean | Активна в справочнике |
+
+**Локально:** ключ LS `crmgenerator_nx_categories_v1`.
+
+---
+
+## Материалы (`Material`)
+
+**Модель:** `libs/domain/src/lib/materials/material.model.ts`  
+**HTTP:** `materials-api.service.ts`  
+**UI:** `/catalog/materials`
+
+| Метод | Путь | Назначение |
+|--------|------|------------|
+| `GET` | `/materials` | Список |
+| `GET` | `/materials/:id` | Одна запись |
+| `POST` | `/materials` | Создание |
+| `PATCH` | `/materials/:id` | Обновление |
+| `DELETE` | `/materials/:id` | Удаление |
+
+### Поля JSON
+
+Обязательное в UI: **`name`**.
+
+| Поле | Тип | Смысл |
+|------|-----|--------|
+| `_id` | string | Id |
+| `name` | string | Название |
+| `code` | string | Код / артикул материала |
+| `notes` | string | Заметки |
+| `isActive` | boolean | Активен |
+
+**Локально:** ключ LS `crmgenerator_nx_materials_v1`.
+
+---
+
+## Типы деталей (`PartType`)
+
+**Модель:** `libs/domain/src/lib/part-types/part-type.model.ts`  
+**HTTP:** `part-types-api.service.ts`  
+**UI:** `/catalog/part-types`
+
+| Метод | Путь | Назначение |
+|--------|------|------------|
+| `GET` | `/part-types` | Список |
+| `GET` | `/part-types/:id` | Одна запись |
+| `POST` | `/part-types` | Создание |
+| `PATCH` | `/part-types/:id` | Обновление |
+| `DELETE` | `/part-types/:id` | Удаление |
+
+### Поля JSON
+
+Обязательное в UI: **`name`**.
+
+| Поле | Тип | Смысл |
+|------|-----|--------|
+| `_id` | string | Id |
+| `name` | string | Название типа |
+| `description` | string | Техописание / параметры |
+| `isActive` | boolean | Активен |
+
+**Локально:** ключ LS `crmgenerator_nx_part_types_v1`.
+
+---
+
+## Товары (`Product`)
+
+**Модель:** `libs/domain/src/lib/products/product.model.ts`  
+**HTTP:** `products-api.service.ts`  
+**Справочники в формах:** `CatalogLookupService` (`core/catalog`) — те же данные, что фаза 1 (LS или `getAll` при remote).  
+**UI:** `/catalog/products` — `ProductsService`, `ProductsPageComponent` (сетка: категории | товары | типы деталей | материалы; клик по строке товара сужает боковые колонки; повторный клик по той же строке или клик вне неё — полные списки).
+
+| Метод | Путь | Назначение |
+|--------|------|------------|
+| `GET` | `/products` | Список |
+| `GET` | `/products/search?q=` | Поиск (опционально для бэка; UI пока фильтрует локально) |
+| `GET` | `/products/:id` | Одна запись |
+| `POST` | `/products` | Создание |
+| `PATCH` | `/products/:id` | Обновление |
+| `DELETE` | `/products/:id` | Удаление |
+
+### Поля JSON
+
+Обязательное в UI: **`name`**, **`categoryId`**. Быстрое создание категории / типа детали / материала из формы товара: `*ForPicker` в сервисах справочников + `CatalogLookupService.applyFromSignals`.
+
+| Поле | Тип | Смысл |
+|------|-----|--------|
+| `_id` | string | Id |
+| `name` | string | Название |
+| `sku` | string | Код / SKU |
+| `categoryId` | string | Ссылка на `Category` (обязательно в UI) |
+| `partTypeId` | string | Тип детали / тех. описание (опц.) |
+| `materialId` | string | Материал к карточке товара (опц.) |
+| `notes` | string | Заметки |
+| `isActive` | boolean | Активен |
+
+**Локально:** ключ LS `crmgenerator_nx_products_v1`.
+
+---
+
+## Заказы (`Order`) — API есть, UI пока нет
+
+Модель: `libs/domain/src/lib/orders/order.model.ts`
+
+В бэке уже реализовано:
+
+| Метод | Путь | Назначение |
+|--------|------|------------|
+| `GET` | `/orders` | Список заказов |
+| `GET` | `/orders/:id` | Детали заказа (строки + комплектации) |
+
+### `GET /orders` — поля JSON
+
+| Поле | Тип | Смысл |
+|------|-----|--------|
+| `_id` | string | Id заказа |
+| `number` | string | Номер заказа |
+| `status` | `{ key: string; name: string }` | Статус |
+| `clientId` | string | Опционально |
+| `organizationId` | string | Опционально |
+| `createdAt`, `updatedAt` | string (ISO) | Если отдаёт бэк |
+
+### `GET /orders/:id` — поля JSON
+
+| Поле | Тип | Смысл |
+|------|-----|--------|
+| `_id` | string | Id заказа |
+| `number` | string | Номер заказа |
+| `status` | `{ key: string; name: string }` | Статус |
+| `clientId`, `organizationId` | string | Опционально |
+| `createdAt`, `updatedAt` | string (ISO) | Если отдаёт бэк |
+| `sourceProposalId` | string | Корень КП (для трассировки) |
+| `sourceProposalVersionId` | string | Скрытый идентификатор версии КП (для трассировки) |
+| `lines` | массив `OrderLine` | Строки заказа |
+
+`OrderLine` (в `lines[]`):
+
+| Поле | Тип | Смысл |
+|------|-----|--------|
+| `_id` | string | Id строки |
+| `lineNo` | number | Порядковый номер |
+| `productionCode` | string | Код позиции производства (№КП-№пп) |
+| `isCustom` | boolean | Custom/не каталог |
+| `quantity` | number | Для производства: что и сколько создаём |
+| `unit` | string | Единица измерения |
+| `sourceProposalItemLineNo` | number | №пп в КП (для “кода производства”) |
+| `productSnapshot` | объект | Снапшот товара (без цены) |
+| `mounts` | массив | Выбранные монтажы (mountTypeId + mountTypeName) |
+| `functionalities` | массив | Выбранные функциональности (functionalityId + functionalityName) |
+
+`productSnapshot`:
+
+| Поле | Тип | Смысл |
+|------|-----|--------|
+| `productName` | string | Название товара на момент фиксации |
+| `productSku` | string | Опционально |
+| `categoryId`, `categoryName` | string | Опционально |
+| `partTypeId`, `partTypeName` | string | Опционально |
+| `materialId`, `materialName` | string | Опционально |
+| `productNotes` | string | Опционально |
+| `productIsActive` | boolean | Опционально |
+
+### Связка с КП (`proposal_paid`)
+
+Бэк создаёт `Order` при переходе версии КП в `proposal_paid`.
+
+Ответ `PATCH /proposals/:id/status` (когда `statusKey=proposal_paid`) содержит:
+- `orderId` (string) — созданный `Order.id`
+
+---
+
+## Спецификации товара (`ProductSpecification`) — **пока без UI**
+
+Модель в **`libs/domain`**, черновик путей в **`product-specifications-api.service.ts`** (ни одна фича не инжектит сервис). Отдельная страница `/catalog/products/:id/specifications` **удалена**; варианты на карточке товара задаются полями **`partTypeId` / `materialId`**. Когда понадобится матрица вариантов или КП — вернуть фичу и перенести таблицу эндпоинтов сюда из **`API_FUTURE_CHECKLIST.md`**.
+
+---
+
 ## История изменений
 
 | Дата | Что |
@@ -133,6 +335,10 @@
 | 2026-03-20 | Разделение: этот файл = только внедрённое; backlog → `API_FUTURE_CHECKLIST.md`. |
 | 2026-03-20 | `OrganizationsService` / `ClientsService` переключаются на `*ApiService` при непустом `apiBaseUrl`. |
 | 2026-03-20 | Remote: `listLoading` / `listLoadError` / `mutationError`, оптимистичный CRUD с откатом, кэш LS при успехе и fallback при сбое `getAll`. |
+| 2026-03-20 | В «Связанные источники»: ссылки на `docs/business` (БЛ и план страниц). |
+| 2026-03-20 | Фаза 1 каталога: `Category`, `Material`, `PartType` в domain; API + фичи `/catalog/*`; контракт и LS-ключи. |
+| 2026-03-20 | Фаза 2 каталога: `Product`, `ProductSpecification` в domain; `ProductsApiService`, `/catalog/products`, `CatalogLookupService`. |
+| 2026-03-20 | UI спецификаций товара отключён; `ProductSpecificationsApiService` остаётся каркасом под бэк. |
 
 ---
 

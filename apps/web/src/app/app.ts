@@ -27,6 +27,38 @@ import { UiCatalogComponent } from './features/ui-catalog/ui-catalog.component';
               Организации
             </app-button>
           </span>
+          <span
+            class="app-header-nav-item"
+            [class.app-header-nav-item--active]="isNavActive('/catalog/categories')"
+          >
+            <app-button variant="ghost" size="sm" (clicked)="navigate('/catalog/categories')">
+              Категории
+            </app-button>
+          </span>
+          <span
+            class="app-header-nav-item"
+            [class.app-header-nav-item--active]="isNavActive('/catalog/materials')"
+          >
+            <app-button variant="ghost" size="sm" (clicked)="navigate('/catalog/materials')">
+              Материалы
+            </app-button>
+          </span>
+          <span
+            class="app-header-nav-item"
+            [class.app-header-nav-item--active]="isNavActive('/catalog/part-types')"
+          >
+            <app-button variant="ghost" size="sm" (clicked)="navigate('/catalog/part-types')">
+              Типы деталей
+            </app-button>
+          </span>
+          <span
+            class="app-header-nav-item"
+            [class.app-header-nav-item--active]="isNavActive('/catalog/products')"
+          >
+            <app-button variant="ghost" size="sm" (clicked)="navigate('/catalog/products')">
+              Товары
+            </app-button>
+          </span>
         </nav>
         <div class="app-header-actions">
           <app-ui-catalog />
@@ -39,15 +71,19 @@ import { UiCatalogComponent } from './features/ui-catalog/ui-catalog.component';
   `,
   styles: `
     .app-header {
-      padding: 0 var(--spacing-3);
+      position: sticky;
+      top: 0;
+      z-index: 40;
+      padding: 0 var(--spacing-4);
       border-bottom: 1px solid var(--border);
       background: var(--card);
+      box-shadow: var(--shadow-sm);
     }
 
     .app-header-inner {
-      max-width: 1280px;
+      max-width: 1400px;
       margin: 0 auto;
-      min-height: 48px;
+      min-height: 56px;
       display: flex;
       flex-wrap: wrap;
       align-items: center;
@@ -101,9 +137,12 @@ import { UiCatalogComponent } from './features/ui-catalog/ui-catalog.component';
     }
 
     .app-main {
-      padding: var(--spacing-2);
-      max-width: 1280px;
+      padding: var(--spacing-4);
+      max-width: 1400px;
       margin: 0 auto;
+      min-height: calc(100vh - 76px);
+      width: 100%;
+      box-sizing: border-box;
     }
   `,
 })
@@ -114,9 +153,12 @@ export class AppComponent {
     void this.router.navigateByUrl(path);
   }
 
-  /** Активный пункт меню (учитываем query string). */
-  isNavActive(path: string): boolean {
+  /** Активный пункт меню (префикс пути, без query). */
+  isNavActive(route: string): boolean {
     const tree = this.router.parseUrl(this.router.url);
-    return tree.root.children['primary']?.segments[0]?.path === path.slice(1);
+    const parts = (tree.root.children['primary']?.segments ?? []).map((s) => s.path);
+    const want = route.replace(/^\//, '').split('/').filter(Boolean);
+    if (!want.length) return false;
+    return want.every((seg, i) => parts[i] === seg);
   }
 }

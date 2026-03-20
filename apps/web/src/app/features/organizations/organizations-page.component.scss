@@ -125,21 +125,6 @@
   padding: var(--spacing-2);
 }
 
-/*
- * Фиксированная высота: при смене вкладок окно не «прыгает» по вертикали.
- * Высота ~максимум по самому длинному разделу, на узком экране — не выше 92vh.
- */
-.modal-panel {
-  box-sizing: border-box;
-  width: min(960px, 96vw);
-  height: min(700px, 92vh);
-  min-height: min(700px, 92vh);
-  max-height: 92vh;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-}
-
 .modal-panel > app-organization-form {
   flex: 1;
   min-height: 0;

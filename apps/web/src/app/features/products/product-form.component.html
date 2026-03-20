@@ -1,0 +1,251 @@
+<app-card [title]="product() ? 'Редактировать товар' : 'Новый товар'" class="product-form-card">
+  <form class="product-form product-form--dialog" (submit)="$event.preventDefault()">
+    <div class="product-form-tabs" role="tablist" aria-label="Разделы формы товара">
+      <button
+        type="button"
+        class="product-tab"
+        role="tab"
+        [attr.aria-selected]="activeTab() === 'main'"
+        [class.product-tab--active]="activeTab() === 'main'"
+        (click)="setTab('main')"
+      >
+        Основное
+      </button>
+      <button
+        type="button"
+        class="product-tab"
+        role="tab"
+        [attr.aria-selected]="activeTab() === 'classification'"
+        [class.product-tab--active]="activeTab() === 'classification'"
+        (click)="setTab('classification')"
+      >
+        Классификация
+      </button>
+      <button
+        type="button"
+        class="product-tab"
+        role="tab"
+        [attr.aria-selected]="activeTab() === 'functionality'"
+        [class.product-tab--active]="activeTab() === 'functionality'"
+        (click)="setTab('functionality')"
+      >
+        Функциональность
+      </button>
+      <button
+        type="button"
+        class="product-tab"
+        role="tab"
+        [attr.aria-selected]="activeTab() === 'mounting'"
+        [class.product-tab--active]="activeTab() === 'mounting'"
+        (click)="setTab('mounting')"
+      >
+        Монтаж
+      </button>
+    </div>
+
+    @if (activeTab() === 'main') {
+      <div class="product-form-tab-panel" role="tabpanel">
+        <div class="product-form-tab-inner">
+          <fieldset class="product-form-block">
+            <legend class="product-form-legend">Карточка товара</legend>
+            <div class="field">
+              <app-input
+                label="Название"
+                [value]="asText(formData().name)"
+                [error]="errors().name"
+                [showErrorText]="false"
+                (valueChange)="formData.update((v) => ({ ...v, name: $event }))"
+              />
+            </div>
+            <app-input
+              label="SKU / код"
+              [value]="asText(formData().sku)"
+              (valueChange)="formData.update((v) => ({ ...v, sku: $event }))"
+            />
+            <div class="field product-form-row-full">
+              <label class="product-form-label" for="prod-notes">Заметки</label>
+              <textarea
+                id="prod-notes"
+                class="product-form-textarea"
+                rows="4"
+                [value]="asText(formData().notes)"
+                (input)="onNotesInput($event)"
+              ></textarea>
+            </div>
+            <label class="product-form-check product-form-row-full">
+              <input
+                type="checkbox"
+                [checked]="formData().isActive !== false"
+                (change)="onActiveChange($event)"
+              />
+              Активен
+            </label>
+          </fieldset>
+        </div>
+      </div>
+    }
+
+    @if (activeTab() === 'classification') {
+      <div class="product-form-tab-panel" role="tabpanel">
+        <div class="product-form-tab-inner">
+          <fieldset class="product-form-block product-form-block--single-col">
+            <legend class="product-form-legend">Справочники</legend>
+            <div class="field">
+              <label
+                class="product-form-label"
+                [class.product-form-label--error]="errors().categoryId"
+                for="prod-category"
+              >
+                Категория
+              </label>
+              <div class="product-form-select-row">
+                <select
+                  id="prod-category"
+                  class="product-form-select product-form-select--grow"
+                  [value]="formData().categoryId || ''"
+                  (change)="onCategoryChange($event)"
+                  [attr.aria-invalid]="errors().categoryId ? true : null"
+                >
+                  <option value="">— выберите категорию —</option>
+                  @for (c of catalogLookup.categories(); track c._id) {
+                    <option [value]="c._id">{{ c.name }}</option>
+                  }
+                </select>
+                <app-button
+                  type="button"
+                  variant="secondary"
+                  size="md"
+                  (clicked)="createCategoryRequested.emit()"
+                  [attr.aria-label]="'Добавить категорию'"
+                >
+                  +
+                </app-button>
+              </div>
+            </div>
+            <div class="field">
+              <label class="product-form-label" for="prod-part-type">Тех. описание (тип детали)</label>
+              <p class="product-form-hint">Необязательно. Справочник «Типы деталей».</p>
+              <div class="product-form-select-row">
+                <select
+                  id="prod-part-type"
+                  class="product-form-select product-form-select--grow"
+                  [value]="formData().partTypeId || ''"
+                  (change)="onPartTypeChange($event)"
+                >
+                  <option value="">— не выбрано —</option>
+                  @for (p of catalogLookup.partTypes(); track p._id) {
+                    <option [value]="p._id">{{ p.name }}</option>
+                  }
+                </select>
+                <app-button
+                  type="button"
+                  variant="secondary"
+                  size="md"
+                  (clicked)="createPartTypeRequested.emit()"
+                  [attr.aria-label]="'Добавить тип детали'"
+                >
+                  +
+                </app-button>
+              </div>
+            </div>
+            <div class="field">
+              <label class="product-form-label" for="prod-material">Материал</label>
+              <p class="product-form-hint">Необязательно. Обычно в паре к выбранному типу детали.</p>
+              <div class="product-form-select-row">
+                <select
+                  id="prod-material"
+                  class="product-form-select product-form-select--grow"
+                  [value]="formData().materialId || ''"
+                  (change)="onMaterialChange($event)"
+                >
+                  <option value="">— не выбран —</option>
+                  @for (m of catalogLookup.materials(); track m._id) {
+                    <option [value]="m._id">{{ m.name }}</option>
+                  }
+                </select>
+                <app-button
+                  type="button"
+                  variant="secondary"
+                  size="md"
+                  (clicked)="createMaterialRequested.emit()"
+                  [attr.aria-label]="'Добавить материал'"
+                >
+                  +
+                </app-button>
+              </div>
+            </div>
+          </fieldset>
+        </div>
+      </div>
+    }
+
+    @if (activeTab() === 'functionality') {
+      <div class="product-form-tab-panel" role="tabpanel">
+        <div class="product-form-tab-inner">
+          <fieldset class="product-form-block product-form-block--single-col">
+            <legend class="product-form-legend">Функциональность</legend>
+            <div class="field">
+              <label class="product-form-label" for="prod-functionality">Функциональность</label>
+              <select
+                id="prod-functionality"
+                class="product-form-select"
+                [value]="formData().functionality || ''"
+                (change)="onFunctionalityChange($event)"
+              >
+                <option value="">— не выбрано —</option>
+                @for (opt of functionalityOptions; track opt) {
+                  <option [value]="opt">{{ opt }}</option>
+                }
+              </select>
+            </div>
+          </fieldset>
+        </div>
+      </div>
+    }
+
+    @if (activeTab() === 'mounting') {
+      <div class="product-form-tab-panel" role="tabpanel">
+        <div class="product-form-tab-inner">
+          <fieldset class="product-form-block product-form-block--single-col">
+            <legend class="product-form-legend">Монтаж</legend>
+            <div class="field">
+              <label class="product-form-label" for="prod-mounting">Монтаж</label>
+              <select
+                id="prod-mounting"
+                class="product-form-select"
+                [value]="formData().mounting || ''"
+                (change)="onMountingChange($event)"
+              >
+                <option value="">— не выбрано —</option>
+                @for (opt of mountingOptions; track opt) {
+                  <option [value]="opt">{{ opt }}</option>
+                }
+              </select>
+            </div>
+          </fieldset>
+        </div>
+      </div>
+    }
+
+    <div class="product-form-actions">
+      <app-button
+        variant="secondary"
+        type="button"
+        size="md"
+        [disabled]="interactionLocked()"
+        (clicked)="onCancel()"
+      >
+        Отмена
+      </app-button>
+      <app-button
+        variant="primary"
+        type="button"
+        size="md"
+        [disabled]="interactionLocked() || hasErrors()"
+        (clicked)="onSubmit()"
+      >
+        Сохранить
+      </app-button>
+    </div>
+  </form>
+</app-card>

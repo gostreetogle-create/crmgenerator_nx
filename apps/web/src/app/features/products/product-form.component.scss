@@ -1,0 +1,216 @@
+@use '../catalog-shared/catalog-crud-patterns';
+
+app-product-form {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  width: 100%;
+}
+
+app-card.product-form-card {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  width: 100%;
+}
+
+app-card.product-form-card .card {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  padding: var(--spacing-4);
+}
+
+app-card.product-form-card .card-header {
+  flex-shrink: 0;
+  margin-bottom: var(--spacing-1);
+  padding-bottom: 2px;
+  border-bottom-width: 1px;
+}
+
+app-card.product-form-card .card-body {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+app-card.product-form-card .card-header h3 {
+  margin: 0;
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-tight, 1.2);
+}
+
+.product-form-card {
+  width: 100%;
+  max-width: none;
+  max-height: 88vh;
+  overflow: hidden;
+}
+
+.product-form--dialog {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  gap: var(--spacing-3);
+}
+
+.product-form-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-2);
+  flex-shrink: 0;
+  padding-bottom: var(--spacing-2);
+  border-bottom: 1px solid var(--border);
+}
+
+.product-tab {
+  border: 1px solid transparent;
+  background: color-mix(in oklch, var(--card) 70%, var(--secondary));
+  color: var(--foreground);
+  border-radius: var(--radius-sm);
+  padding: var(--spacing-1) var(--spacing-2);
+  font-size: var(--font-size-sm);
+  font-family: var(--font-sans);
+  font-weight: var(--font-weight-medium);
+  cursor: pointer;
+  line-height: var(--line-height-tight, 1.2);
+}
+
+.product-tab:hover {
+  border-color: var(--border);
+  background: var(--ghost-hover);
+}
+
+.product-tab--active,
+.product-tab[aria-selected='true'] {
+  border-color: var(--primary);
+  background: color-mix(in oklch, var(--primary) 12%, var(--card));
+}
+
+.product-form-tab-panel {
+  flex: 1;
+  min-height: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: var(--spacing-2);
+  padding-right: var(--spacing-2);
+}
+
+.product-form-tab-inner {
+  display: grid;
+  grid-template-columns: 1fr;
+  row-gap: var(--spacing-3);
+}
+
+.product-form-block {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: var(--spacing-3);
+  display: grid;
+  gap: var(--spacing-2);
+  column-gap: var(--spacing-3);
+  min-width: 0;
+  grid-template-columns: 1fr;
+}
+
+.product-form-block--single-col {
+  grid-template-columns: 1fr;
+}
+
+.product-form-legend {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--muted-foreground);
+  padding: 0 var(--spacing-1);
+  margin: 0 0 var(--spacing-1);
+  line-height: var(--line-height-tight, 1.2);
+}
+
+.product-form-row-full {
+  grid-column: 1 / -1;
+}
+
+.product-form .field {
+  margin: 0;
+  display: grid;
+  gap: 2px;
+}
+
+.product-form-label {
+  display: block;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  margin-bottom: var(--spacing-1);
+}
+
+.product-form-label--error {
+  color: var(--danger);
+}
+
+.product-form-select {
+  width: 100%;
+  padding: var(--spacing-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--card);
+  color: var(--foreground);
+  font: inherit;
+}
+
+.product-form-textarea {
+  width: 100%;
+  padding: var(--spacing-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--card);
+  color: var(--foreground);
+  font: inherit;
+  resize: vertical;
+}
+
+.product-form-check {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  font-size: var(--font-size-sm);
+  cursor: pointer;
+}
+
+.product-form-actions {
+  flex-shrink: 0;
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--spacing-2);
+  padding-top: var(--spacing-2);
+  border-top: 1px solid var(--border);
+}
+
+.product-form-select-row {
+  display: flex;
+  align-items: stretch;
+  gap: var(--spacing-2);
+}
+
+.product-form-select--grow {
+  flex: 1;
+  min-width: 0;
+}
+
+.product-form-hint {
+  margin: 0 0 var(--spacing-1);
+  font-size: var(--font-size-xs);
+  color: color-mix(in oklch, var(--foreground) 65%, var(--muted-foreground));
+}
+
+.product-form-error {
+  display: block;
+  margin-top: var(--spacing-1);
+  font-size: var(--font-size-xs);
+  color: var(--danger);
+}

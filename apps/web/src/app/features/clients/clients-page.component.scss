@@ -105,18 +105,6 @@
   padding: var(--spacing-2);
 }
 
-/* ARCHITECTURE: фиксированная геометрия модалки формы, скролл внутри вкладки */
-.modal-panel {
-  box-sizing: border-box;
-  width: min(560px, 96vw);
-  height: min(520px, 88vh);
-  min-height: min(520px, 88vh);
-  max-height: 88vh;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-}
-
 .modal-panel > app-client-form {
   flex: 1;
   min-height: 0;

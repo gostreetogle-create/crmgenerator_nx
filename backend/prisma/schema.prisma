@@ -1,0 +1,355 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Organization {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  name           String
+  fullName       String?
+  shortName      String?
+  inn            String?
+  kpp            String?
+  ogrn           String?
+  okpo           String?
+  okved          String?
+  legalAddress  String?
+  actualAddress String?
+  postalAddress String?
+  bankName       String?
+  bik             String?
+  settlementAccount    String?
+  correspondentAccount  String?
+  phone          String?
+  extraPhone     String?
+  email          String?
+  website        String?
+  directorFio    String?
+  directorFioShort String?
+  directorPosition String?
+  directorActingOn String?
+  fssNumber     String?
+  pfrNumber     String?
+  logoUrl       String?
+  signatureUrl  String?
+  stampUrl      String?
+  notes          String?
+  markup         Float?
+  prefix         String?
+  vatPercent     Float?
+  accentColor    String?
+  requisites     String?
+}
+
+model Client {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  name          String
+  inn           String?
+  kpp           String?
+  contactPerson String?
+  phone         String?
+  email         String?
+  requisites    String?
+  address       String?
+  notes         String?
+  discount      Float?
+  clientMarkup  Float?
+}
+
+model Category {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  name      String
+  parentId  String?
+  sortOrder Int?
+  isActive  Boolean?
+}
+
+model Material {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  name     String
+  code     String?
+  notes    String?
+  isActive Boolean?
+}
+
+model PartType {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  name        String
+  description String?
+  isActive    Boolean?
+}
+
+model Product {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  name        String
+  sku         String?
+  categoryId  String?
+  partTypeId  String?
+  materialId  String?
+  notes       String?
+  isActive    Boolean?
+
+  @@index([name])
+  @@index([sku])
+}
+
+model Status {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  key   String @unique
+  name  String
+
+  proposalVersions ProposalVersion[]
+  orders            Order[]
+}
+
+model MountType {
+  id          String   @id @default(uuid())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  name        String
+  description String?
+  isActive    Boolean?
+
+  @@index([name])
+
+  itemMounts ProposalItemMount[]
+  productMounts ProductMount[]
+  orderLineMounts OrderLineMount[]
+}
+
+model Functionality {
+  id          String   @id @default(uuid())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  name        String
+  description String?
+  isActive    Boolean?
+
+  @@index([name])
+
+  itemFunctionalities ProposalItemFunctionality[]
+  productFunctionalities ProductFunctionality[]
+  orderLineFunctionalities OrderLineFunctionality[]
+}
+
+model ProductMount {
+  productId   String
+  mountTypeId String
+
+  @@id([productId, mountTypeId])
+
+  mountType MountType @relation(fields: [mountTypeId], references: [id])
+}
+
+model ProductFunctionality {
+  productId        String
+  functionalityId  String
+
+  @@id([productId, functionalityId])
+
+  functionality Functionality @relation(fields: [functionalityId], references: [id])
+}
+
+model Proposal {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Чистый номер КП (например "0236"), не зависит от версий 01/02/...
+  number String?  @unique
+
+  clientId       String?
+  organizationId String?
+
+  // Указывает на текущую актуальную версию
+  currentVersionId String? @unique
+
+  currentVersion ProposalVersion? @relation("ProposalCurrentVersion", fields: [currentVersionId], references: [id])
+  versions        ProposalVersion[]
+}
+
+model ProposalVersion {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  proposalId String
+  versionNo  Int
+
+  statusId   String
+
+  // примерные поля дат для workflow (могут расширяться позже)
+  sentAt   DateTime?
+  decidedAt DateTime?
+
+  @@unique([proposalId, versionNo])
+  @@index([proposalId, versionNo])
+
+  proposal Proposal @relation(fields: [proposalId], references: [id])
+  status   Status @relation(fields: [statusId], references: [id])
+  items    ProposalItem[]
+
+  currentOf Proposal? @relation("ProposalCurrentVersion")
+}
+
+model ProposalItem {
+  id String @id @default(uuid())
+
+  proposalVersionId String
+  lineNo            Int
+
+  isCustom Boolean @default(false)
+
+  productSpecificationId String?
+
+  title      String
+  quantity   Float?
+  unit        String?
+  unitPrice   Float?
+  vatRate     Float?
+  lineTotal   Float?
+  notes       String?
+
+  @@index([proposalVersionId, lineNo])
+
+  mounts           ProposalItemMount[]
+  functionalities  ProposalItemFunctionality[]
+
+  proposalVersion ProposalVersion @relation(fields: [proposalVersionId], references: [id])
+}
+
+model ProposalItemMount {
+  proposalItemId String
+  mountTypeId    String
+
+  @@id([proposalItemId, mountTypeId])
+
+  mountType    MountType    @relation(fields: [mountTypeId], references: [id])
+  proposalItem ProposalItem @relation(fields: [proposalItemId], references: [id])
+}
+
+model ProposalItemFunctionality {
+  proposalItemId String
+  functionalityId String
+
+  @@id([proposalItemId, functionalityId])
+
+  functionality Functionality         @relation(fields: [functionalityId], references: [id])
+  proposalItem  ProposalItem          @relation(fields: [proposalItemId], references: [id])
+}
+
+model Order {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Нужен для “копать концы” по отгрузке
+  sourceProposalId        String
+  sourceProposalVersionId String @unique
+
+  number String @unique
+
+  statusId String
+
+  clientId       String?
+  organizationId String?
+
+  status Status @relation(fields: [statusId], references: [id])
+  lines  OrderLine[]
+
+  @@index([sourceProposalId, sourceProposalVersionId])
+}
+
+model OrderLine {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  orderId String
+  lineNo  Int
+
+  // “код позиции производства”: №КП-номер позиции в КП
+  productionCode String
+
+  // Для производства: что именно и сколько создаём
+  quantity Float?
+  unit      String?
+
+  // связь с исходной позицией КП
+  sourceProposalId             String
+  sourceProposalVersionId      String
+  sourceProposalItemLineNo    Int
+
+  isCustom Boolean @default(false)
+
+  // Снимок товара “как был” (для гарантии/воссоздания)
+  productName   String
+  productSku    String?
+  categoryId    String?
+  categoryName  String?
+  partTypeId    String?
+  partTypeName  String?
+  materialId    String?
+  materialName  String?
+  productNotes  String?
+  productIsActive Boolean?
+
+  // Снимок комплектации на момент заказа
+  orderLineMounts           OrderLineMount[]
+  orderLineFunctionalities OrderLineFunctionality[]
+
+  order Order @relation(fields: [orderId], references: [id])
+
+  @@index([orderId, lineNo])
+  @@index([sourceProposalId, sourceProposalItemLineNo])
+}
+
+model OrderLineMount {
+  orderLineId String
+  mountTypeId String
+  mountTypeName String
+
+  @@id([orderLineId, mountTypeId])
+
+  orderLine  OrderLine  @relation(fields: [orderLineId], references: [id])
+  mountType  MountType  @relation(fields: [mountTypeId], references: [id])
+}
+
+model OrderLineFunctionality {
+  orderLineId String
+  functionalityId String
+  functionalityName String
+
+  @@id([orderLineId, functionalityId])
+
+  orderLine        OrderLine        @relation(fields: [orderLineId], references: [id])
+  functionality     Functionality   @relation(fields: [functionalityId], references: [id])
+}
+

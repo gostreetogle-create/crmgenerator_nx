@@ -1,0 +1,179 @@
+<app-card title="Категории товаров">
+  @if (categoriesService.listLoading() && categoriesService.categories().length === 0) {
+    <p class="list-state list-state--loading" aria-live="polite">Загрузка категорий…</p>
+  }
+  @if (categoriesService.listLoading() && categoriesService.categories().length > 0) {
+    <p class="list-state list-state--refresh" aria-live="polite">Обновление списка…</p>
+  }
+  @if (categoriesService.listLoadError(); as loadErr) {
+    <div class="state-banner state-banner--warning" role="alert">
+      <div class="state-banner__text">
+        <strong>Не удалось загрузить данные с сервера.</strong>
+        {{ loadErr }}
+        Показаны сохранённые локально данные (кэш или демо).
+      </div>
+      <div class="state-banner__actions">
+        <app-button variant="secondary" size="sm" (clicked)="categoriesService.refreshFromRemote()">
+          Повторить
+        </app-button>
+        <button type="button" class="banner-dismiss" (click)="categoriesService.dismissListLoadError()">
+          Скрыть
+        </button>
+      </div>
+    </div>
+  }
+  @if (categoriesService.mutationError(); as mutErr) {
+    <div class="state-banner state-banner--danger" role="alert">
+      <div class="state-banner__text">{{ mutErr }}</div>
+      <button type="button" class="banner-dismiss" (click)="categoriesService.dismissMutationError()">
+        Закрыть
+      </button>
+    </div>
+  }
+
+  <app-button variant="primary" size="md" (clicked)="onOpenModal()">Добавить категорию</app-button>
+
+  <app-input
+    label="Поиск по названию"
+    placeholder="Введите текст…"
+    size="md"
+    [value]="searchQuery()"
+    (valueChange)="setSearchQuery($event)"
+    class="search-input w-full max-w-md mb-4"
+  />
+
+  <div class="table-wrap">
+    <table class="catalog-table">
+      <thead>
+        <tr>
+          <th (click)="toggleSort('name')" class="sortable">
+            Название
+            <span class="sort-indicator">{{ sortBy() === 'name' ? (sortAsc() ? '↑' : '↓') : '' }}</span>
+          </th>
+          <th>Родитель</th>
+          <th (click)="toggleSort('sortOrder')" class="sortable">
+            Порядок
+            <span class="sort-indicator">{{
+              sortBy() === 'sortOrder' ? (sortAsc() ? '↑' : '↓') : ''
+            }}</span>
+          </th>
+          <th>Активна</th>
+          <th>Действия</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (c of paginatedCategories(); track c._id) {
+          <tr>
+            <td>{{ c.name }}</td>
+            <td>{{ parentName(c.parentId) }}</td>
+            <td>{{ c.sortOrder ?? '—' }}</td>
+            <td>{{ c.isActive === false ? 'нет' : 'да' }}</td>
+            <td class="actions">
+              <app-button variant="ghost" size="sm" (clicked)="onSelectCategory(c)">Детали</app-button>
+              <button type="button" class="link-btn" (click)="onOpenModal(c)">Ред</button>
+              <button type="button" class="link-btn danger" (click)="c._id && onDelete(c._id)">Удал</button>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+
+  <div class="pagination-bar">
+    <span>
+      Страница {{ currentPage() }} из {{ totalPages() }} (всего {{ filteredCategories().length }})
+    </span>
+    <div class="pagination-actions">
+      <app-button variant="secondary" size="sm" [disabled]="currentPage() === 1" (clicked)="goPrevPage()">
+        Предыдущая
+      </app-button>
+      <app-button
+        variant="secondary"
+        size="sm"
+        [disabled]="currentPage() === totalPages()"
+        (clicked)="goNextPage()"
+      >
+        Следующая
+      </app-button>
+    </div>
+  </div>
+</app-card>
+
+@if (showModal()) {
+  <div
+    class="modal-backdrop"
+    role="button"
+    tabindex="0"
+    aria-label="Закрыть форму"
+    (click)="closeEditModal()"
+    (keydown.enter)="closeEditModal()"
+    (keydown.space)="closeEditModal()"
+  >
+    <div
+      class="modal-panel modal-panel--md"
+      role="button"
+      tabindex="0"
+      aria-label="Содержимое формы категории"
+      #editModalPanel
+      (click)="$event.stopPropagation()"
+      (keydown.enter)="$event.stopPropagation()"
+      (keydown.space)="$event.stopPropagation()"
+    >
+      <div class="catalog-form-host">
+        <app-category-form
+          [category]="editingCategory()"
+          [allCategories]="categories()"
+          (save)="onSave($event)"
+          (cancel)="closeEditModal()"
+        />
+      </div>
+    </div>
+  </div>
+}
+
+@if (selectedCategory(); as s) {
+  <div
+    class="modal-backdrop details-backdrop"
+    role="button"
+    tabindex="0"
+    aria-label="Закрыть"
+    (click)="closeDetailsModal()"
+    (keydown.enter)="closeDetailsModal()"
+    (keydown.space)="closeDetailsModal()"
+  >
+    <app-card
+      #detailsModalCard
+      title="Категория"
+      class="details-card"
+      role="dialog"
+      aria-modal="true"
+      (click)="$event.stopPropagation()"
+    >
+      <div class="details-body">
+        <dl class="details-grid">
+          <dt>Название</dt>
+          <dd>{{ s.name }}</dd>
+          <dt>Родитель</dt>
+          <dd>{{ parentName(s.parentId) }}</dd>
+          <dt>Порядок</dt>
+          <dd>{{ s.sortOrder ?? '—' }}</dd>
+          <dt>Активна</dt>
+          <dd>{{ s.isActive === false ? 'нет' : 'да' }}</dd>
+        </dl>
+      </div>
+      <div class="details-actions">
+        <app-button variant="secondary" size="md" (clicked)="closeDetailsModal()">Закрыть</app-button>
+      </div>
+    </app-card>
+  </div>
+}
+
+<app-confirm-dialog
+  [open]="showConfirm()"
+  title="Удалить категорию?"
+  message="Категория будет удалена. Продолжить?"
+  confirmText="Удалить"
+  confirmVariant="danger"
+  (confirmed)="onConfirmDelete()"
+  (cancelled)="showConfirm.set(false)"
+/>

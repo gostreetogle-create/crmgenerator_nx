@@ -1,0 +1,44 @@
+<app-card [title]="material() ? 'Редактировать материал' : 'Новый материал'" class="material-form-card">
+  <form class="material-form material-form--dialog" (submit)="onNgSubmit($event)">
+    <div class="material-form-inner">
+      <div class="field">
+        <app-input
+          label="Название"
+          [value]="asText(formData().name)"
+          [error]="errors().name"
+          [showErrorText]="false"
+          (valueChange)="formData.update((v) => ({ ...v, name: $event }))"
+        />
+      </div>
+      <app-input
+        label="Код"
+        [value]="asText(formData().code)"
+        (valueChange)="formData.update((v) => ({ ...v, code: $event }))"
+      />
+      <div class="field">
+        <label class="material-form-label" for="mat-notes">Заметки</label>
+        <textarea
+          id="mat-notes"
+          class="material-form-textarea"
+          rows="4"
+          [value]="asText(formData().notes)"
+          (input)="onNotesInput($event)"
+        ></textarea>
+      </div>
+      <label class="material-form-check">
+        <input
+          type="checkbox"
+          [checked]="formData().isActive !== false"
+          (change)="onActiveChange($any($event.target).checked)"
+        />
+        Активен
+      </label>
+    </div>
+    <div class="material-form-actions">
+      <app-button variant="secondary" type="button" size="md" (clicked)="cancel.emit()">
+        Отмена
+      </app-button>
+      <app-button variant="primary" type="submit" size="md">Сохранить</app-button>
+    </div>
+  </form>
+</app-card>

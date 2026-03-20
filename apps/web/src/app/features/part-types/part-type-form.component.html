@@ -1,0 +1,42 @@
+<app-card
+  [title]="partType() ? 'Редактировать тип детали' : 'Новый тип детали'"
+  class="part-type-form-card"
+>
+  <form class="part-type-form part-type-form--dialog" (submit)="onNgSubmit($event)">
+    <div class="part-type-form-inner">
+      <div class="field">
+        <app-input
+          label="Название"
+          [value]="asText(formData().name)"
+          [error]="errors().name"
+          [showErrorText]="false"
+          (valueChange)="formData.update((v) => ({ ...v, name: $event }))"
+        />
+      </div>
+      <div class="field">
+        <label class="part-type-form-label" for="pt-desc">Техописание / параметры</label>
+        <textarea
+          id="pt-desc"
+          class="part-type-form-textarea"
+          rows="5"
+          [value]="asText(formData().description)"
+          (input)="onDescriptionInput($event)"
+        ></textarea>
+      </div>
+      <label class="part-type-form-check">
+        <input
+          type="checkbox"
+          [checked]="formData().isActive !== false"
+          (change)="onActiveChange($any($event.target).checked)"
+        />
+        Активен
+      </label>
+    </div>
+    <div class="part-type-form-actions">
+      <app-button variant="secondary" type="button" size="md" (clicked)="cancel.emit()">
+        Отмена
+      </app-button>
+      <app-button variant="primary" type="submit" size="md">Сохранить</app-button>
+    </div>
+  </form>
+</app-card>

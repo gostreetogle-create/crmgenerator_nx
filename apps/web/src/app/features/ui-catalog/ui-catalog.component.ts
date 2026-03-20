@@ -4,6 +4,7 @@ import { ButtonComponent } from '@ui-kit/button';
 import { CardComponent } from '@ui-kit/card';
 import { ConfirmDialogComponent } from '@ui-kit/confirm-dialog';
 import { InputComponent } from '@ui-kit/input';
+import { QuickAddDialogComponent } from '@ui-kit/quick-add-dialog';
 
 type ButtonVariant = 'primary' | 'secondary' | 'outline' | 'danger' | 'ghost';
 
@@ -37,6 +38,9 @@ const CARDS: CatalogItem[] = [{ code: 'c-01', name: 'Default card', spanLabel: '
 
 const CONFIRM_DIALOGS: CatalogItem[] = [
   { code: 'd-01', name: 'Danger confirm', spanLabel: 'Опасное подтверждение', subtitle: 'Удаление' },
+];
+const QUICK_ADD_DIALOGS: CatalogItem[] = [
+  { code: 'q-01', name: 'Quick add dialog', spanLabel: 'Верхний диалог +' },
 ];
 
 const FOOTER_COLORS_BUTTONS: CatalogFooterColor[] = [
@@ -77,6 +81,11 @@ const FOOTER_COLORS_CONFIRM: CatalogFooterColor[] = [
   { code: 'col-02', cssVar: '--card' },
   { code: 'col-07', cssVar: '--border' },
 ];
+const FOOTER_COLORS_QUICK_ADD: CatalogFooterColor[] = [
+  { code: 'col-18', cssVar: '--overlay-backdrop' },
+  { code: 'col-07', cssVar: '--border' },
+  { code: 'col-02', cssVar: '--card' },
+];
 
 @Component({
   selector: 'app-ui-catalog',
@@ -87,6 +96,7 @@ const FOOTER_COLORS_CONFIRM: CatalogFooterColor[] = [
     InputComponent,
     CardComponent,
     ConfirmDialogComponent,
+    QuickAddDialogComponent,
   ],
   templateUrl: './ui-catalog.component.html',
   styleUrl: './ui-catalog.component.scss',
@@ -94,6 +104,7 @@ const FOOTER_COLORS_CONFIRM: CatalogFooterColor[] = [
 export class UiCatalogComponent {
   readonly isOpen = signal(false);
   readonly showConfirmPreview = signal(false);
+  readonly showQuickAddPreview = signal(false);
   private readonly platformId = inject(PLATFORM_ID);
 
   readonly theme = signal<'light' | 'dark'>('light');
@@ -135,6 +146,7 @@ export class UiCatalogComponent {
     { title: 'Inputs', items: INPUTS, footerColors: FOOTER_COLORS_INPUTS },
     { title: 'Cards', items: CARDS, footerColors: FOOTER_COLORS_CARDS },
     { title: 'ConfirmDialog', items: CONFIRM_DIALOGS, footerColors: FOOTER_COLORS_CONFIRM },
+    { title: 'QuickAddDialog', items: QUICK_ADD_DIALOGS, footerColors: FOOTER_COLORS_QUICK_ADD },
   ]);
 
   openCatalog() {

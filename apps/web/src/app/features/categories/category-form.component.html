@@ -1,0 +1,56 @@
+<app-card
+  [title]="category() ? 'Редактировать категорию' : 'Новая категория'"
+  class="category-form-card"
+>
+  <form class="category-form category-form--dialog" (submit)="onNgSubmit($event)">
+    <div class="category-form-inner">
+      <div class="field">
+        <app-input
+          label="Название"
+          [value]="asText(formData().name)"
+          [error]="errors().name"
+          [showErrorText]="false"
+          (valueChange)="formData.update((v) => ({ ...v, name: $event }))"
+        />
+      </div>
+      <div class="field">
+        <label class="category-form-label" for="cat-parent">Родительская категория</label>
+        <select
+          id="cat-parent"
+          class="category-form-select"
+          [value]="formData().parentId || ''"
+          (change)="onParentChange($event)"
+        >
+          <option value="">— нет —</option>
+          @for (c of parentOptions(); track c._id) {
+            <option [value]="c._id">{{ c.name }}</option>
+          }
+        </select>
+      </div>
+      <div class="field">
+        <app-input
+          label="Порядок сортировки"
+          type="number"
+          [value]="asText(formData().sortOrder ?? '')"
+          [error]="errors().sortOrder"
+          [showErrorText]="false"
+          (valueChange)="onSortOrderChange($event)"
+        />
+      </div>
+      <label class="category-form-check">
+        <input
+          type="checkbox"
+          [checked]="formData().isActive !== false"
+          (change)="onActiveChange($any($event.target).checked)"
+        />
+        Активна
+      </label>
+    </div>
+    <div class="category-form-actions">
+      <app-button variant="secondary" type="button" size="md" (clicked)="cancel.emit()">
+        Отмена
+      </app-button>
+      <app-button variant="primary" type="submit" size="md">Сохранить</app-button>
+    </div>
+  </form>
+</app-card>

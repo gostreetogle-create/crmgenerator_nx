@@ -146,10 +146,10 @@
     }
 
     <div class="form-actions">
-      <app-button variant="secondary" type="button" (clicked)="cancel.emit()">
+      <app-button variant="secondary" type="button" size="md" (clicked)="cancel.emit()">
         Отмена
       </app-button>
-      <app-button variant="primary" type="submit" [disabled]="hasErrors()">
+      <app-button variant="primary" type="submit" size="md" [disabled]="hasErrors()">
         Сохранить
       </app-button>
     </div>

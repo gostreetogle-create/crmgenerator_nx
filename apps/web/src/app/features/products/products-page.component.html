@@ -1,0 +1,430 @@
+<app-card title="Товары">
+  @if (productsService.listLoading() && productsService.products().length === 0) {
+    <p class="list-state list-state--loading" aria-live="polite">Загрузка товаров…</p>
+  }
+  @if (productsService.listLoading() && productsService.products().length > 0) {
+    <p class="list-state list-state--refresh" aria-live="polite">Обновление списка…</p>
+  }
+  @if (productsService.listLoadError(); as loadErr) {
+    <div class="state-banner state-banner--warning" role="alert">
+      <div class="state-banner__text">
+        <strong>Не удалось загрузить данные с сервера.</strong>
+        {{ loadErr }}
+        Показаны сохранённые локально данные (кэш или демо).
+      </div>
+      <div class="state-banner__actions">
+        <app-button variant="secondary" size="sm" (clicked)="productsService.refreshFromRemote()">
+          Повторить
+        </app-button>
+        <button type="button" class="banner-dismiss" (click)="productsService.dismissListLoadError()">
+          Скрыть
+        </button>
+      </div>
+    </div>
+  }
+  @if (productsService.mutationError(); as mutErr) {
+    <div class="state-banner state-banner--danger" role="alert">
+      <div class="state-banner__text">{{ mutErr }}</div>
+      <button type="button" class="banner-dismiss" (click)="productsService.dismissMutationError()">
+        Закрыть
+      </button>
+    </div>
+  }
+
+  <div class="products-layout">
+    <!-- 1: категории -->
+    <aside class="products-col products-col--side" aria-label="Категории">
+      <div class="products-col__head">
+        <span class="products-col__title">Категории</span>
+        <app-button
+          type="button"
+          variant="secondary"
+          size="sm"
+          [disabled]="colPickerBusy()"
+          (clicked)="showCategoryColModal.set(true)"
+          aria-label="Добавить категорию"
+        >
+          +
+        </app-button>
+      </div>
+      <div class="products-col__body">
+        @if (categoriesService.listLoading() && categoriesService.categories().length === 0) {
+          <p class="products-col__hint">Загрузка…</p>
+        }
+        @if (contextProductId() && !contextProduct()?.categoryId?.trim()) {
+          <p class="products-col__empty">Категория не задана</p>
+        } @else if (displayCategories().length === 0) {
+          <p class="products-col__empty">Нет записей</p>
+        } @else {
+          <ul class="products-side-list">
+            @for (c of displayCategories(); track c._id) {
+              <li>
+                <span class="products-side-item">{{ c.name }}</span>
+              </li>
+            }
+          </ul>
+        }
+      </div>
+    </aside>
+
+    <!-- 2: товары -->
+    <section class="products-col products-col--main" aria-label="Товары">
+      <div class="products-col__head products-col__head--flat">
+        <app-button variant="primary" size="md" (clicked)="onOpenModal()">Добавить товар</app-button>
+      </div>
+      <div class="products-col__body products-col__body--pad">
+        <app-input
+          label="Поиск"
+          placeholder="Название, SKU, категория, тип детали, материал…"
+          size="md"
+          [value]="searchQuery()"
+          (valueChange)="setSearchQuery($event)"
+          class="search-input w-full max-w-md mb-4"
+        />
+
+        <div class="table-wrap">
+          <table class="catalog-table">
+            <thead>
+              <tr>
+                <th (click)="toggleSort('name')" class="sortable">
+                  Название
+                  <span class="sort-indicator">{{ sortBy() === 'name' ? (sortAsc() ? '↑' : '↓') : '' }}</span>
+                </th>
+                <th (click)="toggleSort('sku')" class="sortable">
+                  SKU
+                  <span class="sort-indicator">{{ sortBy() === 'sku' ? (sortAsc() ? '↑' : '↓') : '' }}</span>
+                </th>
+                <th>Заметки</th>
+                <th>Активен</th>
+                <th>Действия</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (p of paginatedProducts(); track p._id) {
+                <tr
+                  class="product-row"
+                  [class.product-row--context]="isContextRow(p)"
+                  [attr.data-product-id]="p._id ?? null"
+                  (click)="onProductRowClick(p, $event)"
+                >
+                  <td>{{ p.name }}</td>
+                  <td>{{ p.sku || '—' }}</td>
+                  <td>{{ notesPreview(p.notes) }}</td>
+                  <td>{{ p.isActive === false ? 'нет' : 'да' }}</td>
+                  <td class="actions" data-product-row-actions (click)="$event.stopPropagation()">
+                    <app-button variant="ghost" size="sm" (clicked)="onSelectProduct(p)">
+                      Детали
+                    </app-button>
+                    <button type="button" class="link-btn" (click)="onOpenModal(p); $event.stopPropagation()">
+                      Ред
+                    </button>
+                    <button type="button" class="link-btn danger" (click)="p._id && onDelete(p._id, $event)">
+                      Удал
+                    </button>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+
+        <div class="pagination-bar">
+          <span>
+            Страница {{ currentPage() }} из {{ totalPages() }} (всего {{ filteredProducts().length }})
+          </span>
+          <div class="pagination-actions">
+            <app-button variant="secondary" size="sm" [disabled]="currentPage() === 1" (clicked)="goPrevPage()">
+              Предыдущая
+            </app-button>
+            <app-button
+              variant="secondary"
+              size="sm"
+              [disabled]="currentPage() === totalPages()"
+              (clicked)="goNextPage()"
+            >
+              Следующая
+            </app-button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3: типы деталей -->
+    <aside class="products-col products-col--side" aria-label="Тех. описание">
+      <div class="products-col__head">
+        <span class="products-col__title">Тех. описание</span>
+        <app-button
+          type="button"
+          variant="secondary"
+          size="sm"
+          [disabled]="colPickerBusy()"
+          (clicked)="showPartTypeColModal.set(true)"
+          aria-label="Добавить тип детали"
+        >
+          +
+        </app-button>
+      </div>
+      <div class="products-col__body">
+        @if (partTypesService.listLoading() && partTypesService.partTypes().length === 0) {
+          <p class="products-col__hint">Загрузка…</p>
+        }
+        @if (contextProductId() && !contextProduct()?.partTypeId?.trim()) {
+          <p class="products-col__empty">Не задано</p>
+        } @else if (displayPartTypes().length === 0) {
+          <p class="products-col__empty">Нет записей</p>
+        } @else {
+          <ul class="products-side-list">
+            @for (pt of displayPartTypes(); track pt._id) {
+              <li>
+                <span class="products-side-item">{{ pt.name }}</span>
+              </li>
+            }
+          </ul>
+        }
+      </div>
+    </aside>
+
+    <!-- 4: материалы -->
+    <aside class="products-col products-col--side" aria-label="Материалы">
+      <div class="products-col__head">
+        <span class="products-col__title">Материалы</span>
+        <app-button
+          type="button"
+          variant="secondary"
+          size="sm"
+          [disabled]="colPickerBusy()"
+          (clicked)="showMaterialColModal.set(true)"
+          aria-label="Добавить материал"
+        >
+          +
+        </app-button>
+      </div>
+      <div class="products-col__body">
+        @if (materialsService.listLoading() && materialsService.materials().length === 0) {
+          <p class="products-col__hint">Загрузка…</p>
+        }
+        @if (contextProductId() && !contextProduct()?.materialId?.trim()) {
+          <p class="products-col__empty">Не задано</p>
+        } @else if (displayMaterials().length === 0) {
+          <p class="products-col__empty">Нет записей</p>
+        } @else {
+          <ul class="products-side-list">
+            @for (m of displayMaterials(); track m._id) {
+              <li>
+                <span class="products-side-item">{{ m.name }}</span>
+              </li>
+            }
+          </ul>
+        }
+      </div>
+    </aside>
+  </div>
+</app-card>
+
+@if (showModal()) {
+  <div class="modal-backdrop products-edit-backdrop">
+    <div
+      class="modal-panel modal-panel--xl products-edit-modal-panel"
+      [style.pointer-events]="productFormInteractionLocked() ? 'none' : null"
+      role="dialog"
+      aria-modal="true"
+      [attr.aria-label]="editingProduct() ? 'Редактировать товар' : 'Новый товар'"
+      #editModalPanel
+    >
+      <div class="catalog-form-host">
+        <app-product-form
+          [product]="editingProduct()"
+          [interactionLocked]="productFormInteractionLocked()"
+          (save)="onSave($event)"
+          (closeRequested)="onProductCloseRequested()"
+          (createCategoryRequested)="openProductCategoryPicker()"
+          (createPartTypeRequested)="openProductPartTypePicker()"
+          (createMaterialRequested)="openProductMaterialPicker()"
+        />
+      </div>
+    </div>
+  </div>
+}
+
+<app-quick-add-dialog
+  [open]="showProductCategoryModal()"
+  size="sm"
+  title="Новая категория"
+  closeAriaLabel="Закрыть"
+  (closed)="closeProductCategoryPicker()"
+>
+  <app-category-form
+    (save)="onProductCategorySave($event)"
+    (cancel)="closeProductCategoryPicker()"
+  />
+</app-quick-add-dialog>
+
+<app-quick-add-dialog
+  [open]="showProductPartTypeModal()"
+  size="sm"
+  title="Новый тип детали"
+  closeAriaLabel="Закрыть"
+  (closed)="closeProductPartTypePicker()"
+>
+  <app-part-type-form
+    (save)="onProductPartTypeSave($event)"
+    (cancel)="closeProductPartTypePicker()"
+  />
+</app-quick-add-dialog>
+
+<app-quick-add-dialog
+  [open]="showProductMaterialModal()"
+  size="sm"
+  title="Новый материал"
+  closeAriaLabel="Закрыть"
+  (closed)="closeProductMaterialPicker()"
+>
+  <app-material-form
+    (save)="onProductMaterialSave($event)"
+    (cancel)="closeProductMaterialPicker()"
+  />
+</app-quick-add-dialog>
+
+@if (selectedProduct(); as s) {
+  <div
+    class="modal-backdrop details-backdrop"
+    role="button"
+    tabindex="0"
+    aria-label="Закрыть"
+    (click)="closeDetailsModal()"
+    (keydown.enter)="closeDetailsModal()"
+    (keydown.space)="closeDetailsModal()"
+  >
+    <app-card
+      #detailsModalCard
+      title="Товар"
+      class="details-card"
+      role="dialog"
+      aria-modal="true"
+      (click)="$event.stopPropagation()"
+    >
+      <div class="details-body">
+        <dl class="details-grid">
+          <dt>Название</dt>
+          <dd>{{ s.name }}</dd>
+          <dt>SKU</dt>
+          <dd>{{ s.sku || '—' }}</dd>
+          <dt>Категория</dt>
+          <dd>{{ catalogLookup.categoryName(s.categoryId) }}</dd>
+          <dt>Тип детали</dt>
+          <dd>{{ catalogLookup.partTypeName(s.partTypeId) }}</dd>
+          <dt>Материал</dt>
+          <dd>{{ catalogLookup.materialName(s.materialId) }}</dd>
+          <dt>Функциональность</dt>
+          <dd>{{ s.functionality || '—' }}</dd>
+          <dt>Монтаж</dt>
+          <dd>{{ s.mounting || '—' }}</dd>
+          <dt>Заметки</dt>
+          <dd class="whitespace-pre-wrap">{{ s.notes || '—' }}</dd>
+          <dt>Активен</dt>
+          <dd>{{ s.isActive === false ? 'нет' : 'да' }}</dd>
+        </dl>
+      </div>
+      <div class="details-actions">
+        <app-button variant="secondary" size="md" (clicked)="closeDetailsModal()">Закрыть</app-button>
+      </div>
+    </app-card>
+  </div>
+}
+
+@if (showCategoryColModal()) {
+  <div
+    class="modal-backdrop products-col-picker-backdrop"
+    role="button"
+    tabindex="0"
+    aria-label="Закрыть"
+    (click)="closeColCategoryPicker()"
+    (keydown.enter)="closeColCategoryPicker()"
+    (keydown.space)="closeColCategoryPicker()"
+  >
+    <div
+      class="modal-panel modal-panel--md"
+      role="dialog"
+      aria-modal="true"
+      aria-label="Новая категория"
+      (click)="$event.stopPropagation()"
+      (keydown.enter)="$event.stopPropagation()"
+      (keydown.space)="$event.stopPropagation()"
+    >
+      <div class="catalog-form-host">
+        <app-category-form
+          (save)="onColCategorySave($event)"
+          (cancel)="closeColCategoryPicker()"
+        />
+      </div>
+    </div>
+  </div>
+}
+
+@if (showPartTypeColModal()) {
+  <div
+    class="modal-backdrop products-col-picker-backdrop"
+    role="button"
+    tabindex="0"
+    aria-label="Закрыть"
+    (click)="closeColPartTypePicker()"
+    (keydown.enter)="closeColPartTypePicker()"
+    (keydown.space)="closeColPartTypePicker()"
+  >
+    <div
+      class="modal-panel modal-panel--md"
+      role="dialog"
+      aria-modal="true"
+      aria-label="Новый тип детали"
+      (click)="$event.stopPropagation()"
+      (keydown.enter)="$event.stopPropagation()"
+      (keydown.space)="$event.stopPropagation()"
+    >
+      <div class="catalog-form-host">
+        <app-part-type-form
+          (save)="onColPartTypeSave($event)"
+          (cancel)="closeColPartTypePicker()"
+        />
+      </div>
+    </div>
+  </div>
+}
+
+@if (showMaterialColModal()) {
+  <div
+    class="modal-backdrop products-col-picker-backdrop"
+    role="button"
+    tabindex="0"
+    aria-label="Закрыть"
+    (click)="closeColMaterialPicker()"
+    (keydown.enter)="closeColMaterialPicker()"
+    (keydown.space)="closeColMaterialPicker()"
+  >
+    <div
+      class="modal-panel modal-panel--md"
+      role="dialog"
+      aria-modal="true"
+      aria-label="Новый материал"
+      (click)="$event.stopPropagation()"
+      (keydown.enter)="$event.stopPropagation()"
+      (keydown.space)="$event.stopPropagation()"
+    >
+      <div class="catalog-form-host">
+        <app-material-form
+          (save)="onColMaterialSave($event)"
+          (cancel)="closeColMaterialPicker()"
+        />
+      </div>
+    </div>
+  </div>
+}
+
+<app-confirm-dialog
+  [open]="showConfirm()"
+  title="Удалить товар?"
+  message="Запись будет удалена. Продолжить?"
+  confirmText="Удалить"
+  confirmVariant="danger"
+  (confirmed)="onConfirmDelete()"
+  (cancelled)="showConfirm.set(false)"
+/>

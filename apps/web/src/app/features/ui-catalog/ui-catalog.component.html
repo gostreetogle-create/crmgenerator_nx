@@ -2,12 +2,20 @@
 
 @if (isOpen()) {
   <div class="catalog-overlay">
-    <app-card title="Component Catalog" class="catalog-card">
+    <app-card title="Каталог UI и паттернов" class="catalog-card">
       <div class="catalog-top-actions">
         <app-button variant="outline" size="sm" (clicked)="toggleTheme()">
           {{ theme() === 'dark' ? 'Тёмная' : 'Светлая' }}
         </app-button>
       </div>
+
+      <p class="catalog-intro">
+        Два уровня: <code>&#64;ui-kit/*</code> и общие классы каталога
+        <code>catalog-crud-patterns.scss</code>. Правила —
+        <code>docs/ai/UI_CATALOG_AND_DESIGN_SYSTEM.md</code>.
+      </p>
+
+      <h2 class="catalog-section-title">libs/ui-kit</h2>
       <div class="catalog-grid">
         @for (group of catalogGroups(); track group.title) {
           <section class="catalog-group">
@@ -46,15 +54,15 @@
                 }
 
                 @if (group.title === 'ConfirmDialog') {
-                  <app-button
-                    variant="danger"
-                    size="sm"
-                    (clicked)="showConfirmPreview.set(true)"
-                  >
+                  <app-button variant="danger" size="sm" (clicked)="showConfirmPreview.set(true)">
                     Открыть confirm
                   </app-button>
                 }
-
+                @if (group.title === 'QuickAddDialog') {
+                  <app-button variant="secondary" size="sm" (clicked)="showQuickAddPreview.set(true)">
+                    Открыть quick-add
+                  </app-button>
+                }
               </article>
             }
 
@@ -76,10 +84,149 @@
         }
       </div>
 
+      <h2 class="catalog-section-title">Паттерны CRUD (каталог)</h2>
+      <p class="catalog-pattern-path">
+        Стили: <code>features/catalog-shared/catalog-crud-patterns.scss</code> · страницы подключают
+        <code>catalog-crud-page.scss</code> (<code>:host</code> + ng-deep для «Детали»).
+      </p>
+      <div class="catalog-grid">
+        <section class="catalog-group">
+          <h3>Таблица и действия</h3>
+          <article class="catalog-item">
+            <div class="item-head">
+              <code>p-tbl</code>
+              <span>catalog-table, link-btn</span>
+            </div>
+            <div class="table-wrap catalog-pattern-table-wrap">
+              <table class="catalog-table">
+                <thead>
+                  <tr>
+                    <th class="sortable">Название <span class="sort-indicator">↑</span></th>
+                    <th>Код</th>
+                    <th>Действия</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Пример строки</td>
+                    <td>SKU-1</td>
+                    <td class="actions">
+                      <button type="button" class="link-btn">Изм</button>
+                      <button type="button" class="link-btn danger">Удал</button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </article>
+        </section>
+
+        <section class="catalog-group">
+          <h3>Состояния списка и баннеры</h3>
+          <article class="catalog-item">
+            <div class="item-head">
+              <code>p-state</code>
+              <span>list-state, state-banner</span>
+            </div>
+            <p class="list-state list-state--loading">Загрузка списка…</p>
+            <div class="state-banner state-banner--warning catalog-pattern-banner">
+              <div class="state-banner__text">
+                <strong>Предупреждение</strong>
+                Текст баннера как на CRUD-страницах.
+              </div>
+              <div class="state-banner__actions">
+                <button type="button" class="banner-dismiss">Скрыть</button>
+              </div>
+            </div>
+          </article>
+        </section>
+
+        <section class="catalog-group">
+          <h3>Пагинация</h3>
+          <article class="catalog-item">
+            <div class="item-head">
+              <code>p-page</code>
+              <span>pagination-bar</span>
+            </div>
+            <div class="pagination-bar">
+              <span>Страница 1 из 5</span>
+              <div class="pagination-actions">
+                <app-button variant="secondary" size="sm" type="button">Назад</app-button>
+                <app-button variant="secondary" size="sm" type="button">Вперёд</app-button>
+              </div>
+            </div>
+          </article>
+        </section>
+
+        <section class="catalog-group">
+          <h3>Модальная оболочка</h3>
+          <article class="catalog-item">
+            <div class="item-head">
+              <code>p-modal</code>
+              <span>modal-backdrop + modal-panel</span>
+            </div>
+            <p class="catalog-pattern-path">В каталоге — усечённый sandbox; на странице — на весь viewport.</p>
+            <div class="catalog-modal-sandbox" aria-hidden="true">
+              <div class="modal-backdrop">
+                <div class="modal-panel modal-panel--md">
+                  <strong>Заголовок панели</strong>
+                  <p>Содержимое модалки; в фичах внутри — <code>catalog-form-host</code> + форма.</p>
+                </div>
+              </div>
+            </div>
+          </article>
+        </section>
+
+        <section class="catalog-group">
+          <h3>Сетка «Детали»</h3>
+          <article class="catalog-item">
+            <div class="item-head">
+              <code>p-dl</code>
+              <span>details-grid</span>
+            </div>
+            <dl class="details-grid">
+              <dt>Поле</dt>
+              <dd>Значение</dd>
+              <dt>Ещё поле</dt>
+              <dd>—</dd>
+            </dl>
+            <div class="details-actions">
+              <app-button variant="secondary" size="sm" type="button">Закрыть</app-button>
+            </div>
+          </article>
+        </section>
+      </div>
+
+      <h2 class="catalog-section-title">Длинные формы (вкладки)</h2>
+      <p class="catalog-pattern-path">
+        Эталон: <code>organization-form</code>, <code>client-form</code> ·
+        <code>docs/ai/ARCHITECTURE.md</code> → «Модальные окна и формы с многими разделами».
+      </p>
+      <div class="catalog-grid">
+        <section class="catalog-group">
+          <h3>Полоса вкладок</h3>
+          <article class="catalog-item">
+            <div class="item-head">
+              <code>f-tabs</code>
+              <span>как org-form-tabs</span>
+            </div>
+            <div class="catalog-demo-tabs" role="tablist" aria-label="Демо вкладок">
+              <button type="button" class="catalog-demo-tab catalog-demo-tab--active" role="tab" aria-selected="true">
+                Реквизиты
+              </button>
+              <button type="button" class="catalog-demo-tab" role="tab" aria-selected="false">Адреса</button>
+              <button type="button" class="catalog-demo-tab" role="tab" aria-selected="false">Контакты</button>
+            </div>
+            <p class="catalog-pattern-path">
+              Формы в модалке с фиксированной высотой и скроллом только у панели вкладки — см. стили
+              <code>organizations-page</code> / <code>clients-page</code>.
+            </p>
+          </article>
+        </section>
+      </div>
+
       <div class="catalog-actions">
-        <app-button variant="secondary" (clicked)="isOpen.set(false)">
-          Закрыть
-        </app-button>
+        <app-button variant="secondary" size="md" (clicked)="isOpen.set(false)">Закрыть</app-button>
       </div>
     </app-card>
   </div>
@@ -94,3 +241,19 @@
   (confirmed)="showConfirmPreview.set(false)"
   (cancelled)="showConfirmPreview.set(false)"
 />
+
+<app-quick-add-dialog
+  [open]="showQuickAddPreview()"
+  size="sm"
+  title="Демо quick-add"
+  closeAriaLabel="Закрыть диалог"
+  (closed)="showQuickAddPreview.set(false)"
+>
+  <app-card title="Новая запись">
+    <p>Переиспользуемый диалог для сценариев по кнопке «+».</p>
+    <div class="catalog-actions">
+      <app-button variant="secondary" size="md" (clicked)="showQuickAddPreview.set(false)">Отмена</app-button>
+      <app-button variant="primary" size="md" (clicked)="showQuickAddPreview.set(false)">Сохранить</app-button>
+    </div>
+  </app-card>
+</app-quick-add-dialog>
