@@ -17,6 +17,7 @@ export const createApp = () => {
   );
   app.use(express.json({ limit: '2mb' }));
 
+  app.get('/health', (_req, res) => res.json({ ok: true }));
   app.get('/api/health', (_req, res) => res.json({ ok: true }));
   // Небольшая “заглушка” для диагностики: чтобы не было 404 на /api
   app.get('/api', (_req, res) =>
