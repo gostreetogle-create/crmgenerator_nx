@@ -79,6 +79,50 @@
 | Обёртка страницы каталога (`:host`, ng-deep детали) | `catalog-crud-page.scss` |
 | Токены         | `libs/design-tokens/src/styles/tokens.scss` |
 
+## UI-паспорт (табличный минимум)
+
+Ниже "быстрый паспорт" для презентации и разработки: артикул, что это, какие токены цвета/размеров/отступов являются нормой.
+
+### 1) Компоненты ui-kit и демо-артикулы
+
+| Артикул | Наименование | Цвета (основные токены) | Размеры | Отступы / ритм |
+|---------|--------------|--------------------------|---------|----------------|
+| `b-01` | Button / Primary loading | `--primary`, `--primary-hover`, `--text-on-primary`, `--outline` | `sm: 28px`, `md: 34px`, `lg: 40px`, min-width `80px` | `padding`: `spacing-1/2`, `spacing-2/3`, `spacing-2/4`; gap `spacing-2` |
+| `b-02` | Button / Slot composition | `--secondary`, `--accent`, `--danger`, `--ghost-hover` (+ варианты `outline/ghost`) | те же, что у `b-01` | те же, что у `b-01`; slots `start/end` |
+| `i-01` | Input / Prefix-suffix | `--card`, `--foreground`, `--border`, `--muted-foreground`, focus `--primary` | `sm: 30px`, `md: 36px`, `lg: 42px` | `padding`: `spacing-1/2`, `spacing-2/3`, `spacing-2/4`; shell gap `spacing-1` |
+| `i-02` | Input / Error + hint | как `i-01` + `--danger` | те же, что у `i-01` | те же, что у `i-01`; hint = `font-size-sm` |
+| `i-03` | Input / Disabled loading | как `i-01` (disabled/loading через opacity) | те же, что у `i-01` | те же, что у `i-01` |
+| `c-01` | Card / Hoverable | `--card`, `--card-foreground`, `--border`, hover mix от `--primary` | `min-height: var(--card-min-height)` | card padding `spacing-3`; header/footer `spacing-2` |
+| `c-02` | Card / Sections (header-body-footer) | те же, что у `c-01` | body скролл в фиксированной карточке | body `16px`; footer `spacing-2` |
+| `d-01` | Dialog / Confirm loading | `--overlay-backdrop`, `--card`, `--border`, `--foreground` | `sm/md/lg/xl` (`560/760/1040/1280` max viewport rules) | header `spacing-3`; body `24px`; footer `16px` + gap `spacing-2` |
+| `d-02` | Dialog / Content slots | те же, что у `d-01` | те же, что у `d-01` | те же, что у `d-01` |
+
+### 2) Паттерны представления (layout/table/dialog shell)
+
+| Артикул | Наименование | Цвета (основные токены) | Размеры | Отступы / ритм |
+|---------|--------------|--------------------------|---------|----------------|
+| `FIXED-LAYOUT-001` | Стабильный layout CRUD | `--card`, `--border`, `--background`, `--muted-foreground` | `table-min-height: 300px`, `card-min-height: 180px`, modal `max-height: 80vh` | страницы: `spacing-3/4`; таблицы и детали по `spacing-2/3` |
+| `ACTIONS-STATE-002` | Действия в строке + баннеры | warning mix от `--accent`; danger mix от `--danger` | sticky `thead`/`pagination`; адаптивные actions | баннеры `spacing-3`, actions gap `spacing-2` |
+| `SLOT-003` | Слоты body/header/footer | inherited from component tokens | зависит от host-компонента (`card/dialog`) | контент всегда в `slot="body"` |
+| `VIEWPORT-FLUID-015` | Полноширинный экран-контейнер | глобальные токены темы (`background/foreground`) | root-контейнеры без `max-width` | main padding по `spacing-4` (`spacing-3` mobile) |
+
+### 3) Список базовых цветовых токенов (обязательный минимум)
+
+- Поверхности: `--background`, `--card`, `--card-foreground`, `--border`
+- Текст и вторичный текст: `--foreground`, `--muted-foreground`
+- Действия: `--primary`, `--primary-hover`, `--secondary`, `--secondary-hover`
+- Состояния: `--danger`, `--danger-hover`, `--accent`, `--ghost-hover`
+- Overlay/focus: `--overlay-backdrop`, `--overlay-backdrop-strong`, `--outline`
+
+### 4) Размерный минимум (обязательный минимум)
+
+- Типографика: `font-size-sm: 12`, `base: 14`, `lg: 16`
+- Шкала отступов: `spacing-1: 4`, `2: 6`, `3: 8`, `4: 12`
+- Радиусы: `radius-sm: 4`, `radius-md: 6`
+- Кнопки: `28 / 34 / 40` (`sm/md/lg`)
+- Input: `30 / 36 / 42` (`sm/md/lg`)
+- Диалоги: `sm/md/lg/xl` (по правилам `dialog.component.scss`)
+
 ## Процесс для ИИ / ревью
 
 1. PR с новым визуальным примитивом: есть ли он в **ui-kit** или в **catalog-crud-patterns**?  

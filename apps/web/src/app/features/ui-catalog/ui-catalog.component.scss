@@ -14,8 +14,8 @@
 
 .catalog-card {
   display: block;
-  width: min(100%, 1200px);
-  margin: 0 auto;
+  width: 100%;
+  margin: 0;
   max-height: none;
   overflow: hidden;
 }
@@ -35,6 +35,74 @@
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
   gap: var(--spacing-3);
+}
+
+.ui-passport-wrap {
+  margin-top: var(--spacing-2);
+  overflow-x: auto;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--card);
+}
+
+.ui-passport-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  min-width: 980px;
+}
+
+.ui-passport-table th,
+.ui-passport-table td {
+  padding: var(--spacing-2) var(--spacing-3);
+  border-bottom: 1px solid var(--border);
+  text-align: left;
+  vertical-align: top;
+  font-size: var(--font-size-sm);
+  line-height: 1.35;
+}
+
+.ui-passport-table thead th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background: color-mix(in oklch, var(--background) 85%, var(--secondary));
+  font-weight: var(--font-weight-bold);
+}
+
+.ui-passport-table tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.color-cell {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-1);
+}
+
+.color-dot {
+  --sw: transparent;
+  width: 16px;
+  height: 16px;
+  border-radius: 999px;
+  background: var(--sw);
+  border: 1px solid color-mix(in oklch, var(--border) 70%, var(--foreground));
+  display: inline-block;
+}
+
+.ui-color-table {
+  min-width: 760px;
+}
+
+.color-swatch {
+  --sw: transparent;
+  width: 100%;
+  max-width: 160px;
+  height: 20px;
+  border-radius: var(--radius-sm);
+  border: 1px solid color-mix(in oklch, var(--border) 70%, var(--foreground));
+  background: var(--sw);
+  display: inline-block;
 }
 
 .catalog-group {

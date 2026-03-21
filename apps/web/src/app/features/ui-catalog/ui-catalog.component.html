@@ -10,330 +10,190 @@
       </div>
 
       <p class="catalog-intro">
-        Два уровня: <code>&#64;ui-kit/*</code> и общие классы каталога
-        <code>catalog-crud-patterns.scss</code>. Правила —
-        <code>docs/ai/UI_CATALOG_AND_DESIGN_SYSTEM.md</code>.
+        Табличный паспорт UI: артикулы, токены цветов, размеры и отступы.
+        Живые демо-компоненты скрыты, чтобы страница читалась как спецификация.
       </p>
 
-      <h2 class="catalog-section-title">libs/ui-kit</h2>
-      <div class="catalog-grid">
-        @for (group of catalogGroups(); track group.title) {
-          <section class="catalog-group">
-            <h3>{{ group.title }}</h3>
-
-            @for (item of group.items; track item.code) {
-              <article class="catalog-item">
-                <div class="item-head">
-                  <code>{{ item.code }}</code>
-                  <span>{{ item.spanLabel || item.name }}</span>
-                </div>
-
-                @if (group.title === 'Buttons') {
-                  @if (item.code === 'b-01') {
-                    <app-button [variant]="item.variant || 'primary'" size="sm" [loading]="true">
-                      Загрузка
-                    </app-button>
-                  } @else {
-                    <app-button [variant]="item.variant || 'secondary'" size="sm" ariaLabel="Слот-кнопка">
-                      <span slot="start">★</span>
-                      Текст
-                      <span slot="end">★</span>
-                    </app-button>
-                  }
-                }
-
-                @if (group.title === 'Inputs') {
-                  @if (item.code === 'i-02') {
-                    <app-input
-                      placeholder="example@mail.com"
-                      variant="error"
-                      hint="Неверный формат email"
-                      ariaLabel="Email с ошибкой"
-                    />
-                  } @else if (item.code === 'i-03') {
-                    <app-input
-                      placeholder="Загрузка..."
-                      [disabled]="true"
-                      [loading]="true"
-                      ariaLabel="Disabled loading input"
-                    />
-                  } @else {
-                    <app-input placeholder="Введите значение..." ariaLabel="Input c prefix suffix">
-                      <span slot="prefix">@</span>
-                      <span slot="suffix">✓</span>
-                    </app-input>
-                  }
-                }
-
-                @if (group.title === 'Cards') {
-                  @if (item.code === 'c-02') {
-                    <app-card [footer]="true" [hoverable]="false">
-                      <div slot="header"><strong>Header slot</strong></div>
-                      <div slot="body">Body slot content</div>
-                      <div slot="footer">Footer slot content</div>
-                    </app-card>
-                  } @else {
-                    <app-card title="Заголовок карточки" subtitle="hoverable">
-                      <div slot="body">
-                        <p>Контент карточки в едином API.</p>
-                      </div>
-                    </app-card>
-                  }
-                }
-
-                @if (group.title === 'Dialog' && item.code === 'd-01') {
-                  <app-button variant="danger" size="sm" (clicked)="showConfirmPreview.set(true)">
-                    Открыть confirm
-                  </app-button>
-                }
-                @if (group.title === 'Dialog' && item.code === 'd-02') {
-                  <app-button variant="secondary" size="sm" (clicked)="showContentPreview.set(true)">
-                    Открыть content
-                  </app-button>
-                }
-              </article>
-            }
-
-            @if (group.footerColors.length) {
-              <div class="group-colors">
-                @for (c of group.footerColors; track c.code) {
-                  <div class="group-color-chip">
-                    <span class="group-color-code">{{ c.code }}</span>
-                    <span
-                      class="group-color-swatch"
-                      [style.background]="'var(' + c.cssVar + ')'"
-                      aria-hidden="true"
-                    ></span>
-                  </div>
-                }
-              </div>
-            }
-          </section>
-        }
+      <h2 class="catalog-section-title">UI-паспорт (компоненты и паттерны)</h2>
+      <div class="ui-passport-wrap">
+        <table class="ui-passport-table">
+          <thead>
+            <tr>
+              <th>Артикул</th>
+              <th>Полное наименование RU</th>
+              <th>Наименование</th>
+              <th>Цвета (визуально)</th>
+              <th>Размеры</th>
+              <th>Отступы / ритм</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>b-01</code></td>
+              <td>Кнопка основного действия с индикатором загрузки</td>
+              <td>Button / Primary loading</td>
+              <td class="color-cell"><span class="color-dot" style="--sw: var(--primary)"></span><span class="color-dot" style="--sw: var(--primary-hover)"></span><span class="color-dot" style="--sw: var(--text-on-primary)"></span><span class="color-dot" style="--sw: var(--outline)"></span></td>
+              <td><code>sm: 28</code>, <code>md: 34</code>, <code>lg: 40</code>, min-width <code>80</code></td>
+              <td><code>spacing-1/2</code>, <code>spacing-2/3</code>, <code>spacing-2/4</code>; gap <code>spacing-2</code></td>
+            </tr>
+            <tr>
+              <td><code>b-02</code></td>
+              <td>Кнопка с составным содержимым (левый/правый слот)</td>
+              <td>Button / Slot composition</td>
+              <td class="color-cell"><span class="color-dot" style="--sw: var(--secondary)"></span><span class="color-dot" style="--sw: var(--accent)"></span><span class="color-dot" style="--sw: var(--danger)"></span><span class="color-dot" style="--sw: var(--ghost-hover)"></span></td>
+              <td>как <code>b-01</code></td>
+              <td>как <code>b-01</code>; slots <code>start/end</code></td>
+            </tr>
+            <tr>
+              <td><code>i-01</code></td>
+              <td>Поле ввода с префиксом/суффиксом</td>
+              <td>Input / Prefix-suffix</td>
+              <td class="color-cell"><span class="color-dot" style="--sw: var(--card)"></span><span class="color-dot" style="--sw: var(--foreground)"></span><span class="color-dot" style="--sw: var(--border)"></span><span class="color-dot" style="--sw: var(--muted-foreground)"></span><span class="color-dot" style="--sw: var(--primary)"></span></td>
+              <td><code>sm: 30</code>, <code>md: 36</code>, <code>lg: 42</code></td>
+              <td><code>spacing-1/2</code>, <code>spacing-2/3</code>, <code>spacing-2/4</code>; shell gap <code>spacing-1</code></td>
+            </tr>
+            <tr>
+              <td><code>i-02</code></td>
+              <td>Поле ввода с ошибкой и подсказкой валидации</td>
+              <td>Input / Error + hint</td>
+              <td class="color-cell"><span class="color-dot" style="--sw: var(--card)"></span><span class="color-dot" style="--sw: var(--foreground)"></span><span class="color-dot" style="--sw: var(--border)"></span><span class="color-dot" style="--sw: var(--muted-foreground)"></span><span class="color-dot" style="--sw: var(--danger)"></span></td>
+              <td>как <code>i-01</code></td>
+              <td>как <code>i-01</code>; hint = <code>font-size-sm</code></td>
+            </tr>
+            <tr>
+              <td><code>i-03</code></td>
+              <td>Отключённое поле ввода с состоянием загрузки</td>
+              <td>Input / Disabled loading</td>
+              <td class="color-cell"><span class="color-dot" style="--sw: var(--card)"></span><span class="color-dot" style="--sw: var(--foreground)"></span><span class="color-dot" style="--sw: var(--border)"></span><span class="color-dot" style="--sw: var(--muted-foreground)"></span></td>
+              <td>как <code>i-01</code></td>
+              <td>как <code>i-01</code></td>
+            </tr>
+            <tr>
+              <td><code>c-01</code></td>
+              <td>Интерактивная карточка с эффектом наведения</td>
+              <td>Card / Hoverable</td>
+              <td class="color-cell"><span class="color-dot" style="--sw: var(--card)"></span><span class="color-dot" style="--sw: var(--card-foreground)"></span><span class="color-dot" style="--sw: var(--border)"></span><span class="color-dot" style="--sw: var(--primary)"></span></td>
+              <td>min-height: <code>--card-min-height</code></td>
+              <td>card: <code>spacing-3</code>; header/footer: <code>spacing-2</code></td>
+            </tr>
+            <tr>
+              <td><code>c-02</code></td>
+              <td>Карточка с секциями: шапка, тело, подвал</td>
+              <td>Card / Sections (header-body-footer)</td>
+              <td>как <code>c-01</code></td>
+              <td>body скролл в фиксированной карточке</td>
+              <td>body <code>16px</code>; footer <code>spacing-2</code></td>
+            </tr>
+            <tr>
+              <td><code>d-01</code></td>
+              <td>Подтверждающий диалог с загрузкой действия</td>
+              <td>Dialog / Confirm loading</td>
+              <td class="color-cell"><span class="color-dot" style="--sw: var(--overlay-backdrop)"></span><span class="color-dot" style="--sw: var(--card)"></span><span class="color-dot" style="--sw: var(--border)"></span><span class="color-dot" style="--sw: var(--foreground)"></span></td>
+              <td><code>sm/md/lg/xl</code> (560/760/1040/1280 max viewport)</td>
+              <td>header <code>spacing-3</code>; body <code>24px</code>; footer <code>16px</code> + gap <code>spacing-2</code></td>
+            </tr>
+            <tr>
+              <td><code>d-02</code></td>
+              <td>Контентный диалог со слотами заголовка и подвала</td>
+              <td>Dialog / Content slots</td>
+              <td>как <code>d-01</code></td>
+              <td>как <code>d-01</code></td>
+              <td>как <code>d-01</code></td>
+            </tr>
+            <tr>
+              <td><code>FIXED-LAYOUT-001</code></td>
+              <td>Стабильная геометрия экранов без скачков интерфейса</td>
+              <td>Стабильный layout CRUD</td>
+              <td class="color-cell"><span class="color-dot" style="--sw: var(--card)"></span><span class="color-dot" style="--sw: var(--border)"></span><span class="color-dot" style="--sw: var(--background)"></span><span class="color-dot" style="--sw: var(--muted-foreground)"></span></td>
+              <td><code>table-min-height: 300</code>, <code>card-min-height: 180</code>, modal max <code>80vh</code></td>
+              <td>страницы: <code>spacing-3/4</code>, таблицы/детали: <code>spacing-2/3</code></td>
+            </tr>
+            <tr>
+              <td><code>ACTIONS-STATE-002</code></td>
+              <td>Единые действия в строках и баннеры состояний списка</td>
+              <td>Действия в строке + баннеры</td>
+              <td class="color-cell"><span class="color-dot" style="--sw: var(--accent)"></span><span class="color-dot" style="--sw: var(--danger)"></span></td>
+              <td>sticky <code>thead</code> и sticky пагинация</td>
+              <td>баннеры <code>spacing-3</code>, actions gap <code>spacing-2</code></td>
+            </tr>
+            <tr>
+              <td><code>SLOT-003</code></td>
+              <td>Слотовая композиция контента для card/dialog</td>
+              <td>Slot body/header/footer</td>
+              <td>наследуются от host-компонента</td>
+              <td>зависит от <code>card/dialog</code></td>
+              <td>контент всегда в <code>slot="body"</code></td>
+            </tr>
+            <tr>
+              <td><code>VIEWPORT-FLUID-015</code></td>
+              <td>Полноширинный контейнер страницы на весь viewport</td>
+              <td>Полноширинный root-screen контейнер</td>
+              <td class="color-cell"><span class="color-dot" style="--sw: var(--background)"></span><span class="color-dot" style="--sw: var(--foreground)"></span></td>
+              <td>root-контейнеры без <code>max-width</code></td>
+              <td>main padding: <code>spacing-4</code>, mobile: <code>spacing-3</code></td>
+            </tr>
+          </tbody>
+        </table>
       </div>
 
-      <h2 class="catalog-section-title">Артикулы окон (D-серия)</h2>
-      <div class="catalog-grid">
-        @for (a of dialogArticles; track a.code) {
-          <section class="catalog-group">
-            <article class="catalog-item">
-              <div class="item-head">
-                <code>{{ a.code }}</code>
-                <span>{{ a.title }}</span>
-              </div>
-              <p class="catalog-pattern-path">{{ a.description }}</p>
-
-              @if (a.code === 'D001') {
-                <app-button variant="secondary" size="sm" (clicked)="showConfirmPreview.set(true)">
-                  Показать пример
-                </app-button>
-              }
-
-              @if (a.code === 'D002') {
-                <app-button variant="secondary" size="sm" (clicked)="showContentPreview.set(true)">
-                  Показать пример
-                </app-button>
-              }
-
-              @if (a.code === 'D003') {
-                <div class="catalog-article-mock">Большое окно с таблицей/деталями (lg)</div>
-              }
-              @if (a.code === 'D004') {
-                <div class="catalog-article-mock">Всплывашка над полем со списком</div>
-              }
-              @if (a.code === 'D005') {
-                <div class="catalog-article-mock">Боковая панель фильтров (drawer)</div>
-              }
-              @if (a.code === 'D006') {
-                <div class="catalog-article-mock">Успех! Данные сохранены.</div>
-              }
-
-              <p class="catalog-article-hint">
-                Скажи мне: "сделай {{ a.code }}, но с формой клиента" — и я пойму.
-              </p>
-            </article>
-          </section>
-        }
+      <h2 class="catalog-section-title">Реестр цветов (уникальные токены)</h2>
+      <div class="ui-passport-wrap">
+        <table class="ui-passport-table ui-color-table">
+          <thead>
+            <tr>
+              <th>Артикул</th>
+              <th>Наименование RU</th>
+              <th>Токен</th>
+              <th>Цвет</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td><code>clr-01</code></td><td>Фон приложения</td><td><code>--background</code></td><td><span class="color-swatch" style="--sw: var(--background)"></span></td></tr>
+            <tr><td><code>clr-02</code></td><td>Фон карточек/панелей</td><td><code>--card</code></td><td><span class="color-swatch" style="--sw: var(--card)"></span></td></tr>
+            <tr><td><code>clr-03</code></td><td>Основной текст карточек</td><td><code>--card-foreground</code></td><td><span class="color-swatch" style="--sw: var(--card-foreground)"></span></td></tr>
+            <tr><td><code>clr-04</code></td><td>Основной текст интерфейса</td><td><code>--foreground</code></td><td><span class="color-swatch" style="--sw: var(--foreground)"></span></td></tr>
+            <tr><td><code>clr-05</code></td><td>Вторичный текст</td><td><code>--muted-foreground</code></td><td><span class="color-swatch" style="--sw: var(--muted-foreground)"></span></td></tr>
+            <tr><td><code>clr-06</code></td><td>Приглушённый фон/состояния</td><td><code>--muted</code></td><td><span class="color-swatch" style="--sw: var(--muted)"></span></td></tr>
+            <tr><td><code>clr-07</code></td><td>Границы элементов</td><td><code>--border</code></td><td><span class="color-swatch" style="--sw: var(--border)"></span></td></tr>
+            <tr><td><code>clr-08</code></td><td>Цвет обводки фокуса/outline</td><td><code>--outline</code></td><td><span class="color-swatch" style="--sw: var(--outline)"></span></td></tr>
+            <tr><td><code>clr-09</code></td><td>Основной акцент / CTA</td><td><code>--primary</code></td><td><span class="color-swatch" style="--sw: var(--primary)"></span></td></tr>
+            <tr><td><code>clr-10</code></td><td>Hover для primary</td><td><code>--primary-hover</code></td><td><span class="color-swatch" style="--sw: var(--primary-hover)"></span></td></tr>
+            <tr><td><code>clr-11</code></td><td>Текст на primary-кнопках</td><td><code>--text-on-primary</code></td><td><span class="color-swatch" style="--sw: var(--text-on-primary)"></span></td></tr>
+            <tr><td><code>clr-12</code></td><td>Вторичный акцент</td><td><code>--secondary</code></td><td><span class="color-swatch" style="--sw: var(--secondary)"></span></td></tr>
+            <tr><td><code>clr-13</code></td><td>Hover для secondary</td><td><code>--secondary-hover</code></td><td><span class="color-swatch" style="--sw: var(--secondary-hover)"></span></td></tr>
+            <tr><td><code>clr-14</code></td><td>Опасное действие / error</td><td><code>--danger</code></td><td><span class="color-swatch" style="--sw: var(--danger)"></span></td></tr>
+            <tr><td><code>clr-15</code></td><td>Hover для danger</td><td><code>--danger-hover</code></td><td><span class="color-swatch" style="--sw: var(--danger-hover)"></span></td></tr>
+            <tr><td><code>clr-16</code></td><td>Дополнительный акцент</td><td><code>--accent</code></td><td><span class="color-swatch" style="--sw: var(--accent)"></span></td></tr>
+            <tr><td><code>clr-17</code></td><td>Hover для ghost-элементов</td><td><code>--ghost-hover</code></td><td><span class="color-swatch" style="--sw: var(--ghost-hover)"></span></td></tr>
+            <tr><td><code>clr-18</code></td><td>Подложка overlay</td><td><code>--overlay-backdrop</code></td><td><span class="color-swatch" style="--sw: var(--overlay-backdrop)"></span></td></tr>
+            <tr><td><code>clr-19</code></td><td>Усиленная подложка overlay</td><td><code>--overlay-backdrop-strong</code></td><td><span class="color-swatch" style="--sw: var(--overlay-backdrop-strong)"></span></td></tr>
+          </tbody>
+        </table>
       </div>
 
-      <h2 class="catalog-section-title">Почему так: один файл — одна истина</h2>
+      <h2 class="catalog-section-title">Минимум для понимания дизайна</h2>
       <article class="catalog-item">
         <p class="catalog-pattern-path">
-          Все компоненты живут в одной папке, один API, варианты через пропсы, слоты для композиции,
-          a11y и анимации через shared. Нет дублей: меняем в одном месте — обновляется везде.
+          <strong>Базовые цветовые токены:</strong>
+          <code>--background</code>, <code>--card</code>, <code>--card-foreground</code>, <code>--border</code>,
+          <code>--foreground</code>, <code>--muted-foreground</code>, <code>--primary</code>,
+          <code>--primary-hover</code>, <code>--secondary</code>, <code>--secondary-hover</code>,
+          <code>--danger</code>, <code>--danger-hover</code>, <code>--accent</code>, <code>--ghost-hover</code>,
+          <code>--overlay-backdrop</code>, <code>--outline</code>.
+        </p>
+        <p class="catalog-pattern-path">
+          <strong>Размерный минимум:</strong>
+          типографика <code>12/14/16</code>, spacing-шкала <code>4/6/8/12</code>,
+          радиусы <code>4/6</code>, кнопки <code>28/34/40</code>, input <code>30/36/42</code>,
+          диалоги <code>sm/md/lg/xl</code>.
+        </p>
+        <p class="catalog-pattern-path">
+          <strong>Почему старую витрину можно скрыть:</strong>
+          она была демонстрационной и не является источником истины; истина — код компонентов в
+          <code>libs/ui-kit</code>, токены в <code>libs/design-tokens</code> и артикулы в документации Eve.
         </p>
       </article>
-
-      <h2 class="catalog-section-title">Паттерны CRUD (каталог)</h2>
-      <p class="catalog-pattern-path">
-        Стили: <code>features/catalog-shared/catalog-crud-patterns.scss</code> · страницы подключают
-        <code>catalog-crud-page.scss</code> (<code>:host</code> + ng-deep для «Детали»).
-      </p>
-      <div class="catalog-grid">
-        <section class="catalog-group">
-          <h3>Таблица и действия</h3>
-          <article class="catalog-item catalog-item--pattern-table">
-            <span class="pattern-code-corner">p-tbl</span>
-            <div class="item-head">
-              <span>catalog-table, link-btn</span>
-            </div>
-            <div class="table-wrap catalog-pattern-table-wrap">
-              <table class="catalog-table">
-                <thead>
-                  <tr>
-                    <th class="sortable">Название <span class="sort-indicator">↑</span></th>
-                    <th>Код</th>
-                    <th>Действия</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>Пример строки</td>
-                    <td>SKU-1</td>
-                    <td class="actions">
-                      <button type="button" class="link-btn">Изм</button>
-                      <button type="button" class="link-btn danger">Удал</button>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </article>
-        </section>
-
-        <section class="catalog-group">
-          <h3>Состояния списка и баннеры</h3>
-          <article class="catalog-item catalog-item--pattern-table">
-            <span class="pattern-code-corner">p-state</span>
-            <div class="item-head">
-              <span>list-state, state-banner</span>
-            </div>
-            <p class="list-state list-state--loading">Загрузка списка…</p>
-            <div class="state-banner state-banner--warning catalog-pattern-banner">
-              <div class="state-banner__text">
-                <strong>Предупреждение</strong>
-                Текст баннера как на CRUD-страницах.
-              </div>
-              <div class="state-banner__actions">
-                <button type="button" class="banner-dismiss">Скрыть</button>
-              </div>
-            </div>
-          </article>
-        </section>
-
-        <section class="catalog-group">
-          <h3>Пагинация</h3>
-          <article class="catalog-item catalog-item--pattern-table">
-            <span class="pattern-code-corner">p-page</span>
-            <div class="item-head">
-              <span>pagination-bar</span>
-            </div>
-            <div class="pagination-bar">
-              <span>Страница 1 из 5</span>
-              <div class="pagination-actions">
-                <app-button variant="secondary" size="sm" type="button">Назад</app-button>
-                <app-button variant="secondary" size="sm" type="button">Вперёд</app-button>
-              </div>
-            </div>
-          </article>
-        </section>
-
-        <section class="catalog-group">
-          <h3>Окно посередине</h3>
-          <article class="catalog-item catalog-item--pattern-table">
-            <span class="pattern-code-corner">p-modal</span>
-            <div class="item-head">
-              <span>app-dialog + slots</span>
-            </div>
-            <p class="catalog-pattern-path">
-              Используем только <code>app-dialog</code>: <code>mode="content"</code>,
-              <code>size</code>, слоты <code>header/body/footer</code>.
-            </p>
-          </article>
-        </section>
-
-        <section class="catalog-group">
-          <h3>Сетка «Детали»</h3>
-          <article class="catalog-item catalog-item--pattern-table">
-            <span class="pattern-code-corner">p-dl</span>
-            <div class="item-head">
-              <span>details-grid</span>
-            </div>
-            <dl class="details-grid">
-              <dt>Поле</dt>
-              <dd>Значение</dd>
-              <dt>Ещё поле</dt>
-              <dd>—</dd>
-            </dl>
-            <div class="details-actions">
-              <app-button variant="secondary" size="sm" type="button">Закрыть</app-button>
-            </div>
-          </article>
-        </section>
-      </div>
-
-      <h2 class="catalog-section-title">Длинные формы (вкладки)</h2>
-      <p class="catalog-pattern-path">
-        Эталон: <code>organization-form</code>, <code>client-form</code> ·
-        <code>docs/ai/ARCHITECTURE.md</code> → «Модальные окна и формы с многими разделами».
-      </p>
-      <div class="catalog-grid">
-        <section class="catalog-group">
-          <h3>Полоса вкладок</h3>
-          <article class="catalog-item catalog-item--pattern-table">
-            <span class="pattern-code-corner">f-tabs</span>
-            <div class="item-head">
-              <span>как org-form-tabs</span>
-            </div>
-            <div class="catalog-demo-tabs" role="tablist" aria-label="Демо вкладок">
-              <button type="button" class="catalog-demo-tab catalog-demo-tab--active" role="tab" aria-selected="true">
-                Реквизиты
-              </button>
-              <button type="button" class="catalog-demo-tab" role="tab" aria-selected="false">Адреса</button>
-              <button type="button" class="catalog-demo-tab" role="tab" aria-selected="false">Контакты</button>
-            </div>
-            <p class="catalog-pattern-path">
-              Формы в модалке с фиксированной высотой и скроллом только у панели вкладки — см. стили
-              <code>organizations-page</code> / <code>clients-page</code>.
-            </p>
-          </article>
-        </section>
-      </div>
 
     </div>
   </app-card>
 </div>
-
-<app-dialog
-  mode="confirm"
-  [open]="showConfirmPreview()"
-  title="Демо Dialog / confirm"
-  message="Пример подтверждающего диалога из ui-kit."
-  confirmText="Понятно"
-  confirmVariant="primary"
-  [loading]="true"
-  [trapFocus]="true"
-  [closeOnEsc]="true"
-  ariaLabel="Подтверждающий диалог"
-  (confirmed)="showConfirmPreview.set(false)"
-  (cancelled)="showConfirmPreview.set(false)"
-/>
-
-<app-dialog
-  mode="content"
-  [open]="showContentPreview()"
-  size="md"
-  ariaLabel="Демо content dialog"
-  [trapFocus]="true"
-  [closeOnEsc]="true"
-  (closed)="showContentPreview.set(false)"
->
-  <h3 slot="header">Демо Dialog / content</h3>
-  <div slot="body">
-    <p>Пример content-режима со слотами и a11y-параметрами.</p>
-  </div>
-  <div slot="footer" class="catalog-actions">
-    <app-button variant="secondary" size="md" (clicked)="showContentPreview.set(false)">Отмена</app-button>
-    <app-button variant="primary" size="md" (clicked)="showContentPreview.set(false)">Сохранить</app-button>
-  </div>
-</app-dialog>

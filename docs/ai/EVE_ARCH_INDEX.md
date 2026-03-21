@@ -35,6 +35,7 @@
 | **THEME-012** | Переключение light/dark | `localStorage` + класс `dark` на `documentElement`. | `ui-catalog.component.ts` | 2026-03-20 | [ARCHITECTURE — theme-dark](./ARCHITECTURE.md#theme-dark) |
 | **A11Y-013** | Базовая доступность | aria-атрибуты, focus в ui-kit. | `input`, `dialog` | 2026-03-20 | [ARCHITECTURE — a11y-ui-kit](./ARCHITECTURE.md#a11y-ui-kit) |
 | **FORMS-014** | Сигнальные формы + effect-init | `formData` через `effect` от `input()`, `output` наружу. | `*-form.component.ts` | 2026-03-20 | [ARCHITECTURE — forms-signal-effect](./ARCHITECTURE.md#forms-signal-effect) |
+| **VIEWPORT-FLUID-015** | Полноширинный root-screen контейнер | Корневые `.app-header-inner` и `.app-main` без max-width, чтобы страницы/карточки занимали всю ширину viewport. | `apps/web/src/app/app.ts` | 2026-03-21 | [ARCHITECTURE](./ARCHITECTURE.md) |
 | **000** | Без выделенного паттерна | Вспомогательный файл без устойчивого паттерна. | точечно в `apps/`, `libs/` | 2026-03-20 | [DOCS_SYNC_RULES](./DOCS_SYNC_RULES.md) |
 
 ---

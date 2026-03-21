@@ -1,4 +1,4 @@
-// Eve-arch: 000 — без выделенного паттерна
+// Eve-arch: VIEWPORT-FLUID-015 — корневой контейнер экрана на всю ширину viewport
 // Eve-UX: UX-FEEDBACK-002 — ненавязчивый feedback: до toast/snackbar — баннеры на страницах фич (см. EVE_UX_INDEX)
 import { Component } from '@angular/core';
 import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
@@ -84,8 +84,8 @@ import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
     }
 
     .app-header-inner {
-      max-width: 1400px;
-      margin: 0 auto;
+      width: 100%;
+      margin: 0;
       min-height: 56px;
       display: flex;
       flex-wrap: wrap;
@@ -163,8 +163,8 @@ import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 
     .app-main {
       padding: var(--spacing-4);
-      max-width: 1400px;
-      margin: 0 auto;
+      max-width: none;
+      margin: 0;
       min-height: calc(100vh - 76px);
       width: 100%;
       box-sizing: border-box;
