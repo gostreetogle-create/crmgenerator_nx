@@ -43,10 +43,10 @@
 | Область | Методы и пути (кратко) |
 |---------|-------------------------|
 | Валюта | `GET /currency/rate` |
-| Категории | `GET/POST /categories`, `GET/PATCH/DELETE /categories/:id`, `POST /categories/import-excel` |
+| Категории | `GET/POST /categories`, `GET/PATCH/DELETE /categories/:id` |
 | Товары | `GET/POST /products`, `GET/PATCH/DELETE /products/:id`, `GET /products/search?q=`, `GET/POST /products/categories`, `GET /products/export/xlsx`, `POST /products/import/xlsx`, `POST /products/import-excel` |
 | Спецификация товара | `GET /product-specification/:productId`, `PUT` — замена состава |
-| Типы частей / материалы | `GET/POST /part-types`, `PATCH/DELETE /part-types/:id`; `GET/POST /materials`, `PATCH/DELETE /materials/:id` |
+| Типы частей / материалы | `GET/POST /part-types`, `PATCH/DELETE /part-types/:id`, `POST /part-types/import-excel`; `GET/POST /materials`, `PATCH/DELETE /materials/:id`, `POST /materials/import-excel` |
 | КП (proposals) | `GET/POST /proposals`, `GET/PATCH/DELETE /proposals/:id`, `POST /proposals/:id/preview-pdf`, `POST /proposals/:id/send-to-yougile`, `DELETE /proposals/:id/yougile`, `GET /proposals/:id/pdf` |
 | PDF-шаблоны | `GET /pdf-templates/base/:name`, `GET/PUT/DELETE /pdf-templates/organization/:organizationId` |
 | Auth | `POST /auth/google`, `POST /auth/register`, `POST /auth/login`, `GET /auth/me` |
@@ -74,7 +74,7 @@
 
 | Фича | Статус | Куда перенесён контракт |
 |------|--------|-------------------------|
-| Категории, материалы, типы деталей (CRUD) | фронт готов, LS + опциональный API | `FRONTEND_CONTRACT.md` — пути `categories`, `materials`, `part-types` |
+| Категории, материалы, типы деталей (CRUD + import-excel в backend) | фронт готов, LS + опциональный API; backend поддерживает `POST /categories/import-excel`, `POST /materials/import-excel`, `POST /part-types/import-excel` | `FRONTEND_CONTRACT.md` — пути `categories`, `materials`, `part-types` |
 | Товары (CRUD) | фронт готов, LS + опциональный API | `FRONTEND_CONTRACT.md` — `products` |
 | Спецификации товара (вложенный ресурс, матрица вариантов) | **UI отложен**; типы + `ProductSpecificationsApiService` в репо | при возврате фичи — контракт в `FRONTEND_CONTRACT.md` |
 | *пример: импорт организаций* | не начато | — |
@@ -139,14 +139,14 @@
 
 ---
 
-## Товары: клон + монтаж/функциональность (пока в backlog)
+## Товары: клон + монтаж/функциональность (статус: внедрено)
 
 | Область | Эндпоинты / правила (черновик) |
 |---------|----------------------------------|
-| Клон товара | `POST /products/:id/clone` |
-| Справочник “виды монтажа” | `GET/POST/PATCH/DELETE /mount-types` |
-| Справочник “функциональности” | `GET/POST/PATCH/DELETE /functionalities` |
-| Привязки к товару | либо расширенный `PATCH /products/:id` (в теле массивы ids), либо отдельные join-эндпоинты: `GET/POST/PATCH/DELETE /products/:id/mounts` и `.../functionalities` |
+| Клон товара | ✅ `POST /products/:id/clone` |
+| Справочник “виды монтажа” | ✅ `GET/POST/PATCH/DELETE /mount-types` |
+| Справочник “функциональности” | ✅ `GET/POST/PATCH/DELETE /functionalities` |
+| Привязки к товару | ✅ `POST/PATCH /products` с `mountTypeIds[]` и `functionalityIds[]` |
 
 ---
 

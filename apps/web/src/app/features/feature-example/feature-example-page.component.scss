@@ -1,0 +1,79 @@
+// Eve-arch: FIXED-LAYOUT-001 — стабильная геометрия таблицы/модалок в demo-page
+@use 'tokens';
+@use '../catalog-shared/catalog-crud-patterns';
+
+:host {
+  display: block;
+  padding: var(--spacing-3);
+}
+
+.toolbar {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: var(--spacing-2);
+  align-items: end;
+  margin-bottom: var(--spacing-2);
+}
+
+.demo-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.demo-table th,
+.demo-table td {
+  padding: var(--spacing-2);
+  border-bottom: 1px solid var(--border);
+  text-align: left;
+  font-size: var(--font-size-sm);
+  vertical-align: middle;
+}
+
+.demo-table thead th {
+  background: color-mix(in oklch, var(--background) 85%, var(--secondary));
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+.actions {
+  display: flex;
+  gap: var(--spacing-2);
+  white-space: nowrap;
+}
+
+.details-grid {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: var(--spacing-2) var(--spacing-3);
+}
+
+.details-grid dt {
+  color: var(--muted-foreground);
+  font-weight: var(--font-weight-medium);
+}
+
+.details-grid dd {
+  margin: 0;
+}
+
+.details-actions {
+  margin-top: var(--spacing-3);
+  padding-top: var(--spacing-2);
+  border-top: 1px solid var(--border);
+  display: flex;
+  justify-content: flex-end;
+}
+
+.back-link {
+  font-size: var(--font-size-sm);
+  color: var(--primary);
+  text-decoration: underline;
+}
+
+@media (max-width: 900px) {
+  .toolbar {
+    grid-template-columns: 1fr;
+  }
+}

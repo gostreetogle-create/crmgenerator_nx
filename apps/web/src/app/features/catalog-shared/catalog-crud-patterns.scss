@@ -81,59 +81,30 @@
   white-space: nowrap;
 }
 
-.modal-backdrop {
-  position: fixed;
-  inset: 0;
-  background: var(--overlay-backdrop);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: var(--spacing-2);
-  backdrop-filter: blur(2px);
+/* Если класс стоит на <td>, сохраняем табличный layout и центрируем кнопки по высоте строки. */
+td.actions {
+  display: table-cell;
+  vertical-align: middle;
+  white-space: nowrap;
 }
 
-.modal-panel {
-  box-sizing: border-box;
-  width: min(760px, 96vw);
-  height: min(620px, 90vh);
-  min-height: min(620px, 90vh);
-  max-height: 90vh;
-  overflow: hidden;
+td.actions > app-button + app-button {
+  margin-left: var(--spacing-2);
+}
+
+/* Обертка формы внутри app-dialog (раньше — под legacy .modal-panel) */
+.catalog-form-host {
+  flex: 1;
+  min-height: 0;
   display: flex;
   flex-direction: column;
-  border-radius: var(--radius-md);
-  box-shadow: 0 12px 40px color-mix(in oklch, var(--foreground) 18%, transparent);
+  overflow: hidden;
 }
 
-.modal-panel--sm {
-  width: min(560px, 94vw);
-  height: min(420px, 78vh);
-  min-height: min(420px, 78vh);
-  max-height: 78vh;
-}
-
-.modal-panel--md {
-  width: min(760px, 96vw);
-  height: min(620px, 90vh);
-  min-height: min(620px, 90vh);
-  max-height: 90vh;
-}
-
-.modal-panel--lg {
-  width: min(1040px, 97vw);
-  height: min(760px, 91vh);
-  min-height: min(760px, 91vh);
-  max-height: 91vh;
-}
-
-.modal-panel--xl {
-  width: min(1280px, 98vw);
-  height: min(860px, 92vh);
-  min-height: min(860px, 92vh);
-  max-height: 92vh;
-}
-
-.modal-panel > .catalog-form-host {
+.catalog-form-host > app-product-form,
+.catalog-form-host > app-category-form,
+.catalog-form-host > app-part-type-form,
+.catalog-form-host > app-material-form {
   flex: 1;
   min-height: 0;
   display: flex;

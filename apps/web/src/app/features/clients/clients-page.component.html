@@ -155,19 +155,31 @@
 </app-card>
 
 @if (showModal()) {
-  <app-dialog mode="content" [open]="showModal()" size="lg" ariaLabel="Содержимое формы клиента" (closed)="closeEditModal()">
+  <app-dialog
+    mode="content"
+    [open]="showModal()"
+    size="lg"
+    ariaLabel="Содержимое формы клиента"
+    (closed)="closeEditModal()"
+  >
     <div slot="body">
       <app-client-form
         [client]="editingClient()"
         (save)="onSave($event)"
         (cancel)="closeEditModal()"
-      />
+      ></app-client-form>
     </div>
   </app-dialog>
 }
 
 @if (selectedClient(); as s) {
-  <app-dialog mode="content" [open]="!!selectedClient()" size="lg" ariaLabel="Детали клиента" (closed)="closeDetailsModal()">
+  <app-dialog
+    mode="content"
+    [open]="!!selectedClient()"
+    size="lg"
+    ariaLabel="Детали клиента"
+    (closed)="closeDetailsModal()"
+  >
     <div slot="body">
       <app-card title="Детали клиента" class="details-card">
       <div slot="body">
@@ -228,4 +240,4 @@
   confirmVariant="danger"
   (confirmed)="onConfirmDelete()"
   (cancelled)="showConfirm.set(false)"
-/>
+></app-dialog>

@@ -14,10 +14,10 @@ export interface Product {
    */
   partTypeId?: string;
   materialId?: string;
-  /** Функциональность товара (MVP: select в UI). */
-  functionality?: string;
-  /** Тип монтажа (MVP: select в UI). */
-  mounting?: string;
+  /** Мультивыбор функциональностей (ids из справочника Functionality). */
+  functionalityIds?: string[];
+  /** Мультивыбор видов монтажа (ids из справочника MountType). */
+  mountTypeIds?: string[];
   notes?: string;
   isActive?: boolean;
 }

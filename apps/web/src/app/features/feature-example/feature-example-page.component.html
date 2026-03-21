@@ -1,0 +1,110 @@
+<!-- Eve-arch: SLOT-003 — контент страницы в card slot=body -->
+<app-card title="Demo Feature Playground (временная)">
+  <div slot="body">
+    <div class="state-banner state-banner--warning" role="status">
+      <div class="state-banner__text">
+        <strong>Временная страница для эталона Angular + Nx.</strong>
+        Используется как пример smart/dumb, таблицы, формы, confirm и индексации Eve.
+      </div>
+      <div class="state-banner__actions">
+        <a routerLink="/clients" class="back-link">Вернуться в рабочие экраны</a>
+      </div>
+    </div>
+
+    <div class="toolbar">
+      <app-button variant="primary" size="md" (clicked)="onCreate()">Добавить запись</app-button>
+      <app-input
+        label="Поиск по демо-записям"
+        placeholder="Название, ответственный, статус..."
+        [value]="query()"
+        (valueChange)="query.set($event)"
+      />
+    </div>
+
+    <div class="table-wrap">
+      <table class="demo-table">
+        <thead>
+          <tr>
+            <th>Название</th>
+            <th>Ответственный</th>
+            <th>Статус</th>
+            <th>Создано</th>
+            <th>Действия</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (item of filtered(); track item.id) {
+            <tr>
+              <td>{{ item.title }}</td>
+              <td>{{ item.owner }}</td>
+              <td>{{ statusLabel(item.status) }}</td>
+              <td>{{ item.createdAt | date: 'dd.MM.yyyy HH:mm' }}</td>
+              <td class="actions">
+                <app-button variant="ghost" size="sm" (clicked)="openDetails(item.id)">Детали</app-button>
+                <app-button variant="secondary" size="sm" (clicked)="onEdit(item.id)">Ред</app-button>
+                <app-button variant="danger" size="sm" (clicked)="openDelete(item.id)">Удал</app-button>
+              </td>
+            </tr>
+          } @empty {
+            <tr class="table-empty-row">
+              <td colspan="5">Нет записей. Добавьте первую запись.</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+</app-card>
+
+@if (showFormModal()) {
+  <app-dialog mode="content" [open]="showFormModal()" size="lg" ariaLabel="Форма demo-записи" (closed)="closeFormModal()">
+    <div slot="body">
+      <app-feature-example-form
+        [initialData]="editingItem()"
+        (saved)="onSave($event)"
+        (cancelled)="closeFormModal()"
+      ></app-feature-example-form>
+    </div>
+  </app-dialog>
+}
+
+@if (showDetailsModal() && selectedItem(); as selected) {
+  <app-dialog
+    mode="content"
+    [open]="showDetailsModal()"
+    size="md"
+    ariaLabel="Детали demo-записи"
+    (closed)="closeDetails()"
+  >
+    <div slot="body">
+      <app-card title="Детали записи" class="details-card">
+        <div slot="body">
+          <dl class="details-grid">
+            <dt>Название</dt>
+            <dd>{{ selected.title }}</dd>
+            <dt>Ответственный</dt>
+            <dd>{{ selected.owner }}</dd>
+            <dt>Статус</dt>
+            <dd>{{ statusLabel(selected.status) }}</dd>
+            <dt>Примечание</dt>
+            <dd>{{ selected.notes || '—' }}</dd>
+          </dl>
+          <div class="details-actions">
+            <app-button variant="secondary" size="md" (clicked)="closeDetails()">Закрыть</app-button>
+          </div>
+        </div>
+      </app-card>
+    </div>
+  </app-dialog>
+}
+
+<app-dialog
+  mode="confirm"
+  [open]="showDeleteConfirm()"
+  title="Удалить демо-запись?"
+  message="Действие необратимо. Продолжить?"
+  confirmText="Удалить"
+  confirmVariant="danger"
+  (confirmed)="confirmDelete()"
+  (cancelled)="showDeleteConfirm.set(false)"
+></app-dialog>

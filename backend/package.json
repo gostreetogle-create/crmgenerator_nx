@@ -14,12 +14,15 @@
     "cors": "*",
     "dotenv": "*",
     "express": "*",
+    "multer": "^2.1.1",
     "pdfkit": "^0.18.0",
+    "xlsx": "^0.18.5",
     "zod": "*"
   },
   "devDependencies": {
     "@types/cors": "*",
     "@types/express": "*",
+    "@types/multer": "^2.1.0",
     "prisma": "^6.0.0",
     "tsx": "*",
     "typescript": "*"

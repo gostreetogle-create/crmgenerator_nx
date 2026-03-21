@@ -10,7 +10,7 @@
 | Что | Где |
 |-----|-----|
 | Модели и поля | `libs/domain/src/lib/**` |
-| HTTP сейчас | `OrganizationsApiService`, `ClientsApiService`, `CategoriesApiService`, `MaterialsApiService`, `PartTypesApiService`, `ProductsApiService` — **CRUD** в UI. `ProductSpecificationsApiService` — каркас в `core/api` **без вызовов из фич** (страница спецификаций отключена). |
+| HTTP сейчас | `OrganizationsApiService`, `ClientsApiService`, `CategoriesApiService`, `MaterialsApiService`, `PartTypesApiService`, `MountTypesApiService`, `FunctionalitiesApiService`, `ProductsApiService` — **CRUD/lookup** в UI. `ProductSpecificationsApiService` — каркас в `core/api` **без вызовов из фич** (страница спецификаций отключена). |
 | UI без бэка | `localStorage` + `*Service` в фичах; при `apiBaseUrl === ''` запросы к API не идут |
 | Бизнес-логика и план страниц | `docs/business/BL_PAGES_AND_DATA_MODEL.md`, `docs/business/BUSINESS_LOGIC.md` |
 
@@ -215,6 +215,56 @@
 
 ---
 
+## Виды монтажа (`MountType`)
+
+**Модель:** `libs/domain/src/lib/mount-types/mount-type.model.ts`  
+**HTTP:** `mount-types-api.service.ts`  
+**UI:** источник опций для мультивыбора в форме товара (`/catalog/products`).
+
+| Метод | Путь | Назначение |
+|--------|------|------------|
+| `GET` | `/mount-types` | Список |
+| `GET` | `/mount-types/:id` | Одна запись |
+| `POST` | `/mount-types` | Создание |
+| `PATCH` | `/mount-types/:id` | Обновление |
+| `DELETE` | `/mount-types/:id` | Удаление |
+
+### Поля JSON
+
+| Поле | Тип | Смысл |
+|------|-----|--------|
+| `_id` | string | Id |
+| `name` | string | Название вида монтажа |
+| `description` | string | Описание |
+| `isActive` | boolean | Активен |
+
+---
+
+## Функциональности (`Functionality`)
+
+**Модель:** `libs/domain/src/lib/functionalities/functionality.model.ts`  
+**HTTP:** `functionalities-api.service.ts`  
+**UI:** источник опций для мультивыбора в форме товара (`/catalog/products`).
+
+| Метод | Путь | Назначение |
+|--------|------|------------|
+| `GET` | `/functionalities` | Список |
+| `GET` | `/functionalities/:id` | Одна запись |
+| `POST` | `/functionalities` | Создание |
+| `PATCH` | `/functionalities/:id` | Обновление |
+| `DELETE` | `/functionalities/:id` | Удаление |
+
+### Поля JSON
+
+| Поле | Тип | Смысл |
+|------|-----|--------|
+| `_id` | string | Id |
+| `name` | string | Название функциональности |
+| `description` | string | Описание |
+| `isActive` | boolean | Активна |
+
+---
+
 ## Товары (`Product`)
 
 **Модель:** `libs/domain/src/lib/products/product.model.ts`  
@@ -228,6 +278,7 @@
 | `GET` | `/products/search?q=` | Поиск (опционально для бэка; UI пока фильтрует локально) |
 | `GET` | `/products/:id` | Одна запись |
 | `POST` | `/products` | Создание |
+| `POST` | `/products/:id/clone` | Копирование товара (создать на основе существующего; body опционально переопределяет поля) |
 | `PATCH` | `/products/:id` | Обновление |
 | `DELETE` | `/products/:id` | Удаление |
 
@@ -243,6 +294,8 @@
 | `categoryId` | string | Ссылка на `Category` (обязательно в UI) |
 | `partTypeId` | string | Тип детали / тех. описание (опц.) |
 | `materialId` | string | Материал к карточке товара (опц.) |
+| `mountTypeIds` | string[] | Выбранные виды монтажа (join `product_mounts`) |
+| `functionalityIds` | string[] | Выбранные функциональности (join `product_functionalities`) |
 | `notes` | string | Заметки |
 | `isActive` | boolean | Активен |
 

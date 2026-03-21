@@ -15,6 +15,8 @@ const createProductSchema = z
     categoryId: z.string().optional(),
     partTypeId: z.string().optional(),
     materialId: z.string().optional(),
+    mountTypeIds: z.array(z.string().min(1)).optional(),
+    functionalityIds: z.array(z.string().min(1)).optional(),
     notes: z.string().optional(),
     isActive: z.boolean().optional(),
   })
@@ -24,7 +26,13 @@ const updateProductSchema = createProductSchema.partial().strict();
 const cloneProductSchema = createProductSchema.partial().strict();
 
 export const listProducts = asyncHandler(async (_req: Request, res: Response) => {
-  const rows = await prisma.product.findMany({ orderBy: { name: 'asc' } });
+  const rows = await prisma.product.findMany({
+    orderBy: { name: 'asc' },
+    include: {
+      productMounts: { select: { mountTypeId: true } },
+      productFunctionalities: { select: { functionalityId: true } },
+    },
+  });
   return res.json(rows.map(mapProduct));
 });
 
@@ -38,7 +46,13 @@ export const searchProducts = asyncHandler(async (req: Request, res: Response) =
         : undefined;
   const qParsed = z.string().optional().parse(q);
   if (!qParsed || !qParsed.trim()) {
-    const rows = await prisma.product.findMany({ orderBy: { name: 'asc' } });
+    const rows = await prisma.product.findMany({
+      orderBy: { name: 'asc' },
+      include: {
+        productMounts: { select: { mountTypeId: true } },
+        productFunctionalities: { select: { functionalityId: true } },
+      },
+    });
     return res.json(rows.map(mapProduct));
   }
 
@@ -52,30 +66,99 @@ export const searchProducts = asyncHandler(async (req: Request, res: Response) =
       ],
     },
     orderBy: { name: 'asc' },
+    include: {
+      productMounts: { select: { mountTypeId: true } },
+      productFunctionalities: { select: { functionalityId: true } },
+    },
   });
   return res.json(rows.map(mapProduct));
 });
 
 export const getProductById = asyncHandler(async (req: Request, res: Response) => {
   const id = getParamString(req.params.id, 'id');
-  const row = await prisma.product.findUnique({ where: { id } });
+  const row = await prisma.product.findUnique({
+    where: { id },
+    include: {
+      productMounts: { select: { mountTypeId: true } },
+      productFunctionalities: { select: { functionalityId: true } },
+    },
+  });
   if (!row) throw new HttpError(404, 'Product not found');
   return res.json(mapProduct(row));
 });
 
 export const createProduct = asyncHandler(async (req: Request, res: Response) => {
   const body = createProductSchema.parse(req.body);
-  const row = await prisma.product.create({ data: body });
+  const { mountTypeIds, functionalityIds, ...data } = body;
+  const row = await prisma.$transaction(async (tx) => {
+    const created = await tx.product.create({ data });
+    if (mountTypeIds?.length) {
+      await tx.productMount.createMany({
+        data: mountTypeIds.map((mountTypeId) => ({
+          productId: created.id,
+          mountTypeId,
+        })),
+        skipDuplicates: true,
+      });
+    }
+    if (functionalityIds?.length) {
+      await tx.productFunctionality.createMany({
+        data: functionalityIds.map((functionalityId) => ({
+          productId: created.id,
+          functionalityId,
+        })),
+        skipDuplicates: true,
+      });
+    }
+    return tx.product.findUniqueOrThrow({
+      where: { id: created.id },
+      include: {
+        productMounts: { select: { mountTypeId: true } },
+        productFunctionalities: { select: { functionalityId: true } },
+      },
+    });
+  });
   return res.status(201).json(mapProduct(row));
 });
 
 export const updateProduct = asyncHandler(async (req: Request, res: Response) => {
   const body = updateProductSchema.parse(req.body);
+  const { mountTypeIds, functionalityIds, ...data } = body;
   const id = getParamString(req.params.id, 'id');
   try {
-    const row = await prisma.product.update({
-      where: { id },
-      data: body,
+    const row = await prisma.$transaction(async (tx) => {
+      await tx.product.update({
+        where: { id },
+        data,
+      });
+
+      if (mountTypeIds) {
+        await tx.productMount.deleteMany({ where: { productId: id } });
+        if (mountTypeIds.length) {
+          await tx.productMount.createMany({
+            data: mountTypeIds.map((mountTypeId) => ({ productId: id, mountTypeId })),
+            skipDuplicates: true,
+          });
+        }
+      }
+
+      if (functionalityIds) {
+        await tx.productFunctionality.deleteMany({ where: { productId: id } });
+        if (functionalityIds.length) {
+          await tx.productFunctionality.createMany({
+            data: functionalityIds.map((functionalityId) => ({ productId: id, functionalityId })),
+            skipDuplicates: true,
+          });
+        }
+      }
+
+      return tx.product.findUniqueOrThrow({
+        where: { id },
+        include: {
+          productMounts: { select: { mountTypeId: true } },
+          productFunctionalities: { select: { functionalityId: true } },
+        },
+      });
     });
     return res.json(mapProduct(row));
   } catch (err: any) {
@@ -99,44 +182,55 @@ export const cloneProduct = asyncHandler(async (req: Request, res: Response) => 
   const sourceId = getParamString(req.params.id, 'id');
   const body = cloneProductSchema.parse(req.body ?? {});
 
-  const source = await prisma.product.findUnique({ where: { id: sourceId } });
-  if (!source) throw new HttpError(404, 'Product not found');
-
-  const cloned = await prisma.product.create({
-    data: {
-      name: body.name ?? source.name,
-      sku: body.sku ?? source.sku,
-      categoryId: body.categoryId ?? source.categoryId,
-      partTypeId: body.partTypeId ?? source.partTypeId,
-      materialId: body.materialId ?? source.materialId,
-      notes: body.notes ?? source.notes,
-      isActive: body.isActive ?? source.isActive,
+  const source = await prisma.product.findUnique({
+    where: { id: sourceId },
+    include: {
+      productMounts: { select: { mountTypeId: true } },
+      productFunctionalities: { select: { functionalityId: true } },
     },
   });
+  if (!source) throw new HttpError(404, 'Product not found');
 
-  const mounts = await prisma.productMount.findMany({
-    where: { productId: sourceId },
-    select: { mountTypeId: true },
-  });
-  await Promise.all(
-    mounts.map((m) =>
-      prisma.productMount.create({
-        data: { productId: cloned.id, mountTypeId: m.mountTypeId },
-      }),
-    ),
-  );
+  const cloned = await prisma.$transaction(async (tx) => {
+    const created = await tx.product.create({
+      data: {
+        name: body.name ?? source.name,
+        sku: body.sku ?? source.sku,
+        categoryId: body.categoryId ?? source.categoryId,
+        partTypeId: body.partTypeId ?? source.partTypeId,
+        materialId: body.materialId ?? source.materialId,
+        notes: body.notes ?? source.notes,
+        isActive: body.isActive ?? source.isActive,
+      },
+    });
 
-  const functionalities = await prisma.productFunctionality.findMany({
-    where: { productId: sourceId },
-    select: { functionalityId: true },
+    const mountTypeIds =
+      body.mountTypeIds ?? source.productMounts.map((m) => m.mountTypeId);
+    const functionalityIds =
+      body.functionalityIds ??
+      source.productFunctionalities.map((f) => f.functionalityId);
+
+    if (mountTypeIds.length) {
+      await tx.productMount.createMany({
+        data: mountTypeIds.map((mountTypeId) => ({ productId: created.id, mountTypeId })),
+        skipDuplicates: true,
+      });
+    }
+    if (functionalityIds.length) {
+      await tx.productFunctionality.createMany({
+        data: functionalityIds.map((functionalityId) => ({ productId: created.id, functionalityId })),
+        skipDuplicates: true,
+      });
+    }
+
+    return tx.product.findUniqueOrThrow({
+      where: { id: created.id },
+      include: {
+        productMounts: { select: { mountTypeId: true } },
+        productFunctionalities: { select: { functionalityId: true } },
+      },
+    });
   });
-  await Promise.all(
-    functionalities.map((f) =>
-      prisma.productFunctionality.create({
-        data: { productId: cloned.id, functionalityId: f.functionalityId },
-      }),
-    ),
-  );
 
   return res.status(201).json(mapProduct(cloned));
 });

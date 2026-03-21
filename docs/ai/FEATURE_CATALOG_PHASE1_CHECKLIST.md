@@ -16,8 +16,8 @@
 
 ## Бэкенд
 
-- [ ] Реализовать REST под путями из контракта (`GET/POST/PATCH/DELETE` для трёх ресурсов)
-- [ ] Импорт Excel из `API_FUTURE_CHECKLIST.md` — по отдельному согласованию
+- [x] Реализовать REST под путями из контракта (`GET/POST/PATCH/DELETE` для трёх ресурсов)
+- [x] Импорт Excel из `API_FUTURE_CHECKLIST.md` — по отдельному согласованию (backend-only endpoint'ы)
 
 ## Следующий шаг (фаза 2)
 

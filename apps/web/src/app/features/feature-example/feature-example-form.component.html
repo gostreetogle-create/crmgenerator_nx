@@ -1,0 +1,45 @@
+<form class="feature-example-form" (submit)="$event.preventDefault()">
+  <app-input
+    label="Название"
+    [value]="formData().title"
+    [error]="errors().title"
+    [showErrorText]="false"
+    (valueChange)="formData.update((v) => ({ ...v, title: $event }))"
+  />
+
+  <app-input
+    label="Ответственный"
+    [value]="formData().owner"
+    [error]="errors().owner"
+    [showErrorText]="false"
+    (valueChange)="formData.update((v) => ({ ...v, owner: $event }))"
+  />
+
+  <div class="field">
+    <label for="feature-example-status">Статус</label>
+    <select id="feature-example-status" [value]="formData().status" (change)="onStatusChange($event)">
+      <option value="new">Новая</option>
+      <option value="in_progress">В работе</option>
+      <option value="done">Готово</option>
+    </select>
+  </div>
+
+  <div class="field">
+    <label for="feature-example-notes">Примечание</label>
+    <textarea
+      id="feature-example-notes"
+      rows="4"
+      [value]="formData().notes || ''"
+      (input)="onNotesInput($event)"
+    ></textarea>
+  </div>
+
+  <div class="actions">
+    <app-button variant="secondary" size="md" type="button" (clicked)="cancelled.emit()">
+      Отмена
+    </app-button>
+    <app-button variant="primary" size="md" type="button" [disabled]="hasErrors()" (clicked)="onSave()">
+      Сохранить
+    </app-button>
+  </div>
+</form>

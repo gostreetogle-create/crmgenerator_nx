@@ -76,7 +76,6 @@ export class ClientsPageComponent implements OnInit {
       });
     }
 
-    console.log('Filtered =', list);
     return list;
   });
   readonly totalPages = computed(() =>
@@ -114,7 +113,6 @@ export class ClientsPageComponent implements OnInit {
   }
 
   ngOnInit() {
-    console.log('Клиенты на старте:', this.clients());
     this.route.queryParams.subscribe((params) => {
       this.syncingFromUrl = true;
       this.searchQuery.set(params['search'] || '');

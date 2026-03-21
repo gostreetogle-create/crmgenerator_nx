@@ -112,6 +112,9 @@ model Product {
   notes       String?
   isActive    Boolean?
 
+  productMounts          ProductMount[]
+  productFunctionalities ProductFunctionality[]
+
   @@index([name])
   @@index([sku])
 }
@@ -167,6 +170,7 @@ model ProductMount {
   @@id([productId, mountTypeId])
 
   mountType MountType @relation(fields: [mountTypeId], references: [id])
+  product   Product   @relation(fields: [productId], references: [id])
 }
 
 model ProductFunctionality {
@@ -176,6 +180,7 @@ model ProductFunctionality {
   @@id([productId, functionalityId])
 
   functionality Functionality @relation(fields: [functionalityId], references: [id])
+  product       Product       @relation(fields: [productId], references: [id])
 }
 
 model Proposal {

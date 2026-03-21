@@ -1,7 +1,6 @@
 import { CommonModule } from '@angular/common';
 import {
   Component,
-  OnInit,
   ViewEncapsulation,
   computed,
   effect,
@@ -26,7 +25,7 @@ type ClientFormTab = 'general' | 'requisites' | 'terms';
 })
 // Eve-arch: FORMS-014 — formData через signals/effect и output на сохранение
 // Eve-BL: BL-FORM-ENTITY-001 — форма заказчика: вкладки, скидка, реквизиты, валидация
-export class ClientFormComponent implements OnInit {
+export class ClientFormComponent {
   readonly client = input<Client | null>(null);
 
   readonly save = output<Partial<Client>>();
@@ -68,11 +67,6 @@ export class ClientFormComponent implements OnInit {
       this.formData.set(value ? { ...value } : {});
       this.activeTab.set('general');
     });
-  }
-
-  ngOnInit(): void {
-    console.log('Форма init, данные =', this.formData());
-    console.log('Форма открыта, данные загружены?');
   }
 
   setTab(tab: ClientFormTab): void {

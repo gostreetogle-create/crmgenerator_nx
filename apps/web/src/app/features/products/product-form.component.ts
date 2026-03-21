@@ -44,22 +44,6 @@ export class ProductFormComponent implements OnInit {
   readonly activeTab = signal<ProductFormTab>('main');
   private lastSeedProduct: Product | null | undefined = undefined;
 
-  readonly functionalityOptions = [
-    'Ограждение',
-    'Декор',
-    'Несущая функция',
-    'Защита',
-    'Комбинированная',
-  ] as const;
-
-  readonly mountingOptions = [
-    'Сварка',
-    'Болтовое',
-    'Анкерное',
-    'Комбинированный',
-    'По месту',
-  ] as const;
-
   readonly errors = computed(() => {
     const d = this.formData();
     const name = d.name?.trim() ? '' : 'Обязательно';
@@ -76,14 +60,20 @@ export class ProductFormComponent implements OnInit {
       const v = this.product();
       if (v === this.lastSeedProduct) return;
       this.lastSeedProduct = v;
-      this.formData.set(v ? { ...v } : { isActive: true });
+      this.formData.set(
+        v
+          ? {
+              ...v,
+              mountTypeIds: this.normalizeStringArray(v.mountTypeIds),
+              functionalityIds: this.normalizeStringArray(v.functionalityIds),
+            }
+          : { isActive: true, mountTypeIds: [], functionalityIds: [] },
+      );
       this.activeTab.set('main');
     });
   }
 
   ngOnInit(): void {
-    console.log('Форма init, данные =', this.formData());
-    console.log('Форма открыта, данные загружены?');
     this.catalogLookup.ensureLoaded();
   }
 
@@ -104,8 +94,8 @@ export class ProductFormComponent implements OnInit {
       categoryId,
       partTypeId: d.partTypeId?.trim() || undefined,
       materialId: d.materialId?.trim() || undefined,
-      functionality: d.functionality?.trim() || undefined,
-      mounting: d.mounting?.trim() || undefined,
+      functionalityIds: this.normalizeStringArray(d.functionalityIds),
+      mountTypeIds: this.normalizeStringArray(d.mountTypeIds),
       notes: d.notes?.trim() || undefined,
       isActive: d.isActive !== false,
     });
@@ -152,23 +142,39 @@ export class ProductFormComponent implements OnInit {
   }
 
   onFunctionalityChange(event: Event) {
-    const value = (event.target as HTMLSelectElement).value;
+    const selected = Array.from((event.target as HTMLSelectElement).selectedOptions).map(
+      (opt) => opt.value,
+    );
     this.formData.update((v) => ({
       ...v,
-      functionality: value || undefined,
+      functionalityIds: this.normalizeStringArray(selected),
     }));
   }
 
   onMountingChange(event: Event) {
-    const value = (event.target as HTMLSelectElement).value;
+    const selected = Array.from((event.target as HTMLSelectElement).selectedOptions).map(
+      (opt) => opt.value,
+    );
     this.formData.update((v) => ({
       ...v,
-      mounting: value || undefined,
+      mountTypeIds: this.normalizeStringArray(selected),
     }));
   }
 
   onCancel() {
     if (this.interactionLocked()) return;
     this.closeRequested.emit();
+  }
+
+  isSelected(list: string[] | undefined, id: string | undefined): boolean {
+    if (!id) return false;
+    return this.normalizeStringArray(list).includes(id);
+  }
+
+  private normalizeStringArray(value: unknown): string[] {
+    if (!Array.isArray(value)) return [];
+    return value
+      .map((v) => String(v).trim())
+      .filter((v) => v.length > 0);
   }
 }

@@ -7,6 +7,13 @@ import { HttpError } from '../errors/HttpError';
 import { asyncHandler } from '../utils/asyncHandler';
 import { mapCategory } from '../utils/responseMappers';
 import { getParamString } from '../utils/getParamString';
+import {
+  asOptionalBoolean,
+  asOptionalInt,
+  asOptionalString,
+  pickCellValue,
+  readExcelRows,
+} from '../utils/excelImport';
 
 const createCategorySchema = z
   .object({
@@ -61,5 +68,43 @@ export const deleteCategory = asyncHandler(async (req: Request, res: Response) =
     if (err?.code === 'P2025') throw new HttpError(404, 'Category not found');
     throw err;
   }
+});
+
+export const importCategoriesFromExcel = asyncHandler(async (req: Request, res: Response) => {
+  const rows = readExcelRows(req.file, ['Категории', 'Categories']);
+  if (!rows.length) {
+    throw new HttpError(400, 'Excel sheet has no data rows');
+  }
+
+  const errors: Array<{ row: number; message: string }> = [];
+  let created = 0;
+
+  for (let i = 0; i < rows.length; i += 1) {
+    const row = rows[i];
+    const payload = {
+      name: asOptionalString(pickCellValue(row, ['name', 'название', 'categoryName'])),
+      parentId: asOptionalString(pickCellValue(row, ['parentId', 'parent', 'родитель', 'родительId'])),
+      sortOrder: asOptionalInt(pickCellValue(row, ['sortOrder', 'sort', 'порядок', 'сортировка'])),
+      isActive: asOptionalBoolean(pickCellValue(row, ['isActive', 'active', 'активен'])),
+    };
+
+    const parsed = createCategorySchema.safeParse(payload);
+    if (!parsed.success) {
+      errors.push({
+        row: i + 2,
+        message: parsed.error.issues.map((issue) => issue.message).join('; '),
+      });
+      continue;
+    }
+
+    await prisma.category.create({ data: parsed.data });
+    created += 1;
+  }
+
+  return res.json({
+    created,
+    failed: errors.length,
+    errors,
+  });
 });
 

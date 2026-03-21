@@ -22,6 +22,13 @@ export const appRoutes: Route[] = [
       import('./features/ui-catalog/ui-catalog.component').then((m) => m.UiCatalogComponent),
   },
   {
+    path: 'demo-feature',
+    loadComponent: () =>
+      import('./features/feature-example/feature-example-page.component').then(
+        (m) => m.FeatureExamplePageComponent
+      ),
+  },
+  {
     path: 'catalog',
     loadComponent: () =>
       import('./features/catalog/catalog-shell.component').then((m) => m.CatalogShellComponent),

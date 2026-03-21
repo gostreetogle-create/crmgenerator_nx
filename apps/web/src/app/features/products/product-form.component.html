@@ -187,16 +187,21 @@
           <fieldset class="product-form-block product-form-block--single-col">
             <legend class="product-form-legend">Функциональность</legend>
             <div class="field">
-              <label class="product-form-label" for="prod-functionality">Функциональность</label>
+              <label class="product-form-label" for="prod-functionality">Функциональности</label>
+              <p class="product-form-hint">Можно выбрать несколько пунктов (Ctrl/Cmd + клик).</p>
               <select
                 id="prod-functionality"
                 class="product-form-select"
-                [value]="formData().functionality || ''"
+                multiple
                 (change)="onFunctionalityChange($event)"
               >
-                <option value="">— не выбрано —</option>
-                @for (opt of functionalityOptions; track opt) {
-                  <option [value]="opt">{{ opt }}</option>
+                @for (opt of catalogLookup.functionalities(); track opt._id) {
+                  <option
+                    [value]="opt._id"
+                    [selected]="isSelected(formData().functionalityIds, opt._id)"
+                  >
+                    {{ opt.name }}
+                  </option>
                 }
               </select>
             </div>
@@ -211,16 +216,21 @@
           <fieldset class="product-form-block product-form-block--single-col">
             <legend class="product-form-legend">Монтаж</legend>
             <div class="field">
-              <label class="product-form-label" for="prod-mounting">Монтаж</label>
+              <label class="product-form-label" for="prod-mounting">Виды монтажа</label>
+              <p class="product-form-hint">Можно выбрать несколько пунктов (Ctrl/Cmd + клик).</p>
               <select
                 id="prod-mounting"
                 class="product-form-select"
-                [value]="formData().mounting || ''"
+                multiple
                 (change)="onMountingChange($event)"
               >
-                <option value="">— не выбрано —</option>
-                @for (opt of mountingOptions; track opt) {
-                  <option [value]="opt">{{ opt }}</option>
+                @for (opt of catalogLookup.mountTypes(); track opt._id) {
+                  <option
+                    [value]="opt._id"
+                    [selected]="isSelected(formData().mountTypeIds, opt._id)"
+                  >
+                    {{ opt.name }}
+                  </option>
                 }
               </select>
             </div>
@@ -230,6 +240,22 @@
     }
 
     <div class="product-form-actions">
+      @if (hasErrors()) {
+        <div class="product-form-errors-summary" role="status" aria-live="polite">
+          <strong>Заполните обязательные поля:</strong>
+          <span>
+            @if (errors().name) {
+              <button type="button" class="product-form-link" (click)="setTab('main')">Название</button>
+            }
+            @if (errors().name && errors().categoryId) {
+              <span> и </span>
+            }
+            @if (errors().categoryId) {
+              <button type="button" class="product-form-link" (click)="setTab('classification')">Категория</button>
+            }
+          </span>
+        </div>
+      }
       <app-button
         variant="secondary"
         type="button"

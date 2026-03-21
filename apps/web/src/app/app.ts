@@ -66,6 +66,13 @@ import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
           <a class="app-header-nav-link" routerLink="/ui" routerLinkActive="app-header-nav-link--active">
             UI
           </a>
+          <a
+            class="app-header-nav-link"
+            routerLink="/demo-feature"
+            routerLinkActive="app-header-nav-link--active"
+          >
+            Demo
+          </a>
           <label class="theme-select-wrap" for="theme-select">
             <span class="sr-only">Тема интерфейса</span>
             <select

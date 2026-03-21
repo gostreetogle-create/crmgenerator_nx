@@ -1,0 +1,21 @@
+# Аналитика исправлений (BI-формат)
+
+Назначение: компактная таблица для агрегирования повторяющихся проблем и приоритизации изменений в документации/процессах.
+
+Период: 2026-03-21
+
+| ID | Area | Short name | Severity | Recurrence risk | Owner | Target doc section | Target date | Status | Why happened | What docs lacked | What was added | Source |
+|----|------|------------|----------|-----------------|-------|--------------------|-------------|--------|--------------|------------------|----------------|--------|
+| A-001 | UI-Kit Dialog | Projection Collision | High | High | Frontend Architecture Owner | `ARCHITECTURE.md#dialog-life`, `DOCS_SYNC_RULES.md` (диагностика dialog) | 2026-03-21 | done | Дублирование `ng-content` в ветках `confirm/content` | Явного запрета на duplicate body projection | Регресс-критерий и проверка в `ARCHITECTURE.md`/`DOCS_SYNC_RULES.md` | `CHECKLIST_FIX_ANALYTICS_LOG.md#1-конфликт-проекции-контента-модалки` |
+| A-002 | SSR | Browser-only DOM Access | High | Medium | Frontend Platform Owner | `ARCHITECTURE.md#a11y-ui-kit`, `DOCS_SYNC_RULES.md` (SSR-safe) | 2026-03-21 | done | Использование `document` без browser guard | SSR-safe правило для директив было недостаточно явным | Уточнение SSR-safe слоя в правилах и фактах полировки | `CHECKLIST_FIX_ANALYTICS_LOG.md#2-ssr-доступ-к-document-в-focus-trap` |
+| A-003 | Code hygiene | Debug Log Leakage | Medium | High | Feature Owner (каждая фича) | `DOCS_SYNC_RULES.md` (DoD-check), phase-checklists | 2026-03-21 | done | Нет обязательного финального cleanup шага | Отдельного gate "нет debug-логов" | Зафиксирован как обязательный этап в трекере/отчёте | `CHECKLIST_FIX_ANALYTICS_LOG.md#3-шум-отладочных-логов-в-production-коде` |
+| A-004 | Angular Compile | Standalone Imports Drift | Medium | Medium | Frontend Feature Owner | `DOCS_SYNC_RULES.md` (проверка build), checklist gates | 2026-03-21 | done | Шаблон менялся, imports нет | Нет обязательной сверки `imports[]` vs template | Повторный build после чистки + фиксация факта | `CHECKLIST_FIX_ANALYTICS_LOG.md#4-ng8113-неиспользуемые-standalone-imports` |
+| A-005 | CSS Migration | Legacy Modal Styles | Medium | Medium | Frontend Architecture Owner | `ARCHITECTURE.md#slot-body`, `ARCHITECTURE.md#dialog-life` | 2026-03-21 | done | Частичная миграция: HTML обновлён, SCSS/handlers нет | Нет post-migration cleanup пункта | Уточнён регресс-критерий + post-polish cleanup | `CHECKLIST_FIX_ANALYTICS_LOG.md#5-legacy-modal--после-перехода-на-app-dialog` |
+| A-006 | Process/Docs Sync | Checklist Status Drift | Medium | High | Documentation Owner | `FEATURE_CATALOG_PHASE1_CHECKLIST.md`, `DOCS_SYNC_RULES.md` | 2026-03-21 | done | Чеклист отстал от реального кода | Нет шага "подтверди кодом перед чеком" | Обновлены статусы и правило верификации | `CHECKLIST_FIX_ANALYTICS_LOG.md#6-бэкенд-статус-не-совпадал-с-чеклистом-фаза-1` |
+| A-007 | Backend API | Missing Excel Import | Medium | Medium | Backend API Owner | `API_FUTURE_CHECKLIST.md`, `FRONTEND_CONTRACT.md` | 2026-03-21 | done | CRUD закрыт, импорт не доведён | Нет мини-контракта импорта в рабочих docs | Endpoint'ы + описание в контрактах/чеклистах | `CHECKLIST_FIX_ANALYTICS_LOG.md#7-отсутствие-excel-import-endpointов-для-справочников` |
+| A-008 | Product Feature | Clone Gap (API/UI) | Medium | Medium | Product Feature Owner | `FEATURE_CATALOG_PHASE2_CHECKLIST.md`, `FRONTEND_CONTRACT.md` | 2026-03-21 | done | Backend-first без закрытия UI действия | Нет сквозного критерия "API+UI+чеклист" | Добавлен clone в UI/service + doc sync | `CHECKLIST_FIX_ANALYTICS_LOG.md#8-клон-товара-реализован-в-backend-но-не-завершён-во-frontend` |
+| A-009 | Data Model | String vs Relation Drift | High | Medium | Domain + Backend Owner | `FRONTEND_CONTRACT.md` (Product fields), `API_FUTURE_CHECKLIST.md` | 2026-03-21 | done | Старые поля `functionality/mounting` как строки | Не было заранее фиксированного решения по нормализации | Перешли на `mountTypeIds[]/functionalityIds[]` + sync API/UI/docs | `CHECKLIST_FIX_ANALYTICS_LOG.md#9-mountfunctionality-оставались-строками-не-связями` |
+
+---
+
+**Синхронизация:** [CHECKLIST_FIX_ANALYTICS_LOG.md](./CHECKLIST_FIX_ANALYTICS_LOG.md) · [../DOCS_SYNC_RULES.md](../DOCS_SYNC_RULES.md) · [../EVE_INDEXES.md](../EVE_INDEXES.md)

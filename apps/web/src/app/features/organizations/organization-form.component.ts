@@ -3,7 +3,6 @@
 import { CommonModule } from '@angular/common';
 import {
   Component,
-  OnInit,
   ViewEncapsulation,
   computed,
   effect,
@@ -29,7 +28,7 @@ type OrgFormTab = 'requisites' | 'address' | 'people' | 'files';
   styleUrl: './organization-form.component.scss',
   encapsulation: ViewEncapsulation.None,
 })
-export class OrganizationFormComponent implements OnInit {
+export class OrganizationFormComponent {
   readonly organization = input<Organization | null>(null);
 
   readonly save = output<Partial<Organization>>();
@@ -86,11 +85,6 @@ export class OrganizationFormComponent implements OnInit {
       this.formData.set(value ? { ...value } : {});
       this.activeTab.set('requisites');
     });
-  }
-
-  ngOnInit(): void {
-    console.log('Форма init, данные =', this.formData());
-    console.log('Форма открыта, данные загружены?');
   }
 
   setTab(tab: OrgFormTab): void {

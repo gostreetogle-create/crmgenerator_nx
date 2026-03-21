@@ -23,14 +23,17 @@ export class FocusTrapDirective implements OnInit, OnDestroy {
   escapePressed = output<void>();
 
   private previousActiveElement: HTMLElement | null = null;
+  private readonly hasDocument = typeof document !== 'undefined';
 
   private readonly host = inject<ElementRef<HTMLElement>>(ElementRef);
 
   ngOnInit(): void {
+    if (!this.hasDocument) return;
     this.previousActiveElement = document.activeElement as HTMLElement | null;
   }
 
   ngOnDestroy(): void {
+    if (!this.hasDocument) return;
     if (this.previousActiveElement) {
       this.previousActiveElement.focus();
     }
@@ -38,6 +41,7 @@ export class FocusTrapDirective implements OnInit, OnDestroy {
 
   @HostListener('keydown', ['$event'])
   onKeydown(event: KeyboardEvent): void {
+    if (!this.hasDocument) return;
     if (event.key === 'Escape' && this.closeOnEsc()) {
       event.preventDefault();
       event.stopPropagation();

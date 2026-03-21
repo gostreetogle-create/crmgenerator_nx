@@ -3,7 +3,6 @@
 import { CommonModule } from '@angular/common';
 import {
   Component,
-  OnInit,
   ViewEncapsulation,
   computed,
   effect,
@@ -24,7 +23,7 @@ import { Category } from '@domain';
   styleUrl: './category-form.component.scss',
   encapsulation: ViewEncapsulation.None,
 })
-export class CategoryFormComponent implements OnInit {
+export class CategoryFormComponent {
   readonly category = input<Category | null>(null);
   /** Все категории для выбора родителя (исключая текущую при редактировании). */
   readonly allCategories = input<Category[]>([]);
@@ -61,11 +60,6 @@ export class CategoryFormComponent implements OnInit {
       const v = this.category();
       this.formData.set(v ? { ...v } : { isActive: true, sortOrder: 0 });
     });
-  }
-
-  ngOnInit(): void {
-    console.log('Форма init, данные =', this.formData());
-    console.log('Форма открыта, данные загружены?');
   }
 
   /** Изоляция submit от родительской формы (например «Товар» в модалке поверх). */

@@ -1,9 +1,6 @@
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { Component, computed, inject, PLATFORM_ID, signal } from '@angular/core';
-import { ButtonComponent } from '@ui-kit/button';
 import { CardComponent } from '@ui-kit/card';
-import { DialogComponent } from '@ui-kit/dialog';
-import { InputComponent } from '@ui-kit/input';
 
 type ButtonVariant = 'primary' | 'secondary' | 'outline' | 'danger' | 'ghost';
 
@@ -89,13 +86,7 @@ const FOOTER_COLORS_DIALOG: CatalogFooterColor[] = [
 @Component({
   selector: 'app-ui-catalog',
   standalone: true,
-  imports: [
-    CommonModule,
-    ButtonComponent,
-    InputComponent,
-    CardComponent,
-    DialogComponent,
-  ],
+  imports: [CommonModule, CardComponent],
   templateUrl: './ui-catalog.component.html',
   styleUrl: './ui-catalog.component.scss',
 })

@@ -19,7 +19,6 @@ export class ClientsService {
   readonly mutationError = signal<string | null>(null);
 
   constructor() {
-    console.log('ClientsService init, clients =', this.clients());
     if (!this.clients().length) {
       this.clients.set([
         {
@@ -37,7 +36,6 @@ export class ClientsService {
           discount: 10,
         },
       ]);
-      console.log('Сид загружен:', this.clients());
     }
 
     effect(() => {

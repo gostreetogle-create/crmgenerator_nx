@@ -1,5 +1,6 @@
 // Eve-BE: ERROR-HANDLER-003 — HttpError/Zod/500 → JSON клиенту без stack; 500 → console.error
 import type { ErrorRequestHandler } from 'express';
+import multer from 'multer';
 import { ZodError } from 'zod';
 import { HttpError } from '../errors/HttpError';
 
@@ -13,6 +14,13 @@ export const errorHandler: ErrorRequestHandler = (err, _req, res, _next) => {
       message: 'Validation error',
       code: 'VALIDATION_ERROR',
       details: err.flatten(),
+    });
+  }
+
+  if (err instanceof multer.MulterError) {
+    return res.status(400).json({
+      message: err.message,
+      code: 'UPLOAD_ERROR',
     });
   }
 

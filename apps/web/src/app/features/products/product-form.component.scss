@@ -156,8 +156,15 @@ app-card.product-form-card .card-header h3 {
   font: inherit;
 }
 
+.product-form-select[multiple] {
+  min-height: 132px;
+}
+
 .product-form-textarea {
   width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
   padding: var(--spacing-2);
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
@@ -178,10 +185,31 @@ app-card.product-form-card .card-header h3 {
 .product-form-actions {
   flex-shrink: 0;
   display: flex;
+  flex-wrap: wrap;
   justify-content: flex-end;
   gap: var(--spacing-2);
   padding-top: var(--spacing-2);
   border-top: 1px solid var(--border);
+}
+
+.product-form-errors-summary {
+  margin-right: auto;
+  font-size: var(--font-size-sm);
+  color: var(--danger);
+  display: inline-flex;
+  gap: var(--spacing-1);
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.product-form-link {
+  border: 0;
+  padding: 0;
+  background: transparent;
+  color: var(--danger);
+  text-decoration: underline;
+  cursor: pointer;
+  font: inherit;
 }
 
 .product-form-select-row {

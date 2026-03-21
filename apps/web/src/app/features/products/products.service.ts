@@ -77,6 +77,8 @@ export class ProductsService {
         categoryId: 'cat1',
         partTypeId: 'pt1',
         materialId: 'mat1',
+        functionalityIds: ['fn-guard'],
+        mountTypeIds: ['mt-weld'],
         isActive: true,
       },
     ];
@@ -178,5 +180,42 @@ export class ProductsService {
       return;
     }
     this.products.update((list) => list.filter((p) => p._id !== id));
+  }
+
+  cloneProduct(id: string, overrides: Partial<Omit<Product, '_id'>> = {}) {
+    const source = this.products().find((p) => p._id === id);
+    if (!source) return;
+
+    const sourceWithoutId = source as Omit<Product, '_id'>;
+    const cloneDraft: Omit<Product, '_id'> = {
+      ...sourceWithoutId,
+      ...overrides,
+      name: overrides.name?.trim() || `${source.name} (копия)`,
+    };
+
+    if (this.api.isRemoteEnabled()) {
+      this.mutationError.set(null);
+      const tempId = `__pending:${crypto.randomUUID()}`;
+      this.products.update((list) => [{ ...cloneDraft, _id: tempId }, ...list]);
+      this.api.clone(id, cloneDraft).subscribe({
+        next: (created) => {
+          this.products.update((list) =>
+            list.map((p) => (p._id === tempId ? created : p))
+          );
+          this.persistRemoteCache(this.products());
+        },
+        error: (err) => {
+          console.error('[ProductsService] clone failed', err);
+          this.products.update((list) => list.filter((p) => p._id !== tempId));
+          this.mutationError.set(httpErrorMessage(err));
+        },
+      });
+      return;
+    }
+
+    this.products.update((list) => [
+      { ...cloneDraft, _id: crypto.randomUUID() },
+      ...list,
+    ]);
   }
 }

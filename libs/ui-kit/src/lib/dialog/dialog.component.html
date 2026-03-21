@@ -35,12 +35,22 @@
             <h3 [id]="labelledBy() || null">{{ title() }}</h3>
           }
         </header>
-        <div class="dialog-body">
-          <ng-content select="[slot=body]">
-            <p class="dialog-message">{{ message() }}</p>
-          </ng-content>
-          <ng-content></ng-content>
-        </div>
+      } @else {
+        <header class="dialog-header">
+          <ng-content select="[slot=header]"></ng-content>
+        </header>
+      }
+
+      <div class="dialog-body">
+        @if (mode() === 'confirm' && message()) {
+          <p class="dialog-message">{{ message() }}</p>
+        }
+        <!-- Eve-arch: SLOT-003 — единая проекция тела модалки -->
+        <ng-content select="[slot=body]"></ng-content>
+        <ng-content></ng-content>
+      </div>
+
+      @if (mode() === 'confirm') {
         <footer class="dialog-footer">
           <app-button
             #cancelButton
@@ -61,14 +71,6 @@
           </app-button>
         </footer>
       } @else {
-        <header class="dialog-header">
-          <ng-content select="[slot=header]"></ng-content>
-        </header>
-        <div class="dialog-body">
-          <!-- Eve-arch: SLOT-003 — тело модалки: slot=body + запасная проекция -->
-          <ng-content select="[slot=body]"></ng-content>
-          <ng-content></ng-content>
-        </div>
         <footer class="dialog-footer">
           <ng-content select="[slot=footer]"></ng-content>
         </footer>

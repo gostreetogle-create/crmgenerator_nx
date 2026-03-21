@@ -3,7 +3,6 @@
 import { CommonModule } from '@angular/common';
 import {
   Component,
-  OnInit,
   ViewEncapsulation,
   computed,
   effect,
@@ -24,7 +23,7 @@ import { PartType } from '@domain';
   styleUrl: './part-type-form.component.scss',
   encapsulation: ViewEncapsulation.None,
 })
-export class PartTypeFormComponent implements OnInit {
+export class PartTypeFormComponent {
   readonly partType = input<PartType | null>(null);
 
   readonly save = output<Omit<PartType, '_id'>>();
@@ -48,11 +47,6 @@ export class PartTypeFormComponent implements OnInit {
       const v = this.partType();
       this.formData.set(v ? { ...v } : { isActive: true });
     });
-  }
-
-  ngOnInit(): void {
-    console.log('Форма init, данные =', this.formData());
-    console.log('Форма открыта, данные загружены?');
   }
 
   onNgSubmit(event: Event) {

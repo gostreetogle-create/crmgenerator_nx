@@ -44,4 +44,8 @@ export class ProductsApiService {
   delete(id: string): Observable<void> {
     return this.http.delete<void>(`products/${encodeURIComponent(id)}`);
   }
+
+  clone(id: string, body: Partial<Omit<Product, '_id'>> = {}): Observable<Product> {
+    return this.http.post<Product>(`products/${encodeURIComponent(id)}/clone`, body);
+  }
 }

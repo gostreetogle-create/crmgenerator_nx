@@ -200,7 +200,7 @@ export class ProductsPageComponent implements OnInit {
     if (!cid) return;
     const t = event.target as HTMLElement | null;
     if (!t) return;
-    if (t.closest('.dialog-backdrop') || t.closest('.modal-backdrop')) return;
+    if (t.closest('.dialog-backdrop')) return;
     const row = t.closest('tr[data-product-id]');
     const rid = row?.getAttribute('data-product-id') ?? null;
     if (rid === cid) return;
@@ -375,6 +375,11 @@ export class ProductsPageComponent implements OnInit {
     this.showConfirm.set(true);
   }
 
+  onClone(product: Product) {
+    if (!product._id) return;
+    this.productsService.cloneProduct(product._id);
+  }
+
   onConfirmDelete() {
     const id = this.deletingId();
     if (!id) return;
@@ -412,6 +417,16 @@ export class ProductsPageComponent implements OnInit {
   notesPreview(notes?: string): string {
     if (!notes) return '—';
     return notes.length > 48 ? `${notes.slice(0, 48)}…` : notes;
+  }
+
+  mountTypeNames(ids?: string[]): string {
+    if (!ids?.length) return '—';
+    return ids.map((id) => this.catalogLookup.mountTypeName(id)).join(', ');
+  }
+
+  functionalityNames(ids?: string[]): string {
+    if (!ids?.length) return '—';
+    return ids.map((id) => this.catalogLookup.functionalityName(id)).join(', ');
   }
 
   closeColCategoryPicker() {

@@ -100,18 +100,17 @@
   white-space: nowrap;
 }
 
-.modal-backdrop {
-  position: fixed;
-  inset: 0;
-  background: var(--overlay-backdrop);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: var(--spacing-2);
-  backdrop-filter: blur(2px);
+td.actions {
+  display: table-cell;
+  vertical-align: middle;
+  white-space: nowrap;
 }
 
-.modal-panel > app-client-form {
+td.actions > app-button + app-button {
+  margin-left: var(--spacing-2);
+}
+
+:host ::ng-deep .dialog-body app-client-form {
   flex: 1;
   min-height: 0;
   display: flex;

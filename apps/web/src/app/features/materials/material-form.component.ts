@@ -3,7 +3,6 @@
 import { CommonModule } from '@angular/common';
 import {
   Component,
-  OnInit,
   ViewEncapsulation,
   computed,
   effect,
@@ -24,7 +23,7 @@ import { Material } from '@domain';
   styleUrl: './material-form.component.scss',
   encapsulation: ViewEncapsulation.None,
 })
-export class MaterialFormComponent implements OnInit {
+export class MaterialFormComponent {
   readonly material = input<Material | null>(null);
 
   readonly save = output<Omit<Material, '_id'>>();
@@ -48,11 +47,6 @@ export class MaterialFormComponent implements OnInit {
       const v = this.material();
       this.formData.set(v ? { ...v } : { isActive: true });
     });
-  }
-
-  ngOnInit(): void {
-    console.log('Форма init, данные =', this.formData());
-    console.log('Форма открыта, данные загружены?');
   }
 
   onNgSubmit(event: Event) {

@@ -95,6 +95,21 @@
   flex: 1;
   min-height: 0;
   overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.dialog-message {
+  flex-shrink: 0;
+}
+
+/* Проецируемый контент (slot=body / fallback), не текст confirm — тянется на высоту body */
+.dialog-body > *:not(.dialog-message) {
+  flex: 1;
+  min-height: 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
 }
 
 .dialog-message {

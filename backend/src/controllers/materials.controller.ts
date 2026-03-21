@@ -7,6 +7,12 @@ import { HttpError } from '../errors/HttpError';
 import { asyncHandler } from '../utils/asyncHandler';
 import { mapMaterial } from '../utils/responseMappers';
 import { getParamString } from '../utils/getParamString';
+import {
+  asOptionalBoolean,
+  asOptionalString,
+  pickCellValue,
+  readExcelRows,
+} from '../utils/excelImport';
 
 const createMaterialSchema = z
   .object({
@@ -61,5 +67,43 @@ export const deleteMaterial = asyncHandler(async (req: Request, res: Response) =
     if (err?.code === 'P2025') throw new HttpError(404, 'Material not found');
     throw err;
   }
+});
+
+export const importMaterialsFromExcel = asyncHandler(async (req: Request, res: Response) => {
+  const rows = readExcelRows(req.file, ['Материалы', 'Materials']);
+  if (!rows.length) {
+    throw new HttpError(400, 'Excel sheet has no data rows');
+  }
+
+  const errors: Array<{ row: number; message: string }> = [];
+  let created = 0;
+
+  for (let i = 0; i < rows.length; i += 1) {
+    const row = rows[i];
+    const payload = {
+      name: asOptionalString(pickCellValue(row, ['name', 'название', 'materialName'])),
+      code: asOptionalString(pickCellValue(row, ['code', 'код', 'артикул'])),
+      notes: asOptionalString(pickCellValue(row, ['notes', 'note', 'заметки', 'описание'])),
+      isActive: asOptionalBoolean(pickCellValue(row, ['isActive', 'active', 'активен'])),
+    };
+
+    const parsed = createMaterialSchema.safeParse(payload);
+    if (!parsed.success) {
+      errors.push({
+        row: i + 2,
+        message: parsed.error.issues.map((issue) => issue.message).join('; '),
+      });
+      continue;
+    }
+
+    await prisma.material.create({ data: parsed.data });
+    created += 1;
+  }
+
+  return res.json({
+    created,
+    failed: errors.length,
+    errors,
+  });
 });
 

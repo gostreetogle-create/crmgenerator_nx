@@ -2,10 +2,14 @@
 import type {
   Category,
   Client,
+  Functionality,
   Material,
+  MountType,
   Organization,
   PartType,
   Product,
+  ProductFunctionality,
+  ProductMount,
 } from '@prisma/client';
 
 const undef = undefined;
@@ -106,7 +110,23 @@ export function mapPartType(row: PartType) {
   };
 }
 
-export function mapProduct(row: Product) {
+export function mapProduct(
+  row: Product & {
+    productMounts?: Pick<ProductMount, 'mountTypeId'>[];
+    productFunctionalities?: Pick<ProductFunctionality, 'functionalityId'>[];
+    mountTypes?: Pick<MountType, 'id'>[];
+    functionalities?: Pick<Functionality, 'id'>[];
+  },
+) {
+  const mountTypeIds =
+    row.productMounts?.map((m) => m.mountTypeId) ??
+    row.mountTypes?.map((m) => m.id) ??
+    undef;
+  const functionalityIds =
+    row.productFunctionalities?.map((f) => f.functionalityId) ??
+    row.functionalities?.map((f) => f.id) ??
+    undef;
+
   return {
     _id: row.id,
     name: row.name,
@@ -114,6 +134,8 @@ export function mapProduct(row: Product) {
     categoryId: row.categoryId ?? undef,
     partTypeId: row.partTypeId ?? undef,
     materialId: row.materialId ?? undef,
+    mountTypeIds: mountTypeIds?.length ? mountTypeIds : undef,
+    functionalityIds: functionalityIds?.length ? functionalityIds : undef,
     notes: row.notes ?? undef,
     isActive: row.isActive ?? undef,
     createdAt: row.createdAt.toISOString(),

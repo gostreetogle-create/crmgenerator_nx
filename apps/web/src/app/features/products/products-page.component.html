@@ -132,24 +132,34 @@
                   <td>{{ p.sku || '—' }}</td>
                   <td>{{ notesPreview(p.notes) }}</td>
                   <td>{{ p.isActive === false ? 'нет' : 'да' }}</td>
-                  <td class="actions" data-product-row-actions (click)="$event.stopPropagation()">
-                    <app-button variant="ghost" size="sm" (clicked)="onSelectProduct(p)">
-                      Детали
-                    </app-button>
-                    <app-button
-                      variant="secondary"
-                      size="sm"
-                      (clicked)="onOpenModal(p)"
-                    >
-                      Ред
-                    </app-button>
-                    <app-button
-                      variant="danger"
-                      size="sm"
-                      (clicked)="p._id && onDelete(p._id)"
-                    >
-                      Удал
-                    </app-button>
+                  <td data-product-row-actions (click)="$event.stopPropagation()">
+                    <div class="actions actions--row">
+                      <app-button variant="outline" size="sm" (clicked)="onSelectProduct(p)">
+                        Детали
+                      </app-button>
+                      <app-button
+                        variant="secondary"
+                        size="sm"
+                        (clicked)="onOpenModal(p)"
+                      >
+                        Ред
+                      </app-button>
+                      <app-button
+                        variant="secondary"
+                        size="sm"
+                        [ariaLabel]="'Копировать товар'"
+                        (clicked)="onClone(p)"
+                      >
+                        Копировать
+                      </app-button>
+                      <app-button
+                        variant="danger"
+                        size="sm"
+                        (clicked)="p._id && onDelete(p._id)"
+                      >
+                        Удал
+                      </app-button>
+                    </div>
                   </td>
                 </tr>
               } @empty {
@@ -307,56 +317,62 @@
           (createCategoryRequested)="openProductCategoryPicker()"
           (createPartTypeRequested)="openProductPartTypePicker()"
           (createMaterialRequested)="openProductMaterialPicker()"
-        />
+        ></app-product-form>
       </div>
     </div>
   </app-dialog>
 }
 
-<app-dialog
-  mode="content"
-  [open]="showProductCategoryModal()"
-  size="md"
-  ariaLabel="Новая категория"
-  (closed)="closeProductCategoryPicker()"
->
-  <div slot="body">
-    <app-category-form
-      (save)="onProductCategorySave($event)"
-      (cancel)="closeProductCategoryPicker()"
-    />
-  </div>
-</app-dialog>
+@if (showProductCategoryModal()) {
+  <app-dialog
+    mode="content"
+    [open]="showProductCategoryModal()"
+    size="md"
+    ariaLabel="Новая категория"
+    (closed)="closeProductCategoryPicker()"
+  >
+    <div slot="body">
+      <app-category-form
+        (save)="onProductCategorySave($event)"
+        (cancel)="closeProductCategoryPicker()"
+      ></app-category-form>
+    </div>
+  </app-dialog>
+}
 
-<app-dialog
-  mode="content"
-  [open]="showProductPartTypeModal()"
-  size="md"
-  ariaLabel="Новый тип детали"
-  (closed)="closeProductPartTypePicker()"
->
-  <div slot="body">
-    <app-part-type-form
-      (save)="onProductPartTypeSave($event)"
-      (cancel)="closeProductPartTypePicker()"
-    />
-  </div>
-</app-dialog>
+@if (showProductPartTypeModal()) {
+  <app-dialog
+    mode="content"
+    [open]="showProductPartTypeModal()"
+    size="md"
+    ariaLabel="Новый тип детали"
+    (closed)="closeProductPartTypePicker()"
+  >
+    <div slot="body">
+      <app-part-type-form
+        (save)="onProductPartTypeSave($event)"
+        (cancel)="closeProductPartTypePicker()"
+      ></app-part-type-form>
+    </div>
+  </app-dialog>
+}
 
-<app-dialog
-  mode="content"
-  [open]="showProductMaterialModal()"
-  size="md"
-  ariaLabel="Новый материал"
-  (closed)="closeProductMaterialPicker()"
->
-  <div slot="body">
-    <app-material-form
-      (save)="onProductMaterialSave($event)"
-      (cancel)="closeProductMaterialPicker()"
-    />
-  </div>
-</app-dialog>
+@if (showProductMaterialModal()) {
+  <app-dialog
+    mode="content"
+    [open]="showProductMaterialModal()"
+    size="md"
+    ariaLabel="Новый материал"
+    (closed)="closeProductMaterialPicker()"
+  >
+    <div slot="body">
+      <app-material-form
+        (save)="onProductMaterialSave($event)"
+        (cancel)="closeProductMaterialPicker()"
+      ></app-material-form>
+    </div>
+  </app-dialog>
+}
 
 @if (selectedProduct(); as s) {
   <app-dialog mode="content" [open]="!!selectedProduct()" size="lg" ariaLabel="Товар" (closed)="closeDetailsModal()">
@@ -375,10 +391,22 @@
           <dd>{{ catalogLookup.partTypeName(s.partTypeId) }}</dd>
           <dt>Материал</dt>
           <dd>{{ catalogLookup.materialName(s.materialId) }}</dd>
-          <dt>Функциональность</dt>
-          <dd>{{ s.functionality || '—' }}</dd>
+          <dt>Функциональности</dt>
+          <dd>
+            @if (s.functionalityIds?.length) {
+              {{ functionalityNames(s.functionalityIds) }}
+            } @else {
+              —
+            }
+          </dd>
           <dt>Монтаж</dt>
-          <dd>{{ s.mounting || '—' }}</dd>
+          <dd>
+            @if (s.mountTypeIds?.length) {
+              {{ mountTypeNames(s.mountTypeIds) }}
+            } @else {
+              —
+            }
+          </dd>
           <dt>Заметки</dt>
           <dd class="whitespace-pre-wrap">{{ s.notes || '—' }}</dd>
           <dt>Активен</dt>
@@ -401,7 +429,7 @@
         <app-category-form
           (save)="onColCategorySave($event)"
           (cancel)="closeColCategoryPicker()"
-        />
+        ></app-category-form>
       </div>
     </div>
   </app-dialog>
@@ -414,7 +442,7 @@
         <app-part-type-form
           (save)="onColPartTypeSave($event)"
           (cancel)="closeColPartTypePicker()"
-        />
+        ></app-part-type-form>
       </div>
     </div>
   </app-dialog>
@@ -427,7 +455,7 @@
         <app-material-form
           (save)="onColMaterialSave($event)"
           (cancel)="closeColMaterialPicker()"
-        />
+        ></app-material-form>
       </div>
     </div>
   </app-dialog>
@@ -442,4 +470,4 @@
   confirmVariant="danger"
   (confirmed)="onConfirmDelete()"
   (cancelled)="showConfirm.set(false)"
-/>
+></app-dialog>
