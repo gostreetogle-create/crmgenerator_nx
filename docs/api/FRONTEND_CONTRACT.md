@@ -374,9 +374,31 @@
 
 ---
 
-## Спецификации товара (`ProductSpecification`) — **пока без UI**
+## Спецификации товара (`ProductSpecification`) — API внедрено, UI отложен
 
-Модель в **`libs/domain`**, черновик путей в **`product-specifications-api.service.ts`** (ни одна фича не инжектит сервис). Отдельная страница `/catalog/products/:id/specifications` **удалена**; варианты на карточке товара задаются полями **`partTypeId` / `materialId`**. Когда понадобится матрица вариантов или КП — вернуть фичу и перенести таблицу эндпоинтов сюда из **`API_FUTURE_CHECKLIST.md`**.
+Модель: `libs/domain/src/lib/product-specifications/product-specification.model.ts`  
+HTTP-слой: `apps/web/src/app/core/api/product-specifications-api.service.ts`
+
+| Метод | Путь | Назначение |
+|--------|------|------------|
+| `GET` | `/products/:productId/specifications` | Список спецификаций товара |
+| `GET` | `/products/:productId/specifications/:id` | Одна спецификация |
+| `POST` | `/products/:productId/specifications` | Создание |
+| `PATCH` | `/products/:productId/specifications/:id` | Обновление |
+| `DELETE` | `/products/:productId/specifications/:id` | Удаление |
+
+### Поля JSON
+
+| Поле | Тип | Смысл |
+|------|-----|--------|
+| `_id` | string | Id спецификации |
+| `productId` | string | Товар-владелец |
+| `partTypeId` | string | Тип детали (обяз.) |
+| `materialId` | string | Материал (опц.) |
+| `displayName` | string | Подпись в UI/КП (опц.) |
+| `isActive` | boolean | Активность (опц.) |
+
+Отдельная страница `/catalog/products/:id/specifications` пока выключена; текущий UI товаров работает через `partTypeId`/`materialId`.
 
 ---
 
@@ -392,6 +414,7 @@
 | 2026-03-20 | Фаза 1 каталога: `Category`, `Material`, `PartType` в domain; API + фичи `/catalog/*`; контракт и LS-ключи. |
 | 2026-03-20 | Фаза 2 каталога: `Product`, `ProductSpecification` в domain; `ProductsApiService`, `/catalog/products`, `CatalogLookupService`. |
 | 2026-03-20 | UI спецификаций товара отключён; `ProductSpecificationsApiService` остаётся каркасом под бэк. |
+| 2026-03-21 | Реализован backend CRUD `/products/:productId/specifications`; `ProductSpecificationsApiService` переведён в runtime-ready контракт. |
 
 ---
 

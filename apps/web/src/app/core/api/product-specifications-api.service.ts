@@ -13,6 +13,7 @@ export type ProductSpecificationCreate = Pick<
 
 /**
  * HTTP-слой спецификаций товара (`docs/api/FRONTEND_CONTRACT.md`).
+ * Backend endpoint реализован: `/products/:productId/specifications`.
  */
 @Injectable({ providedIn: 'root' })
 export class ProductSpecificationsApiService {

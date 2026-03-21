@@ -111,9 +111,9 @@ describe('ClientsService', () => {
     expect(service.clients()).toEqual(remoteList);
     expect(service.listLoading()).toBe(false);
     expect(service.listLoadError()).toBeNull();
-    expect(JSON.parse(window.localStorage.getItem(storageKey)!)).toEqual(
-      remoteList
-    );
+    const stored = window.localStorage.getItem(storageKey);
+    expect(stored).not.toBeNull();
+    expect(JSON.parse(stored ?? '[]')).toEqual(remoteList);
   });
 
   it('when remote getAll fails, falls back to localStorage and sets listLoadError', () => {

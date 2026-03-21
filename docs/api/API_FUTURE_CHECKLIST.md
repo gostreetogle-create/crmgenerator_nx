@@ -45,7 +45,7 @@
 | Валюта | `GET /currency/rate` |
 | Категории | `GET/POST /categories`, `GET/PATCH/DELETE /categories/:id` |
 | Товары | `GET/POST /products`, `GET/PATCH/DELETE /products/:id`, `GET /products/search?q=`, `GET/POST /products/categories`, `GET /products/export/xlsx`, `POST /products/import/xlsx`, `POST /products/import-excel` |
-| Спецификация товара | `GET /product-specification/:productId`, `PUT` — замена состава |
+| Спецификация товара | ✅ внедрено: `GET/POST/PATCH/DELETE /products/:productId/specifications` |
 | Типы частей / материалы | `GET/POST /part-types`, `PATCH/DELETE /part-types/:id`, `POST /part-types/import-excel`; `GET/POST /materials`, `PATCH/DELETE /materials/:id`, `POST /materials/import-excel` |
 | КП (proposals) | `GET/POST /proposals`, `GET/PATCH/DELETE /proposals/:id`, `POST /proposals/:id/preview-pdf`, `POST /proposals/:id/send-to-yougile`, `DELETE /proposals/:id/yougile`, `GET /proposals/:id/pdf` |
 | PDF-шаблоны | `GET /pdf-templates/base/:name`, `GET/PUT/DELETE /pdf-templates/organization/:organizationId` |
@@ -76,7 +76,7 @@
 |------|--------|-------------------------|
 | Категории, материалы, типы деталей (CRUD + import-excel в backend) | фронт готов, LS + опциональный API; backend поддерживает `POST /categories/import-excel`, `POST /materials/import-excel`, `POST /part-types/import-excel` | `FRONTEND_CONTRACT.md` — пути `categories`, `materials`, `part-types` |
 | Товары (CRUD) | фронт готов, LS + опциональный API | `FRONTEND_CONTRACT.md` — `products` |
-| Спецификации товара (вложенный ресурс, матрица вариантов) | **UI отложен**; типы + `ProductSpecificationsApiService` в репо | при возврате фичи — контракт в `FRONTEND_CONTRACT.md` |
+| Спецификации товара (вложенный ресурс, матрица вариантов) | backend API внедрено; UI для отдельной страницы отложен | `FRONTEND_CONTRACT.md` — раздел `ProductSpecification` |
 | *пример: импорт организаций* | не начато | — |
 
 ---
