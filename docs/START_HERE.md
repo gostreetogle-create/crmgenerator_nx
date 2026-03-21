@@ -45,6 +45,11 @@
 - минимум один валидирующий прогон (`build/test/smoke`);
 - в отчете указаны измененные файлы и статус (полностью/частично).
 
+## Перед деплоем (обязательно)
+
+- Прогнать `backend: npm run build`.
+- Если есть ошибки TypeScript (`TS7006`, `TS2305`) — сначала исправить типы/Prisma-генерацию, потом деплой.
+
 ---
 
 **Синхронизация:** [`README.md`](./README.md) · [`ai/DOCS_SYNC_RULES.md`](./ai/DOCS_SYNC_RULES.md) · [`ai/EVE_INDEXES.md`](./ai/EVE_INDEXES.md)

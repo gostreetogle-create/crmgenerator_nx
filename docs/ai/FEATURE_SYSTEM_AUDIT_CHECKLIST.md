@@ -33,6 +33,9 @@
 - [x] Карта routes/controllers собрана и проверена на базовую целостность.
 - [x] Проверен базовый health/mount app (`/api`, `/api/health`, `apiRouter`).
 - [x] Проверен статус критичных каталогов API (`products`, `categories`, `materials`, `part-types`, `mount-types`, `functionalities`).
+- [ ] Prisma generate добавлен в Dockerfile backend (или отдельный build-step) и проверен.
+- [ ] Все параметры контроллеров типизированы (`Request`, `Response`, сервисные типы Prisma).
+- [ ] `npm run build` проходит без TS-ошибок перед пушем.
 
 ### Frontend audit
 - [x] Сборка frontend проходит (`npx nx build web --configuration development`).
