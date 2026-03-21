@@ -19,6 +19,7 @@
 
 - Развёрнутый лог причин и doc-gap: [`CHECKLIST_FIX_ANALYTICS_LOG.md`](./CHECKLIST_FIX_ANALYTICS_LOG.md)
 - Табличный BI-формат для агрегирования (включая `Owner`, `Target doc section`, `Target date`, `Status`): [`CHECKLIST_FIX_ANALYTICS_LOG_BI.md`](./CHECKLIST_FIX_ANALYTICS_LOG_BI.md)
+- Генеральная аналитика документации frontend+backend и roadmap до “почти авто-режима”: [`DOCS_FRONT_BACK_GENERAL_ANALYTICS_2026-03-19.md`](./DOCS_FRONT_BACK_GENERAL_ANALYTICS_2026-03-19.md)
 
 ---
 

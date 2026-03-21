@@ -1,20 +1,27 @@
 # Документация проекта
 
-| Файл | Описание |
-|------|----------|
-| **[ai/PROMPTS.md](./ai/PROMPTS.md)** | Промпты P1–P8 для ИИ (новая фича, domain, ui-kit, архив и т.д.) |
-| [business/BL_PAGES_AND_DATA_MODEL.md](./business/BL_PAGES_AND_DATA_MODEL.md) | БЛ: страницы по фазам, входы/выходы, сущности и таблицы |
-| [business/BUSINESS_LOGIC.md](./business/BUSINESS_LOGIC.md) | Краткая бизнес-логика и инварианты |
-| [ai/ARCHITECTURE.md](./ai/ARCHITECTURE.md) | Слои Nx/Angular, импорты, правила |
-| [ai/AI_PROJECT_PLAYBOOK.md](./ai/AI_PROJECT_PLAYBOOK.md) | Как агенту работать с репозиторием |
-| [ai/FEATURE_CHECKLIST_BASE.md](./ai/FEATURE_CHECKLIST_BASE.md) | Шаблон чек-листа фичи + шаблон компонента ui-kit (P4) |
-| [ai/DOCS_SYNC_RULES.md](./ai/DOCS_SYNC_RULES.md) | Сторож: синхронизация доков с кодом и Eve-Arch |
-| [ai/EVE_ARCH_INDEX.md](./ai/EVE_ARCH_INDEX.md) | Реестр артикулов структурных паттернов (маркеры `Eve-arch` в коде) |
-| [ai/EVE_INDEXES.md](./ai/EVE_INDEXES.md) | Оглавление Eve-BL / Eve-UX / Eve-PERF / Eve-SEC (`Eve-*` в коде) |
-| [ai/EVE_BACKEND_INDEX.md](./ai/EVE_BACKEND_INDEX.md) | Бэкенд: API / SEC / LOG (`Eve-BE:` в `backend/src`) |
+## Единая точка входа
 
-Остальные материалы — в папке [`ai/`](./ai/), контракт API — [`api/`](./api/), бизнес — [`business/`](./business/).
+Открывай сначала: **[`START_HERE.md`](./START_HERE.md)**.  
+Это единый вход для frontend + backend с маршрутами по типу задачи и роли.
+
+## Основные разделы
+
+| Раздел | Куда идти |
+|------|----------|
+| AI / архитектура / процессы | [`docs/ai`](./ai/) |
+| API контракт и backend↔frontend синхронизация | [`docs/api`](./api/) |
+| Бизнес-логика и доменная модель | [`docs/business`](./business/) |
+| Персональные инструкции запуска Cursor | [`docs/tigran`](./tigran/) |
+
+## Критичные документы (короткий список)
+
+- `docs/ai/ARCHITECTURE.md`
+- `docs/ai/AI_PROJECT_PLAYBOOK.md`
+- `docs/api/FRONTEND_CONTRACT.md`
+- `docs/business/BL_PAGES_AND_DATA_MODEL.md`
+- `docs/ai/FEATURE_CHECKLIST_BASE.md`
 
 ---
 
-**Синхронизация:** [`ai/DOCS_SYNC_RULES.md`](./ai/DOCS_SYNC_RULES.md) · [`ai/EVE_ARCH_INDEX.md`](./ai/EVE_ARCH_INDEX.md)
+**Синхронизация:** [`START_HERE.md`](./START_HERE.md) · [`ai/DOCS_SYNC_RULES.md`](./ai/DOCS_SYNC_RULES.md) · [`ai/EVE_INDEXES.md`](./ai/EVE_INDEXES.md)

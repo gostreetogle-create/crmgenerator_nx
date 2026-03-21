@@ -11,11 +11,13 @@ alwaysApply: false
 
 # Работа с репозиторием crmgenerator_nx
 
+Единый вход в документацию: `docs/START_HERE.md`.
+
 Перед нетривиальными правками **прочитай** (в указанном порядке):
 
 1. `docs/ai/ARCHITECTURE.md` — слои, импорты, запреты  
 2. `docs/ai/AI_PROJECT_PLAYBOOK.md` — процесс внедрения фич и антипаттерны  
-3. `docs/PROMPTS.md` — готовые формулировки задач  
+3. `docs/ai/PROMPTS.md` — готовые формулировки задач  
 4. `docs/business/WORKFLOW_STATUSES.md` — stable `key` статусов, неизменность после `proposal_paid`, версионирование  
 5. `backend/docs/ARCHITECTURE.md` — правила слоёв бэка, ошибки API, snapshot/PDF jobs  
 
