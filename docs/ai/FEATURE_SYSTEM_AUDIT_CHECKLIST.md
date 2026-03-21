@@ -50,7 +50,7 @@
 
 1. **Build status:** backend и frontend собираются успешно.
 2. **Lint status:** warning-ы в `web` тестах устранены.
-3. **Синхро-gap закрыт:** для `ProductSpecificationsApiService` реализован backend CRUD (`/products/:productId/specifications`), контракт синхронизирован; локальный runtime smoke заблокирован отсутствием БД (`localhost:5433`).
+3. **Синхро-gap закрыт:** для `ProductSpecificationsApiService` реализован backend CRUD (`/products/:productId/specifications`), контракт синхронизирован; runtime smoke пройден после подъема PostgreSQL в Docker.
 4. **Ручной smoke (UI):**
    - `/clients` — PASS (лист/действия видны, форма открывается и корректно закрывается).
    - `/organizations` — PASS (лист/действия видны, форма открывается и корректно закрывается).

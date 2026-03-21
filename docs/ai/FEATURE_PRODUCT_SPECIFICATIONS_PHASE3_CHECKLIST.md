@@ -28,7 +28,7 @@
 - [x] Обновить `API_FUTURE_CHECKLIST.md` (статус: внедрено).
 - [x] Прогнать backend `prisma generate` + `npm run build`.
 - [x] Прогнать frontend `npx nx lint web` + `npx nx test web`.
-- [-] Ручной smoke: базовый CRUD спецификаций через API (postman/httpie) — blocked локально, PostgreSQL `localhost:5433` недоступен.
+- [x] Ручной smoke: базовый CRUD спецификаций через API (postman/httpie).
 
 ## Risks / open questions
 
@@ -41,7 +41,7 @@
 |------|-----|
 | 2026-03-21 | Инициализирован чеклист фазы 3, начата реализация runtime endpoint-ов. |
 | 2026-03-21 | Прогнаны проверки: `prisma generate`, `backend build`, `web lint/test` — успешно. |
-| 2026-03-21 | Добавлен smoke-скрипт `backend/scripts/smoke-product-specifications.ps1`; запуск подтверждает блокер окружения: нет подключения к PostgreSQL (`localhost:5433`). |
+| 2026-03-21 | Добавлен smoke-скрипт `backend/scripts/smoke-product-specifications.ps1`; после поднятия PostgreSQL в Docker smoke пройден (create/update/delete). |
 
 ---
 
