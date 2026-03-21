@@ -1,6 +1,7 @@
 // Eve-BE: API-CRUD-PRODUCT-001 — товары: list/search/CRUD + clone (mounts/functionalities)
 // Eve-BE: API-VALID-ZOD-002 — валидация тела/параметров через zod
 import type { Request, Response } from 'express';
+import type { Prisma } from '@prisma/client';
 import { z } from 'zod';
 import { prisma } from '../services/prisma';
 import { HttpError } from '../errors/HttpError';
@@ -90,7 +91,7 @@ export const getProductById = asyncHandler(async (req: Request, res: Response) =
 export const createProduct = asyncHandler(async (req: Request, res: Response) => {
   const body = createProductSchema.parse(req.body);
   const { mountTypeIds, functionalityIds, ...data } = body;
-  const row = await prisma.$transaction(async (tx) => {
+  const row = await prisma.$transaction(async (tx: Prisma.TransactionClient) => {
     const created = await tx.product.create({ data });
     if (mountTypeIds?.length) {
       await tx.productMount.createMany({
@@ -126,7 +127,7 @@ export const updateProduct = asyncHandler(async (req: Request, res: Response) =>
   const { mountTypeIds, functionalityIds, ...data } = body;
   const id = getParamString(req.params.id, 'id');
   try {
-    const row = await prisma.$transaction(async (tx) => {
+    const row = await prisma.$transaction(async (tx: Prisma.TransactionClient) => {
       await tx.product.update({
         where: { id },
         data,
@@ -191,7 +192,7 @@ export const cloneProduct = asyncHandler(async (req: Request, res: Response) => 
   });
   if (!source) throw new HttpError(404, 'Product not found');
 
-  const cloned = await prisma.$transaction(async (tx) => {
+  const cloned = await prisma.$transaction(async (tx: Prisma.TransactionClient) => {
     const created = await tx.product.create({
       data: {
         name: body.name ?? source.name,

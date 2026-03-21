@@ -49,6 +49,14 @@
 - [x] Принято решение по gap: оставить frontend API как non-runtime каркас до следующей фазы.
 - [x] Обновлён docs-контракт и backlog после решения.
 
+### Strict TypeScript & Deployment Checklist
+- [ ] Все параметры в контроллерах типизированы? (`Request`, `Response`, `Prisma.TransactionClient` и т.д.)
+- [ ] `npx prisma generate` вызывается в Dockerfile до `npm run build`?
+- [ ] `npm run build` в `backend` проходит без `TS7006`/`TS2305`?
+- [ ] Миграции запускаются через `docker compose run --rm backend npx prisma migrate deploy`?
+- [ ] После пуша выполняется `git pull && ./deploy.sh`, затем проверяются логи и `curl /health`?
+- [ ] При ошибке снята диагностика (`docker compose logs ...` + `docker compose ps`)?
+
 ## Findings (текущие)
 
 1. **Build status:** backend и frontend собираются успешно.

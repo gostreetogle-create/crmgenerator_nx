@@ -39,6 +39,9 @@
 - понятен источник правды по данным (`FRONTEND_CONTRACT.md` vs backlog);
 - есть активный чеклист фичи или создан из шаблона.
 
+Перед любой фичей: пройди аудит по `docs/ai/FEATURE_SYSTEM_AUDIT_CHECKLIST.md`.  
+Не пушь, если build ломается!
+
 ## Definition of Done (коротко)
 
 - код + wiring + docs sync (`EVE_*`, `ARCHITECTURE`, checklist);
