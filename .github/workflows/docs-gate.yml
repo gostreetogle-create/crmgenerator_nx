@@ -1,0 +1,60 @@
+name: docs-gate
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  docs-gate:
+    name: Require docs update for code changes
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Validate docs sync for app/backend changes
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          BASE_SHA="${{ github.event.pull_request.base.sha }}"
+          HEAD_SHA="${{ github.sha }}"
+
+          echo "Comparing changes: ${BASE_SHA}..${HEAD_SHA}"
+          CHANGED_FILES="$(git diff --name-only "${BASE_SHA}" "${HEAD_SHA}")"
+
+          if [[ -z "${CHANGED_FILES}" ]]; then
+            echo "No changed files in diff range. Gate passed."
+            exit 0
+          fi
+
+          echo "Changed files:"
+          echo "${CHANGED_FILES}"
+
+          CODE_CHANGED=false
+          DOCS_CHANGED=false
+
+          while IFS= read -r file; do
+            [[ -z "${file}" ]] && continue
+
+            if [[ "${file}" =~ ^(apps/|backend/) ]]; then
+              CODE_CHANGED=true
+            fi
+
+            if [[ "${file}" =~ ^(docs/|\.cursor/rules/) ]]; then
+              DOCS_CHANGED=true
+            fi
+          done <<< "${CHANGED_FILES}"
+
+          if [[ "${CODE_CHANGED}" == "true" && "${DOCS_CHANGED}" != "true" ]]; then
+            echo "::error title=Docs Gate Failed::Detected changes in apps/ or backend/ without updates in docs/ or .cursor/rules/. Please sync documentation."
+            exit 1
+          fi
+
+          echo "Docs gate passed."
