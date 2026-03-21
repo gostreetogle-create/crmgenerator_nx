@@ -79,6 +79,37 @@
   --overlay-backdrop-strong: rgba(0, 0, 0, 0.78);
 }
 
+.eagle {
+  /* Light — «Орёл»: индустриальный минимализм, сталь и электрик-синий */
+  --background: #F0F2F5;
+  --foreground: #1A1C21;
+  --card: #FFFFFF;
+  --card-foreground: #1A1C21;
+
+  --primary: #2563EB;
+  --primary-hover: #1D4ED8;
+  --accent: #0EA5E9;
+  --ghost-hover: #F1F5F9;
+
+  --secondary: #475569;
+  --secondary-hover: #334155;
+
+  --muted: #E2E8F0;
+  --muted-foreground: #64748B;
+
+  --danger: oklch(0.60 0.20 25);
+  --danger-hover: oklch(0.55 0.18 25);
+
+  --border: #CBD5E1;
+  --outline: #3B82F6;
+
+  --text-on-primary: #FFFFFF;
+
+  --shadow-glow: 0 1px 3px rgba(15, 23, 42, 0.18);
+  --overlay-backdrop: rgba(15, 23, 42, 0.4);
+  --overlay-backdrop-strong: rgba(15, 23, 42, 0.7);
+}
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);

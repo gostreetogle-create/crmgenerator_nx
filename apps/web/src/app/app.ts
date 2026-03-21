@@ -1,6 +1,8 @@
 // Eve-arch: VIEWPORT-FLUID-015 — корневой контейнер экрана на всю ширину viewport
+// Eve-arch: THEME-012 — глобальный селектор темы в header + class (`dark`/`eagle`) на documentElement
 // Eve-UX: UX-FEEDBACK-002 — ненавязчивый feedback: до toast/snackbar — баннеры на страницах фич (см. EVE_UX_INDEX)
-import { Component } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
+import { Component, inject, PLATFORM_ID, signal } from '@angular/core';
 import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 
 @Component({
@@ -64,6 +66,20 @@ import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
           <a class="app-header-nav-link" routerLink="/ui" routerLinkActive="app-header-nav-link--active">
             UI
           </a>
+          <label class="theme-select-wrap" for="theme-select">
+            <span class="sr-only">Тема интерфейса</span>
+            <select
+              id="theme-select"
+              class="theme-select"
+              [value]="theme()"
+              (change)="onThemeChange($event)"
+              aria-label="Выбор темы интерфейса"
+            >
+              <option value="light">Лев</option>
+              <option value="dark">Пантера</option>
+              <option value="eagle">Орёл</option>
+            </select>
+          </label>
         </div>
       </div>
     </header>
@@ -128,18 +144,24 @@ import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
     .app-header-nav-link {
       display: inline-flex;
       align-items: center;
+      justify-content: center;
+      min-height: 30px;
       border-radius: var(--radius-sm);
       padding: var(--spacing-1) var(--spacing-2);
       text-decoration: none;
       color: var(--foreground);
       font-size: var(--font-size-sm);
-      border: 1px solid transparent;
+      border: 1px solid var(--border);
+      background: var(--card);
       white-space: nowrap;
-      transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+      box-sizing: border-box;
+      transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease, transform 0.15s ease;
     }
 
     .app-header-nav-link:hover {
-      background: var(--ghost-hover);
+      background: color-mix(in oklch, var(--ghost-hover) 80%, var(--card));
+      border-color: color-mix(in oklch, var(--primary) 30%, var(--border));
+      transform: translateY(-1px);
     }
 
     .app-header-nav-link:focus-visible {
@@ -150,7 +172,7 @@ import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
     .app-header-nav-link--active {
       background: color-mix(in oklch, var(--primary) 12%, transparent);
       border-color: color-mix(in oklch, var(--primary) 35%, var(--border));
-      box-shadow: inset 0 -1px 0 0 var(--primary);
+      box-shadow: inset 0 -1px 0 0 var(--primary), 0 1px 0 color-mix(in oklch, var(--primary) 20%, transparent);
       color: color-mix(in oklch, var(--foreground) 88%, var(--primary));
     }
 
@@ -159,6 +181,47 @@ import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
       display: flex;
       align-items: center;
       gap: var(--spacing-2);
+    }
+
+    .theme-select-wrap {
+      display: inline-flex;
+      align-items: center;
+    }
+
+    .theme-select {
+      min-height: 30px;
+      min-width: 92px;
+      padding: var(--spacing-1) var(--spacing-2);
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+      background: var(--card);
+      color: var(--foreground);
+      font-size: var(--font-size-sm);
+      line-height: 1.2;
+      cursor: pointer;
+      box-sizing: border-box;
+    }
+
+    .theme-select:hover {
+      border-color: color-mix(in oklch, var(--primary) 30%, var(--border));
+      background: color-mix(in oklch, var(--ghost-hover) 80%, var(--card));
+    }
+
+    .theme-select:focus-visible {
+      outline: 2px solid var(--outline);
+      outline-offset: 1px;
+    }
+
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
     }
 
     .app-main {
@@ -192,4 +255,43 @@ import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
     }
   `,
 })
-export class AppComponent {}
+export class AppComponent {
+  private readonly platformId = inject(PLATFORM_ID);
+  readonly theme = signal<'light' | 'dark' | 'eagle'>('light');
+
+  constructor() {
+    if (!isPlatformBrowser(this.platformId)) return;
+    const stored = this.safeGetTheme();
+    this.applyTheme(stored);
+  }
+
+  onThemeChange(event: Event) {
+    const raw = (event.target as HTMLSelectElement).value;
+    const value: 'light' | 'dark' | 'eagle' =
+      raw === 'dark' ? 'dark' : raw === 'eagle' ? 'eagle' : 'light';
+    this.applyTheme(value);
+  }
+
+  private applyTheme(next: 'light' | 'dark' | 'eagle') {
+    this.theme.set(next);
+    if (!isPlatformBrowser(this.platformId)) return;
+    try {
+      document.documentElement.classList.toggle('dark', next === 'dark');
+      document.documentElement.classList.toggle('eagle', next === 'eagle');
+      window.localStorage.setItem('theme', next);
+    } catch {
+      // ignore localStorage/DOM access errors
+    }
+  }
+
+  private safeGetTheme(): 'light' | 'dark' | 'eagle' {
+    try {
+      const raw = window.localStorage.getItem('theme');
+      if (raw === 'dark') return 'dark';
+      if (raw === 'eagle') return 'eagle';
+      return 'light';
+    } catch {
+      return 'light';
+    }
+  }
+}

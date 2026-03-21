@@ -91,18 +91,28 @@
 }
 
 .ui-color-table {
-  min-width: 760px;
+  min-width: 1260px;
 }
 
 .color-swatch {
   --sw: transparent;
-  width: 100%;
-  max-width: 160px;
+  width: 64px;
   height: 20px;
   border-radius: var(--radius-sm);
   border: 1px solid color-mix(in oklch, var(--border) 70%, var(--foreground));
   background: var(--sw);
   display: inline-block;
+}
+
+.theme-color-cell {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  white-space: nowrap;
+}
+
+.theme-empty {
+  color: var(--muted-foreground);
 }
 
 .catalog-group {
