@@ -4,8 +4,8 @@ COPY package*.json ./
 COPY nx.json tsconfig.base.json ./
 COPY apps ./apps
 COPY libs ./libs
-RUN npm ci
-RUN npx nx build web --configuration production
+RUN npm install --no-audit --no-fund
+RUN npx nx build web --configuration development
 
 FROM nginx:1.27-alpine AS runtime
 COPY deploy/nginx.conf /etc/nginx/conf.d/default.conf

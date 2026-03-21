@@ -10,7 +10,7 @@ sudo apt install docker.io docker-compose git -y
 sudo systemctl enable --now docker
 sudo usermod -aG docker $USER
 # Перелогиньтесь по SSH после команды выше
-git clone <URL_ВАШЕГО_REPO> crmgenerator_nx
+git clone https://github.com/gostreetogle-create/crmgenerator_nx.git
 cd crmgenerator_nx/deploy
 cp .env.example .env
 chmod +x deploy.sh
